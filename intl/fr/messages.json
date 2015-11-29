@@ -1,9 +1,1 @@
-{
-    "msgCommandNotSpecified": "La commande n'a pas été spécifié",
-    "msgHelp": "Imprimer ce message et quitter.",
-    "msgInvalidUsage": "Utilisation non valide",
-    "msgInvalidUsageLong": "Utilisation non valide de l'option",
-    "msgTitle": "StrongLoop Globalisez Preuve de concept",
-    "msgTranslate": "Traduisez les fichiers de ressources.",
-    "msgVersion": "Version et quitter Imprimer."
-}
+{}

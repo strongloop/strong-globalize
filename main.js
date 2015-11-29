@@ -2,6 +2,7 @@
 
 'use strict';
 
+var assert = require('assert');
 var async = require('async');
 var Parser = require('posix-getopt').BasicParser;
 var debug = require('debug')('strong-globalize');
@@ -14,6 +15,36 @@ var TARGET_LANGS = ['ja', 'zh-CN', 'zh-TW', 'ko',
   'de', 'es', 'fr', 'it', 'pt-BR'];
 // TARGET_LANGS = ['ja'];
 var INTL_ROOT = __dirname + '/intl/';
+
+var MSG = {};
+
+function loadMsg() {
+  MSG = require('./MSG.json');
+  if (MSG.en && Object.keys(MSG.en).length === 0) {
+    loadEnglish();
+    storeMsg();
+  }
+  // console.log('MSG loaded: %j', MSG);
+}
+
+function storeMsg() {
+  fs.writeFileSync('./MSG.json', JSON.stringify(MSG, null, 4));
+}
+
+function writeToMsg(lang, key, value) {
+  assert(lang === 'en' || TARGET_LANGS.indexOf(lang) >= 0,
+    'Unsupported language key: ' + lang);
+  assert(typeof value === 'string',
+    'Message value type is not <string>: ' + typeof value);
+  console.log('Adding {%s: "%s"}', key, value);
+  MSG[lang][key] = value;
+}
+
+function writeAllToMsg(lang, json) {
+  Object.keys(json).forEach(function(key) {
+    writeToMsg(lang, key, json[key]);
+  });
+}
 
 function printHelp($0, prn) {
   var MY_APP_LANGUAGE = process.env.MY_APP_LANGUAGE || 'en';
@@ -63,6 +94,15 @@ function getCredentials() {
   return LC;
 }
 
+function loadEnglish() {
+  var enDirPath = INTL_ROOT + 'en/';
+  var enJsons = fs.readdirSync(enDirPath);
+  enJsons.forEach(function(jsonFile) {
+    var sourceFilePath = enDirPath + jsonFile;
+    writeAllToMsg('en', JSON.parse(fs.readFileSync(sourceFilePath)));
+  });
+}
+
 function translateResource(dirPath, callback) {
   var enDirPath = INTL_ROOT + 'en/';
   debug('enDirPath: %s', enDirPath);
@@ -71,6 +111,7 @@ function translateResource(dirPath, callback) {
   langs.splice(langs.indexOf('en'), 1);
   debug('enJsons: %j', enJsons);
   debug('langs: %j', langs);
+  loadMsg();
   async.eachSeries(enJsons, function(jsonFile, enJsonsCb) {
     var sourceFilePath = enDirPath + jsonFile;
     console.log('---------- Processing json: %s', jsonFile);
@@ -88,6 +129,7 @@ function translateResource(dirPath, callback) {
     });
   }, function(err, result) {
     callback(err, result);
+    storeMsg();
   });
 }
 
@@ -145,7 +187,12 @@ function translate(jsonFile, sourceJson, targetJson, targetLang, callback) {
 
   });
   async.series(asyncTasks, function(err, result) {
-    if (!err) fs.writeFileSync(targetJson, JSON.stringify(result[2], null, 4));
+    if (!err) {
+      var translatedJson = result[2];
+      writeAllToMsg(targetLang, translatedJson);
+      fs.writeFileSync(targetJson, JSON.stringify(translatedJson, null, 4));
+      storeMsg();
+    }
     callback(null, result); // carry on even if this language failed
   });
 }
@@ -167,14 +214,17 @@ function main(argv, callback) {
   while ((option = parser.getopt()) !== undefined) {
     switch (option.option) {
       case 'v':
+        loadMsg();
         console.log(new Date() + ' Version ' +
           require('./package.json').version);
         return callback();
       case 'h':
+        loadMsg();
         printHelp($0, console.log);
         return callback();
       case 't':
         cmd = option.option;
+        loadMsg();
         break;
       default:
         console.error('Invalid usage (near option \'%s\'), try `%s --help`.',
@@ -196,6 +246,17 @@ function main(argv, callback) {
       debug('translateResource result: %j', result);
 
     }
+
+    console.log('\n\n---------- BEGIN: Version Command');
+    console.log(new Date() + ' Version ' +
+      require('./package.json').version);
+    console.log('---------- END: Version Command');
+
+    // help command
+    console.log('\n\n---------- BEGIN Help Command');
+    printHelp($0, console.log);
+    console.log('---------- END Help Command\n\n');
+
     callback(err);
   });
 
@@ -207,5 +268,4 @@ main(process.argv, function(err) {
   }
   process.exit(1);
 });
-
 

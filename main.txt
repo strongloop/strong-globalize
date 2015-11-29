@@ -1,25 +1,8 @@
 usage: %MAIN% [options]
 
-Sync Strongloop Central DB with Heroku
+StrongLoop Globalize Proof of Concept
 
 Options:
   -h,--help         Print this message and exit.
   -v,--version      Print version and exit.
-  -b,--base BASE    Base directory to work in (default `.strong-central`).
-  -c,--check	    Check if Central DB is consistent with Heroku.
-  -d,--dry-run 		Non destructive version of update.
-  -u,--update 		Update Central DB to be consistent with Heroku.
-
-Compare models stored on Central DB against Heroku app data.  Update
-Central DB if inconsistent.
-
-There are seceral cases that can make Central DB inconsistent with
-the Herou app data:
-
-- Resource provisioned to Heroku, but errors occur when creating
-  Central models
-- Heroku command is rejected because Heroku has put all dynos to sleep
-  (destroys)
-- In case multiple instances are registered for a service but some
-  are referring to stale Heroku dynos, Central should record those
-  instances as stopped.
+  -t,--translate    Translate resource files.

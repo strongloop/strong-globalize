@@ -1,0 +1,9 @@
+{
+    "msgCommandNotSpecified": "El mandato no se ha especificado",
+    "msgHelp": "Imprimir este mensaje y salir.",
+    "msgInvalidUsage": "Uso no válido",
+    "msgInvalidUsageLong": "Uso no válido cerca de opción",
+    "msgTitle": "StrongLoop Globalizar Prueba de Concepto",
+    "msgTranslate": "Convertir archivos de recursos.",
+    "msgVersion": "Imprimir la versión y salir."
+}

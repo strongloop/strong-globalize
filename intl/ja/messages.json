@@ -1,0 +1,9 @@
+{
+    "msgCommandNotSpecified": "命令は指定されませんでした",
+    "msgHelp": "この伝言と出口を出版して下さい。",
+    "msgInvalidUsage": "無効な使い方",
+    "msgInvalidUsageLong": "無効な使い方近くの選択",
+    "msgTitle": "StrongLoopは概念の証拠をグローバル化します",
+    "msgTranslate": "資源ファイルを翻訳して下さい。",
+    "msgVersion": "バージョンと出口を印刷して下さい。"
+}

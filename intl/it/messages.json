@@ -1,0 +1,9 @@
+{
+    "msgCommandNotSpecified": "Il comando non è stato specificato",
+    "msgHelp": "Stampate questo messaggio e uscite.",
+    "msgInvalidUsage": "Utilizzo non valido",
+    "msgInvalidUsageLong": "Utilizzo non valido vicino  a opzione",
+    "msgTitle": "Prova Globalize StrongLoop di Concetto",
+    "msgTranslate": "Traducete archivi di risorsa.",
+    "msgVersion": "Versione di stampa e uscita."
+}

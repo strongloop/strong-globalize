@@ -1,0 +1,10 @@
+{
+    "msgCommandNotSpecified": "Command was not specified",
+    "msgInvalidUsage": "Invalid usage",
+    "msgInvalidUsageLong": "Invalid usage near option",
+
+    "msgTranslate": "Translate resource files.",
+    "msgVersion": "Print version and exit.",
+    "msgHelp": "Print this message and exit.",
+    "msgTitle": "StrongLoop Globalize Proof of Concept"
+}

@@ -1,0 +1,9 @@
+{
+    "msgCommandNotSpecified": "명령이 명시해 지지 않았다.",
+    "msgHelp": "이 메시지를 인쇄하고 퇴장해라.",
+    "msgInvalidUsage": "효력이 없는 사용",
+    "msgInvalidUsageLong": "옵션 가까이에 효력이 없는 사용",
+    "msgTitle": "StrongLoop Globalize 개념의 증거",
+    "msgTranslate": "자원 파일을 번역해라.",
+    "msgVersion": "프린트 버전과 출구."
+}

@@ -30,10 +30,8 @@
     "async": "^1.4.2",
     "debug": "^2.2.0",
     "g11n-pipeline": "^1.1.3",
-    "globalize": "^1.1.0-rc.6",
+    "cldr-data": "latest",
+    "globalize": "1.x",
     "posix-getopt": "^1.1.0"
-  },
-  "peerDependencies": {
-    "cldr-data": "^28.0.3"
   }
 }

@@ -1,7 +1,8 @@
 {
     "msgCommandNotSpecified": "Command was not specified",
     "msgInvalidUsage": "Invalid usage",
-    "msgInvalidUsageLong": "Invalid usage near option",
+    "msgInvalidUsageLong": "Invalid usage (near option {phNearOption}), try {phProgramName}{phHelpOption}.",
+    "msgInvalidUsageExtra": "Invalid usage (extra arguments), try {phProgramName}{phHelpOption}.",
 
     "msgTranslate": "Translate resource files.",
     "msgVersion": "Print version and exit.",

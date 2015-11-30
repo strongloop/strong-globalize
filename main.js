@@ -4,13 +4,13 @@
 
 var assert = require('assert');
 var async = require('async');
+var Globalize = require('globalize');
 var Parser = require('posix-getopt').BasicParser;
 var debug = require('debug')('strong-globalize');
 var fs = require('fs');
 var path = require('path');
+var util = require('util');
 
-// TO-DO: zh-TW is not processed in this code
-// TO-DO: zh-CN is not supported in GAAS
 var TARGET_LANGS = ['ja', 'zh-CN', 'zh-TW', 'ko',
   'de', 'es', 'fr', 'it', 'pt-BR'];
 // TARGET_LANGS = ['ja'];
@@ -18,12 +18,61 @@ var INTL_ROOT = __dirname + '/intl/';
 
 var MSG = {};
 
+var MY_APP_LANGUAGE = process.env.MY_APP_LANGUAGE || 'en';
+assert(MY_APP_LANGUAGE === 'en' || TARGET_LANGS.indexOf(MY_APP_LANGUAGE) >= 0,
+  'Locale not supported: ' + MY_APP_LANGUAGE);
+loadCldr();
+loadMsg();
+adjustLocale();
+Globalize.locale(twisterCLDR(MY_APP_LANGUAGE));
+
+function loadCldr() {
+  Globalize.load(
+    require('cldr-data/main/en/ca-gregorian'),
+    require('cldr-data/main/en/currencies'),
+    require('cldr-data/main/en/dateFields'),
+    require('cldr-data/main/en/numbers'),
+    require('cldr-data/supplemental/currencyData'),
+    require('cldr-data/supplemental/likelySubtags'),
+    require('cldr-data/supplemental/plurals'),
+    require('cldr-data/supplemental/timeData'),
+    require('cldr-data/supplemental/weekData')
+  );
+  var bundleCa = 'cldr-data/main/%s/ca-gregorian';
+  var bundleCurrencies = 'cldr-data/main/%s/currencies';
+  var bundleDates = 'cldr-data/main/%s/dateFields';
+  var bundleNumbers = 'cldr-data/main/%s/numbers';
+  TARGET_LANGS.forEach(function(lang) {
+    Globalize.load(
+      require(util.format(bundleCa, twisterCLDR(lang))),
+      require(util.format(bundleCurrencies, twisterCLDR(lang))),
+      require(util.format(bundleDates, twisterCLDR(lang))),
+      require(util.format(bundleNumbers, twisterCLDR(lang)))
+    );
+  });
+}
+
+function adjustLocale() {
+  if (MY_APP_LANGUAGE === 'en') return;
+  assert(TARGET_LANGS.indexOf(MY_APP_LANGUAGE) >= 0);
+  var twistedLang = twisterCLDR(MY_APP_LANGUAGE);
+  if (!MSG[twistedLang] || Object.keys(MSG[twistedLang]).length === 0) {
+    console.log(
+      '\n**************************************************************\n' +
+      '*** Messages are not yet localized.  Fall back to English. ***\n' +
+      '**************************************************************\n'
+      );
+    MY_APP_LANGUAGE = 'en';
+  }
+}
+
 function loadMsg() {
   MSG = require('./MSG.json');
   if (MSG.en && Object.keys(MSG.en).length === 0) {
     loadEnglish();
     storeMsg();
   }
+  Globalize.loadMessages(MSG);
   // console.log('MSG loaded: %j', MSG);
 }
 
@@ -36,8 +85,12 @@ function writeToMsg(lang, key, value) {
     'Unsupported language key: ' + lang);
   assert(typeof value === 'string',
     'Message value type is not <string>: ' + typeof value);
-  console.log('Adding {%s: "%s"}', key, value);
-  MSG[lang][key] = value;
+  // console.log('Adding {%s: "%s"}', key, value);
+  var twistedLang = twisterCLDR(lang);
+  if (!MSG[twistedLang]) MSG[twistedLang] = {};
+  MSG[twistedLang][key] = value;
+  // Keep both for now
+  if (lang !== twistedLang) MSG[lang][key] = value;
 }
 
 function writeAllToMsg(lang, json) {
@@ -47,18 +100,32 @@ function writeAllToMsg(lang, json) {
 }
 
 function printHelp($0, prn) {
-  var MY_APP_LANGUAGE = process.env.MY_APP_LANGUAGE || 'en';
-  if (MY_APP_LANGUAGE !== 'en') console.log('Language: %s', MY_APP_LANGUAGE);
-  var USAGE = fs.readFileSync(require.resolve('./main.txt'), 'utf-8')
+  var USAGE = fs.readFileSync(require.resolve('./mainTemp.txt'), 'utf-8');
+  USAGE = util.format(USAGE,
+    Globalize.messageFormatter('termusage')(),
+    Globalize.messageFormatter('termoptions')(),
+    Globalize.messageFormatter('msgTitle')(),
+    Globalize.messageFormatter('termOptions')(),
+    Globalize.messageFormatter('msgHelp')(),
+    Globalize.messageFormatter('msgVersion')(),
+    Globalize.messageFormatter('msgTranslate')())
     .replace(/%MAIN%/g, $0)
     .trim();
-
+  USAGE = '\n\n' + USAGE + '\n\n';
   prn(USAGE);
 }
 
-function zhTwister(locale) {
+function twisterGPB(locale) {
   if (locale === 'zh-CN') return 'zh-Hans';
   if (locale === 'zh-TW') return 'zh-Hant';
+  return locale;
+}
+
+// This twisterCLDR works for Dates but not for Messages
+function twisterCLDR(locale) {
+  if (locale === 'zh-CN') return 'zh';
+  if (locale === 'zh-TW') return 'zh-Hant';
+  if (locale === 'pt-BR') return 'pt';
   return locale;
 }
 
@@ -144,7 +211,7 @@ function translate(jsonFile, sourceJson, targetJson, targetLang, callback) {
     debug('*** 1 *** myBundle.create');
     myBundle.create({
       sourceLanguage: 'en',
-      targetLanguages: [zhTwister(targetLang)]}, function(err) {
+      targetLanguages: [twisterGPB(targetLang)]}, function(err) {
       if (err) console.error('***** myBundle.create error: %j', err);
       cb(err);
     });
@@ -164,7 +231,7 @@ function translate(jsonFile, sourceJson, targetJson, targetLang, callback) {
     var maxTry = 5;
     var tryCount = 0;
     var opts = {
-      languageId: zhTwister(targetLang),
+      languageId: twisterGPB(targetLang),
       resourceKey: bundleName,
     };
     function myGetStrings() {
@@ -202,7 +269,6 @@ function main(argv, callback) {
     callback = function() {};
   }
 
-  var $0 = process.env.CMD ? process.env.CMD : path.basename(argv[1]);
   var parser = new Parser([':',
     'v(version)',
     'h(help)',
@@ -211,12 +277,17 @@ function main(argv, callback) {
 
   var option;
   var cmd;
+  var $0 = process.env.CMD ? process.env.CMD : path.basename(argv[1]);
   while ((option = parser.getopt()) !== undefined) {
     switch (option.option) {
       case 'v':
         loadMsg();
-        console.log(new Date() + ' Version ' +
-          require('./package.json').version);
+        console.log('\n\n' +
+          Globalize.formatDate(new Date(), {datetime: 'medium'}) + ' ' +
+          Globalize.messageFormatter('termVersion')({
+            phVersion: require('./package.json').version,
+          }) + '\n\n'
+          );
         return callback();
       case 'h':
         loadMsg();
@@ -227,16 +298,21 @@ function main(argv, callback) {
         loadMsg();
         break;
       default:
-        console.error('Invalid usage (near option \'%s\'), try `%s --help`.',
-          option.optopt,
-          $0);
-        return callback(Error('Invalid usage'));
+        console.error(Globalize.messageFormatter('msgInvalidUsageLong')({
+          phNearOption: option.optopt,
+          phProgramName: $0,
+          phHelpOption: ' --help',
+        }));
+        return callback(Error(Globalize.messageFormatter('msgInvalidUsage')()));
     }
   }
 
   if (parser.optind() !== argv.length) {
-    console.error('Invalid usage (extra arguments), try `%s --help`.', $0);
-    return callback(Error('Invalid usage'));
+    console.error(Globalize.messageFormatter('msgInvalidUsageExtra')({
+      phProgramName: $0,
+      phHelpOpiton: ' --help',
+    }));
+    return callback(Error(Globalize.messageFormatter('msgInvalidUsage')()));
   }
 
   if (cmd === 't') translateResource(INTL_ROOT, function(err, result) {
@@ -246,17 +322,6 @@ function main(argv, callback) {
       debug('translateResource result: %j', result);
 
     }
-
-    console.log('\n\n---------- BEGIN: Version Command');
-    console.log(new Date() + ' Version ' +
-      require('./package.json').version);
-    console.log('---------- END: Version Command');
-
-    // help command
-    console.log('\n\n---------- BEGIN Help Command');
-    printHelp($0, console.log);
-    console.log('---------- END Help Command\n\n');
-
     callback(err);
   });
 
@@ -268,4 +333,3 @@ main(process.argv, function(err) {
   }
   process.exit(1);
 });
-

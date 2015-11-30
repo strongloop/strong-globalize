@@ -3,7 +3,7 @@
 Run main.js as follows:
 
 
-$ MY_APP_LANGUAGE=**locale** BLUEMIX_USER=**userId** BLUEMIX_PASSWORD=**password** BLUEMIX_INSTANCE=**instanceId** node main
+$ MY_APP_LANGUAGE=**locale** BLUEMIX_USER=**userId** BLUEMIX_PASSWORD=**password** BLUEMIX_INSTANCE=**instanceId** node main -h
 
 
 

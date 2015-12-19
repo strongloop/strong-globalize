@@ -15,6 +15,10 @@ var util = require('util');
 var TARGET_LANGS = ['ja', 'zh-Hans', 'zh-Hant', 'ko',
   'de', 'es', 'fr', 'it', 'pt', 'ru'];
 
+function t(path, variables) {
+  return GLB.messageFormatter(path)(variables);
+}
+
 function twisterGPB(locale) {
   if (locale === 'pt') return 'pt-BR';
   return locale;
@@ -137,13 +141,13 @@ function writeAllToMsg(lang, json) {
 function printHelp($0, prn) {
   var USAGE = fs.readFileSync(require.resolve('./mainTemp.txt'), 'utf-8');
   USAGE = util.format(USAGE,
-    GLB.formatMessage('termusage'),
-    GLB.formatMessage('termoptions'),
-    GLB.formatMessage('msgTitle'),
-    GLB.formatMessage('termOptions'),
-    GLB.formatMessage('msgHelp'),
-    GLB.formatMessage('msgVersion'),
-    GLB.formatMessage('msgTranslate'))
+    t('termusage'),
+    t('termoptions'),
+    t('msgTitle'),
+    t('termOptions'),
+    t('msgHelp'),
+    t('msgVersion'),
+    t('msgTranslate'))
     .replace(/%MAIN%/g, $0)
     .trim();
   USAGE = '\n\n' + USAGE + '\n\n';
@@ -310,7 +314,7 @@ function main(argv, callback) {
         loadMsg();
         console.log('\n\n' +
           GLB.formatDate(new Date(), {datetime: 'medium'}) + ' ' +
-          GLB.formatMessage('termVersion', {
+          t('termVersion', {
             phVersion: require('./package.json').version,
           }) + ' ' +
           GLB.formatNumber(123456.78) + ' ' +
@@ -327,21 +331,21 @@ function main(argv, callback) {
         loadMsg();
         break;
       default:
-        console.error(GLB.formatMessage('msgInvalidUsageLong', {
+        console.error(t('msgInvalidUsageLong', {
           phNearOption: option.optopt,
           phProgramName: $0,
           phHelpOption: ' --help',
         }));
-        return callback(Error(GLB.formatMessage('msgInvalidUsage')));
+        return callback(Error(t('msgInvalidUsage')));
     }
   }
 
   if (parser.optind() !== argv.length) {
-    console.error(GLB.formatMessage('msgInvalidUsageExtra', {
+    console.error(t('msgInvalidUsageExtra', {
       phProgramName: $0,
       phHelpOpiton: ' --help',
     }));
-    return callback(Error(GLB.formatMessage('msgInvalidUsage')));
+    return callback(Error(t('msgInvalidUsage')));
   }
 
   if (cmd === 't') translateResource(INTL_ROOT, function(err, result) {

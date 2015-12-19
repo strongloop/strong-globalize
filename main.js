@@ -14,6 +14,17 @@ var util = require('util');
 var TARGET_LANGS = ['ja', 'zh-CN', 'zh-TW', 'ko',
   'de', 'es', 'fr', 'it', 'pt-BR'];
 // TARGET_LANGS = ['ja'];
+var CURRENCY_SYMBOLS = {
+  'ja': 'JPY',
+  'zh-CN': 'CNY',
+  'zh-TW': 'TWD',
+  'ko': 'KRW',
+  'de': 'EUR',
+  'es': 'EUR',
+  'fr': 'EUR',
+  'it': 'EUR',
+  'pt-BR': 'BRL',
+};
 var INTL_ROOT = __dirname + '/intl/';
 
 var MSG = {};
@@ -50,6 +61,11 @@ function loadCldr() {
       require(util.format(bundleNumbers, twisterCLDR(lang)))
     );
   });
+}
+
+function getCurrencySymbol(locale) {
+  if (locale === 'en') return 'USD';
+  return CURRENCY_SYMBOLS[locale];
 }
 
 function adjustLocale() {
@@ -284,10 +300,12 @@ function main(argv, callback) {
         loadMsg();
         console.log('\n\n' +
           Globalize.formatDate(new Date(), {datetime: 'medium'}) + ' ' +
-          Globalize.messageFormatter('termVersion')({
+          Globalize.formatMessage('termVersion', {
             phVersion: require('./package.json').version,
-          }) + '\n\n'
-          );
+          })  + ' ' +
+          Globalize.formatNumber(123456.78) + ' ' +
+          Globalize.formatCurrency(123456.78, getCurrencySymbol(MY_APP_LANGUAGE)) + ' ' +
+          '\n\n');
         return callback();
       case 'h':
         loadMsg();

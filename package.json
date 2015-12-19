@@ -22,16 +22,16 @@
     "eslint": "^1.x",
     "eslint-config-strongloop": "^1.x",
     "jscs": "^1.13.0",
-    "mkdirp": "^0.5.1",
     "nyc": "^3.0.0",
     "tap": "^1.2.0"
   },
   "dependencies": {
     "async": "^1.4.2",
+    "cldr-data": "latest",
     "debug": "^2.2.0",
     "g11n-pipeline": "^1.1.3",
-    "cldr-data": "latest",
     "globalize": "1.x",
+    "mkdirp": "^0.5.1",
     "posix-getopt": "^1.1.0"
   }
 }

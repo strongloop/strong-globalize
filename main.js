@@ -4,26 +4,44 @@
 
 var assert = require('assert');
 var async = require('async');
-var Globalize = require('globalize');
+var GLB = require('globalize');
 var Parser = require('posix-getopt').BasicParser;
 var debug = require('debug')('strong-globalize');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 var path = require('path');
 var util = require('util');
 
-var TARGET_LANGS = ['ja', 'zh-CN', 'zh-TW', 'ko',
-  'de', 'es', 'fr', 'it', 'pt-BR'];
-// TARGET_LANGS = ['ja'];
+var TARGET_LANGS = ['ja', 'zh-Hans', 'zh-Hant', 'ko',
+  'de', 'es', 'fr', 'it', 'pt', 'ru'];
+
+function twisterGPB(locale) {
+  if (locale === 'pt') return 'pt-BR';
+  return locale;
+}
+
+function twisterCLDR(locale) {
+  return locale;
+}
+
+function initIntlDirs(intlRoot) {
+  mkdirp.sync(intlRoot + 'en');
+  TARGET_LANGS.forEach(function(lang) {
+    mkdirp.sync(intlRoot + lang);
+  });
+}
+
 var CURRENCY_SYMBOLS = {
-  'ja': 'JPY',
-  'zh-CN': 'CNY',
-  'zh-TW': 'TWD',
-  'ko': 'KRW',
-  'de': 'EUR',
-  'es': 'EUR',
-  'fr': 'EUR',
-  'it': 'EUR',
-  'pt-BR': 'BRL',
+  ja: 'JPY',
+  'zh-Hans': 'CNY',
+  'zh-Hant': 'TWD',
+  ko: 'KRW',
+  de: 'EUR',
+  es: 'EUR',
+  fr: 'EUR',
+  it: 'EUR',
+  pt: 'BRL',
+  ru: 'RUB',
 };
 var INTL_ROOT = __dirname + '/intl/';
 
@@ -32,13 +50,15 @@ var MSG = {};
 var MY_APP_LANGUAGE = process.env.MY_APP_LANGUAGE || 'en';
 assert(MY_APP_LANGUAGE === 'en' || TARGET_LANGS.indexOf(MY_APP_LANGUAGE) >= 0,
   'Locale not supported: ' + MY_APP_LANGUAGE);
+
+initIntlDirs(INTL_ROOT);
 loadCldr();
 loadMsg();
 adjustLocale();
-Globalize.locale(twisterCLDR(MY_APP_LANGUAGE));
+GLB.locale(twisterCLDR(MY_APP_LANGUAGE));
 
 function loadCldr() {
-  Globalize.load(
+  GLB.load(
     require('cldr-data/main/en/ca-gregorian'),
     require('cldr-data/main/en/currencies'),
     require('cldr-data/main/en/dateFields'),
@@ -54,7 +74,7 @@ function loadCldr() {
   var bundleDates = 'cldr-data/main/%s/dateFields';
   var bundleNumbers = 'cldr-data/main/%s/numbers';
   TARGET_LANGS.forEach(function(lang) {
-    Globalize.load(
+    GLB.load(
       require(util.format(bundleCa, twisterCLDR(lang))),
       require(util.format(bundleCurrencies, twisterCLDR(lang))),
       require(util.format(bundleDates, twisterCLDR(lang))),
@@ -84,11 +104,12 @@ function adjustLocale() {
 
 function loadMsg() {
   MSG = require('./MSG.json');
-  if (MSG.en && Object.keys(MSG.en).length === 0) {
+  if (!MSG.en) MSG.en = {};
+  if (Object.keys(MSG.en).length === 0) {
     loadEnglish();
     storeMsg();
   }
-  Globalize.loadMessages(MSG);
+  GLB.loadMessages(MSG);
   // console.log('MSG loaded: %j', MSG);
 }
 
@@ -105,8 +126,6 @@ function writeToMsg(lang, key, value) {
   var twistedLang = twisterCLDR(lang);
   if (!MSG[twistedLang]) MSG[twistedLang] = {};
   MSG[twistedLang][key] = value;
-  // Keep both for now
-  if (lang !== twistedLang) MSG[lang][key] = value;
 }
 
 function writeAllToMsg(lang, json) {
@@ -118,31 +137,17 @@ function writeAllToMsg(lang, json) {
 function printHelp($0, prn) {
   var USAGE = fs.readFileSync(require.resolve('./mainTemp.txt'), 'utf-8');
   USAGE = util.format(USAGE,
-    Globalize.messageFormatter('termusage')(),
-    Globalize.messageFormatter('termoptions')(),
-    Globalize.messageFormatter('msgTitle')(),
-    Globalize.messageFormatter('termOptions')(),
-    Globalize.messageFormatter('msgHelp')(),
-    Globalize.messageFormatter('msgVersion')(),
-    Globalize.messageFormatter('msgTranslate')())
+    GLB.formatMessage('termusage'),
+    GLB.formatMessage('termoptions'),
+    GLB.formatMessage('msgTitle'),
+    GLB.formatMessage('termOptions'),
+    GLB.formatMessage('msgHelp'),
+    GLB.formatMessage('msgVersion'),
+    GLB.formatMessage('msgTranslate'))
     .replace(/%MAIN%/g, $0)
     .trim();
   USAGE = '\n\n' + USAGE + '\n\n';
   prn(USAGE);
-}
-
-function twisterGPB(locale) {
-  if (locale === 'zh-CN') return 'zh-Hans';
-  if (locale === 'zh-TW') return 'zh-Hant';
-  return locale;
-}
-
-// This twisterCLDR works for Dates but not for Messages
-function twisterCLDR(locale) {
-  if (locale === 'zh-CN') return 'zh';
-  if (locale === 'zh-TW') return 'zh-Hant';
-  if (locale === 'pt-BR') return 'pt';
-  return locale;
 }
 
 function fillZero(value) {
@@ -181,6 +186,7 @@ function loadEnglish() {
   var enDirPath = INTL_ROOT + 'en/';
   var enJsons = fs.readdirSync(enDirPath);
   enJsons.forEach(function(jsonFile) {
+    if (jsonFile.indexOf('.') === 0) return;
     var sourceFilePath = enDirPath + jsonFile;
     writeAllToMsg('en', JSON.parse(fs.readFileSync(sourceFilePath)));
   });
@@ -196,6 +202,10 @@ function translateResource(dirPath, callback) {
   debug('langs: %j', langs);
   loadMsg();
   async.eachSeries(enJsons, function(jsonFile, enJsonsCb) {
+    if (jsonFile.indexOf('.') === 0) {
+      enJsonsCb(null);
+      return;
+    }
     var sourceFilePath = enDirPath + jsonFile;
     console.log('---------- Processing json: %s', jsonFile);
     async.eachSeries(langs, function(lang, langsCb) {
@@ -299,12 +309,13 @@ function main(argv, callback) {
       case 'v':
         loadMsg();
         console.log('\n\n' +
-          Globalize.formatDate(new Date(), {datetime: 'medium'}) + ' ' +
-          Globalize.formatMessage('termVersion', {
+          GLB.formatDate(new Date(), {datetime: 'medium'}) + ' ' +
+          GLB.formatMessage('termVersion', {
             phVersion: require('./package.json').version,
-          })  + ' ' +
-          Globalize.formatNumber(123456.78) + ' ' +
-          Globalize.formatCurrency(123456.78, getCurrencySymbol(MY_APP_LANGUAGE)) + ' ' +
+          }) + ' ' +
+          GLB.formatNumber(123456.78) + ' ' +
+          GLB.formatCurrency(123456.78,
+            getCurrencySymbol(MY_APP_LANGUAGE)) + ' ' +
           '\n\n');
         return callback();
       case 'h':
@@ -316,21 +327,21 @@ function main(argv, callback) {
         loadMsg();
         break;
       default:
-        console.error(Globalize.messageFormatter('msgInvalidUsageLong')({
+        console.error(GLB.formatMessage('msgInvalidUsageLong', {
           phNearOption: option.optopt,
           phProgramName: $0,
           phHelpOption: ' --help',
         }));
-        return callback(Error(Globalize.messageFormatter('msgInvalidUsage')()));
+        return callback(Error(GLB.formatMessage('msgInvalidUsage')));
     }
   }
 
   if (parser.optind() !== argv.length) {
-    console.error(Globalize.messageFormatter('msgInvalidUsageExtra')({
+    console.error(GLB.formatMessage('msgInvalidUsageExtra', {
       phProgramName: $0,
       phHelpOpiton: ' --help',
     }));
-    return callback(Error(Globalize.messageFormatter('msgInvalidUsage')()));
+    return callback(Error(GLB.formatMessage('msgInvalidUsage')));
   }
 
   if (cmd === 't') translateResource(INTL_ROOT, function(err, result) {

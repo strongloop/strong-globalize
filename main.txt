@@ -1,8 +1,0 @@
-usage: %MAIN% [options]
-
-StrongLoop Globalize Proof of Concept
-
-Options:
-  -h,--help         Print this message and exit.
-  -v,--version      Print version and exit.
-  -t,--translate    Translate resource files.

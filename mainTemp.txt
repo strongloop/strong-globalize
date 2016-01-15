@@ -1,8 +1,0 @@
-%s: %MAIN% [%s]
-
-%s
-
-%s:
-  -h,--help         %s
-  -v,--version      %s
-  -t,--translate    %s

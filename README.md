@@ -6,13 +6,15 @@ StrongLoop Globalize API and CLI
 
 strong-globalize is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
 
-strong-globalize is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js module built on top of jquery/globalize.  strong-globalize provides these features:
-- shorthands and wrappers for the format functions supported by jquery/globalize,
-- automatic extraction of the strings from the code and auto-creation of resource JSON,
+strong-globalize is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package built on top of jquery/globalize.  strong-globalize provides these features:
+- shorthands and wrappers for the format functions supported by Node.js console, jquery/globalize, and util.format,
+- automatic extraction of the strings from JS code and HTML templates and auto-creation of resource JSON,
 - machine translation of the resource JSON using IBM Globalization Pipeline on Bluemix,
-- in runtime, loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
+- in Node.js runtime, loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
 
 As shown in the Demo section of this README(bottom of the page), the globalized code using strong-globalzie is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
+
+
 
 
 ## `npm install -g strong-globalize`
@@ -25,6 +27,14 @@ As shown in the Demo section of this README(bottom of the page), the globalized 
 
 ## `g.setRootDir(rootPath)`
 - `rootPath` : {`string`} App's root directory full path
+
+## `g.setHtmlRegex(regex, regexHead, regexTail)`
+- `regex` : {`RegExp`} to extract the whole string out of the HTML text
+- `regexHead` : {`RegExp`} to trim the head portion from the extracted string
+- `regexTail` : {`RegExp`} to trim the tail portion from the extracted string
+
+Most clients do not need to setHtmlRegex.  See "Globalize HTML Templates" for details.
+
 
 # API - Formatters
 
@@ -39,7 +49,7 @@ alias of `formatMessage`
 - `value {Date object}` Date
 - `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
 
-## `g.d(date, options)`
+## `g.d(value, options)`
 alias of `formatDate`
 
 ## `g.formatNumber(value, options)`
@@ -64,11 +74,17 @@ alias of `formatCurrency`
 ## `g.Error(path, ...)`
 returns Error with a formatted message.
 
+## `g.log(path, ...)`
+passes the result message from `formatMessage` to `console.log`.
+
 ## `g.error(path, ...)`
 passes the result message from `formatMessage` to `console.error`.
 
-## `g.log(path, ...)`
-passes the result message from `formatMessage` to `console.log`.
+## `g.info(path, ...)`
+passes the result message from `formatMessage` to `console.info`.
+
+## `g.warn(path, ...)`
+passes the result message from `formatMessage` to `console.warn`.
 
 ## `g.ewrite(path, ...)`
 passes the result message from `formatMessage` to `process.stderr.write`.
@@ -322,3 +338,31 @@ after:
 	console.log(gsub.getHelpText());
 
 ```
+
+# Globalize HTML Templates
+
+Many UI strings are included in HTML temaplates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
+
+In the following example, the two strings `{{StrongLoop}} History Board` and `History board shows the access history to the e-commerce web site.` are extracted to JSON.
+
+```
+	<div class="board-header section-header">
+		<h2>{{{{StrongLoop}} History Board | globalize}}</h2>
+	</div>
+	<div role="help-note">
+		<p>
+			{{ History board shows the access history to the e-commerce web site. | globalize }}
+		</p>
+	</div>
+```
+
+`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for you template engine, you can set custom RegExp by `setHtmlRegex` API.
+
+The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
+
+```
+	<![CDATA[
+		{{Text in cdata | globalize }}
+	]]>
+```
+

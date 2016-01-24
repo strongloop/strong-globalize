@@ -1,16 +1,16 @@
 var Globalize = require('globalize');
-var glb = require('../lib/globalize');
+var g = require('../lib/globalize');
 var helper = require('../lib/helper');
 var test = require('tap').test;
 
 test('setDefaultLanguage', function(t) {
   helper.setRootDir(__dirname);
-  glb.setDefaultLanguage('ja');
+  g.setDefaultLanguage('ja');
   systemLocale = Globalize.locale();
   t.assert(systemLocale && systemLocale.attributes &&
     systemLocale.attributes.bundle && systemLocale.attributes.bundle === 'ja',
     'System language is set to ja.');
-  glb.setDefaultLanguage();
+  g.setDefaultLanguage();
   var systemLocale = Globalize.locale();
   t.assert(systemLocale && systemLocale.attributes &&
     systemLocale.attributes.bundle && systemLocale.attributes.bundle === 'en',
@@ -24,89 +24,89 @@ test('formatMessage', function(t) {
     url: 'http:any.com',
     port: '12345',
   };
-  glb.setDefaultLanguage();
+  g.setDefaultLanguage();
   var key = 'Error: {url} or {port} is invalid.';
-  var message = glb.t(key, params);
+  var message = g.t(key, params);
   t.comment(message);
   var targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
   t.assert(message === targetMsg, 'Default message formatting works.');
 
-  glb.setDefaultLanguage('xx');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('xx');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
   t.assert(message === targetMsg,
     'Invalid language message formatting defaults to English.');
 
-  glb.setDefaultLanguage('en');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('en');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
   t.assert(message === targetMsg, 'English message formatting works.');
 
-  glb.setDefaultLanguage('ja');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('ja');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = '間違い:' + params.url + 'あるいは' +
     params.port + '無効です。';
   t.assert(message === targetMsg, 'Japanese message formatting works.');
 
-  glb.setDefaultLanguage('ko');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('ko');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = '오류: ' + params.url + '이나 ' +
     params.port + '은 효력이 없다.';
   t.assert(message === targetMsg, 'Korean message formatting works.');
 
-  glb.setDefaultLanguage('zh-Hans');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('zh-Hans');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = '在中的错误：' + params.url + '或者'
     + params.port + '是无效。';
   t.assert(message === targetMsg,
     'Simplified Chinese message formatting works.');
 
-  glb.setDefaultLanguage('zh-Hant');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('zh-Hant');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = '在中的錯誤：' + params.url + '或者'
     + params.port + '是無效。';
   t.assert(message === targetMsg,
     'Traditional Chinese message formatting works.');
 
-  glb.setDefaultLanguage('de');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('de');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Fehler: ' + params.url + ' oder ' +
     params.port + ' sind ungültig.';
   t.assert(message === targetMsg, 'German message formatting works.');
 
-  glb.setDefaultLanguage('es');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('es');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' o ' +
     params.port + ' no es válido.';
   t.assert(message === targetMsg, 'Spanish message formatting works.');
 
-  glb.setDefaultLanguage('fr');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('fr');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Erreur: ' + params.url + ' ou ' +
     params.port + ' n\'est pas valide.';
   t.assert(message === targetMsg, 'French message formatting works.');
 
-  glb.setDefaultLanguage('it');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('it');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Errore: ' + params.url + ' o ' +
     params.port + ' non sono validi.';
   t.assert(message === targetMsg, 'Italian message formatting works.');
 
-  glb.setDefaultLanguage('pt');
-  message = glb.t(key, params);
+  g.setDefaultLanguage('pt');
+  message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Erro: ' + params.url + ' ou ' +
     params.port + ' é inválido.';
@@ -116,78 +116,78 @@ test('formatMessage', function(t) {
 
 test('formatNumber', function(t) {
   helper.setRootDir(__dirname);
-  glb.setDefaultLanguage();
+  g.setDefaultLanguage();
   var value = 123456.789;
-  var message = glb.n(value);
+  var message = g.n(value);
   t.comment(message);
   var targetMsg = '123,456.789';
   t.assert(message === targetMsg, 'Default number formatting works.');
 
-  glb.setDefaultLanguage('xx');
-  message = glb.n(value);
+  g.setDefaultLanguage('xx');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123,456.789';
   t.assert(message === targetMsg,
     'Invalid language number formatting defaults to English.');
 
-  glb.setDefaultLanguage('en');
-  message = glb.n(value);
+  g.setDefaultLanguage('en');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123,456.789';
   t.assert(message === targetMsg, 'English number formatting works.');
 
-  glb.setDefaultLanguage('ja');
-  message = glb.n(value);
+  g.setDefaultLanguage('ja');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123,456.789';
   t.assert(message === targetMsg, 'Japanese number formatting works.');
 
-  glb.setDefaultLanguage('ko');
-  message = glb.n(value);
+  g.setDefaultLanguage('ko');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123,456.789';
   t.assert(message === targetMsg, 'Korean number formatting works.');
 
-  glb.setDefaultLanguage('zh-Hans');
-  message = glb.n(value);
+  g.setDefaultLanguage('zh-Hans');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123,456.789';
   t.assert(message === targetMsg,
     'Simplified Chinese number formatting works.');
 
-  glb.setDefaultLanguage('zh-Hant');
-  message = glb.n(value);
+  g.setDefaultLanguage('zh-Hant');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123,456.789';
   t.assert(message === targetMsg,
     'Traditional Chinese number formatting works.');
 
-  glb.setDefaultLanguage('de');
-  message = glb.n(value);
+  g.setDefaultLanguage('de');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123.456,789';
   t.assert(message === targetMsg, 'German number formatting works.');
 
-  glb.setDefaultLanguage('es');
-  message = glb.n(value);
+  g.setDefaultLanguage('es');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123.456,789';
   t.assert(message === targetMsg, 'Spanish number formatting works.');
 
-  glb.setDefaultLanguage('fr');
-  message = glb.n(value);
+  g.setDefaultLanguage('fr');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123 456,789';
   t.assert(message === targetMsg, 'French number formatting works.');
 
-  glb.setDefaultLanguage('it');
-  message = glb.n(value);
+  g.setDefaultLanguage('it');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123.456,789';
   t.assert(message === targetMsg, 'Italian number formatting works.');
 
-  glb.setDefaultLanguage('pt');
-  message = glb.n(value);
+  g.setDefaultLanguage('pt');
+  message = g.n(value);
   t.comment(message);
   targetMsg = '123.456,789';
   t.assert(message === targetMsg, 'Portuguese number formatting works.');
@@ -197,7 +197,7 @@ test('formatNumber', function(t) {
 
 test('formatDate', function(t) {
   helper.setRootDir(__dirname);
-  glb.setDefaultLanguage();
+  g.setDefaultLanguage();
   var msecSinceTheEpoc = 1451446850425;
   // Target date-time strings are in UTC-8:00 (Pacific Standard Time)
   // Need to adjust it according to the system's time zone offset
@@ -205,76 +205,76 @@ test('formatDate', function(t) {
   var delta = 480 - date.getTimezoneOffset(); // in minutes
   msecSinceTheEpoc -= delta * 60 * 1000;
   date = new Date(msecSinceTheEpoc);
-  var message = glb.d(date);
+  var message = g.d(date);
   t.comment(message);
   var targetMsg = 'Dec 29, 2015, 7:40:50 PM';
   t.assert(message === targetMsg, 'Default date formatting works.');
 
-  glb.setDefaultLanguage('xx');
-  message = glb.d(date);
+  g.setDefaultLanguage('xx');
+  message = g.d(date);
   t.comment(message);
   targetMsg = 'Dec 29, 2015, 7:40:50 PM';
   t.assert(message === targetMsg,
     'Invalid language date formatting defaults to English.');
 
-  glb.setDefaultLanguage('en');
-  message = glb.d(date);
+  g.setDefaultLanguage('en');
+  message = g.d(date);
   t.comment(message);
   targetMsg = 'Dec 29, 2015, 7:40:50 PM';
   t.assert(message === targetMsg, 'English date formatting works.');
 
-  glb.setDefaultLanguage('ja');
-  message = glb.d(date);
+  g.setDefaultLanguage('ja');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '2015/12/29 19:40:50';
   t.assert(message === targetMsg, 'Japanese date formatting works.');
 
-  glb.setDefaultLanguage('ko');
-  message = glb.d(date);
+  g.setDefaultLanguage('ko');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '2015. 12. 29. 오후 7:40:50';
   t.assert(message === targetMsg, 'Korean date formatting works.');
 
-  glb.setDefaultLanguage('zh-Hans');
-  message = glb.d(date);
+  g.setDefaultLanguage('zh-Hans');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '2015年12月29日 下午7:40:50';
   t.assert(message === targetMsg,
     'Simplified Chinese date formatting works.');
 
-  glb.setDefaultLanguage('zh-Hant');
-  message = glb.d(date);
+  g.setDefaultLanguage('zh-Hant');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '2015年12月29日 下午7:40:50';
   t.assert(message === targetMsg,
     'Traditional Chinese date formatting works.');
 
-  glb.setDefaultLanguage('de');
-  message = glb.d(date);
+  g.setDefaultLanguage('de');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '29.12.2015, 19:40:50';
   t.assert(message === targetMsg, 'German date formatting works.');
 
-  glb.setDefaultLanguage('es');
-  message = glb.d(date);
+  g.setDefaultLanguage('es');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '29 dic. 2015 19:40:50';
   t.assert(message === targetMsg, 'Spanish date formatting works.');
 
-  glb.setDefaultLanguage('fr');
-  message = glb.d(date);
+  g.setDefaultLanguage('fr');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '29 déc. 2015 à 19:40:50';
   t.assert(message === targetMsg, 'French date formatting works.');
 
-  glb.setDefaultLanguage('it');
-  message = glb.d(date);
+  g.setDefaultLanguage('it');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '29 dic 2015, 19:40:50';
   t.assert(message === targetMsg, 'Italian date formatting works.');
 
-  glb.setDefaultLanguage('pt');
-  message = glb.d(date);
+  g.setDefaultLanguage('pt');
+  message = g.d(date);
   t.comment(message);
   targetMsg = '29 de dez de 2015 19:40:50';
   t.assert(message === targetMsg, 'Portuguese date formatting works.');
@@ -284,82 +284,102 @@ test('formatDate', function(t) {
 
 test('formatCurency', function(t) {
   helper.setRootDir(__dirname);
-  glb.setDefaultLanguage();
+  g.setDefaultLanguage();
   var symbol = 'USD';
   var value = 123456.789;
-  var message = glb.c(value, symbol);
+  var message = g.c(value, symbol);
   t.comment(message);
   var targetMsg = '123,456.79 US dollars';
   t.assert(message === targetMsg, 'Default currency formatting works.');
 
-  glb.setDefaultLanguage('xx');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('xx');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123,456.79 US dollars';
   t.assert(message === targetMsg,
     'Invalid language currency formatting defaults to English.');
 
-  glb.setDefaultLanguage('en');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('en');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123,456.79 US dollars';
   t.assert(message === targetMsg, 'English currency formatting works.');
 
-  glb.setDefaultLanguage('ja');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('ja');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123,456.79米ドル';
   t.assert(message === targetMsg, 'Japanese currency formatting works.');
 
-  glb.setDefaultLanguage('ko');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('ko');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123,456.79 미국 달러';
   t.assert(message === targetMsg, 'Korean currency formatting works.');
 
-  glb.setDefaultLanguage('zh-Hans');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('zh-Hans');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123,456.79美元';
   t.assert(message === targetMsg,
     'Simplified Chinese currency formatting works.');
 
-  glb.setDefaultLanguage('zh-Hant');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('zh-Hant');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123,456.79 美元';
   t.assert(message === targetMsg,
     'Traditional Chinese currency formatting works.');
 
-  glb.setDefaultLanguage('de');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('de');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123.456,79 US-Dollar';
   t.assert(message === targetMsg, 'German currency formatting works.');
 
-  glb.setDefaultLanguage('es');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('es');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123.456,79 dólares estadounidenses';
   t.assert(message === targetMsg, 'Spanish currency formatting works.');
 
-  glb.setDefaultLanguage('fr');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('fr');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123 456,79 dollars des États-Unis';
   t.assert(message === targetMsg, 'French currency formatting works.');
 
-  glb.setDefaultLanguage('it');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('it');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123.456,79 dollari statunitensi';
   t.assert(message === targetMsg, 'Italian currency formatting works.');
 
-  glb.setDefaultLanguage('pt');
-  message = glb.c(value, symbol);
+  g.setDefaultLanguage('pt');
+  message = g.c(value, symbol);
   t.comment(message);
   targetMsg = '123.456,79 Dólares americanos';
   t.assert(message === targetMsg, 'Portuguese currency formatting works.');
 
+  t.end();
+});
+
+test('throw Error', function(t) {
+  helper.setRootDir(__dirname);
+  g.setDefaultLanguage('ja');
+  var params = {
+    url: 'http:any.com',
+    port: '12345',
+  };
+  var key = 'Error: {url} or {port} is invalid.';
+  try {
+    throw g.Error(key, params);
+  } catch (e) {
+    var targetMsg = 'Error: 間違い:' + params.url + 'あるいは' +
+      params.port + '無効です。';
+    t.comment(e.toString());
+    t.assert(e.toString() === targetMsg,
+      'Error is correctly thrown and caught.');
+  };
   t.end();
 });

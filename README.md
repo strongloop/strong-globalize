@@ -11,6 +11,7 @@ strong-globalize is a JavaScript library for internationalization and localizati
 - automatic extraction of the strings from JS code and HTML templates and auto-creation of resource JSON,
 - machine translation of the resource JSON using IBM Globalization Pipeline on Bluemix,
 - in Node.js runtime, loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
+- function hook to grab localized user messages so that the client can log what is shown to the end user along with the original English message in its log file.
 
 As shown in the Demo section of this README(bottom of the page), the globalized code using strong-globalzie is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
 
@@ -45,6 +46,9 @@ Most clients do not need to setHtmlRegex.  See "Globalize HTML Templates" for de
 ## `g.t(path, variables)`
 alias of `formatMessage`
 
+## `g.m(path, variables)`
+alias of `formatMessage`
+
 ## `g.formatDate(value, options)`
 - `value {Date object}` Date
 - `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
@@ -69,28 +73,28 @@ alias of `formatCurrency`
 
 # API - Message Formatter Wrappers
 
-%s place folders are supported.  Intended to direcly globalize strings embedded in the first parameter of Error, console.error, console.log and util.format by simply replacing console or util with require('strong-globalize').
+%s place folders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').
 
 ## `g.Error(path, ...)`
 returns Error with a formatted message.
 
 ## `g.log(path, ...)`
-passes the result message from `formatMessage` to `console.log`.
+passes the result message from `formatMessage` to `console.log`, and log to file with `info` level if persistent logging is set.
 
 ## `g.error(path, ...)`
-passes the result message from `formatMessage` to `console.error`.
+passes the result message from `formatMessage` to `console.error`, and log to file with `error` level if persistent logging is set.
 
 ## `g.info(path, ...)`
-passes the result message from `formatMessage` to `console.info`.
+passes the result message from `formatMessage` to `console.info`, and log to file with `info` level if persistent logging is set.
 
 ## `g.warn(path, ...)`
-passes the result message from `formatMessage` to `console.warn`.
+passes the result message from `formatMessage` to `console.warn`, and log to file with `warn` level if persistent logging is set.
 
 ## `g.ewrite(path, ...)`
-passes the result message from `formatMessage` to `process.stderr.write`.
+passes the result message from `formatMessage` to `process.stderr.write`, and log to file with `error` level if persistent logging is set.
 
 ## `g.owrite(path, ...)`
-passes the result message from `formatMessage` to `process.stdout.write`.
+passes the result message from `formatMessage` to `process.stdout.write`, and log to file with `info` level if persistent logging is set.
 
 ## `g.write(path, ...)`
 alias of `owrite`
@@ -147,10 +151,14 @@ or
 
 before:
 ```js
-	// don't concatenate string. word order varies from lanauage to language.
+	// don't concatenate string. word order varies from language to language.
 	process.stdout.write('Directory ' + workingDir + ' does not exist...');
 ```
-after:
+wrong:
+```js
+	process.stdout.write(g.t('Directory ') + workingDir + g.t(' does not exist...'));
+```
+correct:
 ```js
 	g.write('Directory %s does not exist...', workingDir);
 ```
@@ -163,7 +171,7 @@ before:
 ```
 after
 ```js
-	// 1
+	// 1 (recommended; simply replace `util` with `g`)
 	g.format('Deploy %s to %s failed: %s', what, url, err);
 	// 2
 	g.format('Deploy {0} to {1} failed: {2}', [what, url, err]);
@@ -173,9 +181,9 @@ after
 	g.format('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
 ```
 ## other cases
-In case you need to manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and will be translated.
+In case you need to manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
 
-For example, frontend modules such as StrongLoop Arc contain many UI strings in HTML.  You can use a filter or a tool for the frontend rendering engine to extract strings to strong-globalize resource JSON, and use slt-globalize CLI.
+For example, frontend modules such as StrongLoop Arc contain many UI strings in HTML.  You can use a filter or a tool for the template engine to extract strings to strong-globalize resource JSON, and use slt-globalize CLI.
 
 Note that strong-globalize supports multiple *.txt and multiple *.json files under intl/en.
 
@@ -185,7 +193,7 @@ They must be uniquely named because they are used as-is in runtime message datab
 
 When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
 
-Rule of thumb is `strong-globalize` extracts messages from js files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or js files provided by the client.
+The rule of thumb is `strong-globalize` extracts messages from JS and HTML template files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.
 
 # CLI
 
@@ -257,10 +265,9 @@ after:
 - `var g = require('strong-globalize');`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
-- then, run `slt-globalize -e` to exract and `slt-globalize -t` to machine translate the string resource.
+- then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-	var fs = require('fs');
 	var g = require('strong-globalize');
 
 	exports.getHelpText = getHelpText;
@@ -313,7 +320,7 @@ after:
 - replace `console` with `g`
 - replace `process.stdout` with `g`
 - wrap `new Date()` with `g.d()`
-- then, run `slt-globalize -e` to exract and `slt-globalize -t` to machine translate the string resource.
+- then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
 	var express = require('express');
@@ -344,7 +351,7 @@ after:
 
 # Globalize HTML Templates
 
-Many UI strings are included in HTML temaplates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
+Many UI strings are included in HTML templates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
 
 In the following example, the two strings `{{StrongLoop}} History Board` and `History board shows the access history to the e-commerce web site.` are extracted to JSON.
 
@@ -359,7 +366,7 @@ In the following example, the two strings `{{StrongLoop}} History Board` and `Hi
 	</div>
 ```
 
-`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for you template engine, you can set custom RegExp by `setHtmlRegex` API.
+`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
 
 The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
 
@@ -369,3 +376,88 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 	]]>
 ```
 
+# Persistent Logging
+
+strong-globalize provides 'persistent logging' by passing all the localized messages to client-supplied logging function.  For example, if the client uses `winston` file transport for logging, the client code would look like this:
+
+Client:
+```js
+	var g = require('strong-globalize'); // strong-globalize handle
+	var w = require('winston'); // winston handle
+
+	g.setRootDir(__dirname);
+	g.setDefaultLanguage();
+	initWinston(w);
+	var disableConsole = false;
+	g.setPersistentLogging(w.log, disableConsole);
+
+	function initWinston(w) {
+	  var options = {
+	    filename: __dirname + '/system.log',
+	    maxsize: 1000000,
+	    maxFiles: 10,
+	    zippedArchive: true,
+	  };
+	  w.add(w.transports.File, options);
+	  w.remove(w.transports.Console);
+	}
+
+```
+
+To enable the persistent logging, call `setPersistentLogging(logFn, bool)` where, `logFn` is a callback function accepting two arguments in this order: `level` (UTF8 string) -- urgency level and `messsage` (object) with three properties, and `bool` is to specify if `console` logging should be disabled or not (default: false = enabled). 
+
+```js
+	{
+		message: 'ホスト:localhostのポート:8123へ送っています。',
+		orig: 'Sending to host: %s, port: %d ...',
+		vars: ['localhost', 8123],
+	}
+```
+
+In addition, the following API's show a localized message to console.log as well as writes it to the file with `verbose` and `debug` level respectively.  All the other console logging API (error, warn, info, log, write, owrite, and ewrite) are also logFn-aware.  
+
+## `g.verbose(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `verbose` level if persistent logging is set.
+
+## `g.debug(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `debug` level if persistent logging is set.
+
+## Persistent Logging Demo `gmain/index.js`
+
+```js
+	var express = require('express');
+	var request = require('request');
+	var app = express();
+	var g = require('strong-globalize'); // strong-globalize handle
+	var gsub = require('gsub');
+	var w = require('winston'); // winston handle
+
+	g.setRootDir(__dirname);
+	g.setDefaultLanguage();
+	initWinston(w); // see the Client initialization
+	g.setPersistentLogging(w.log);
+
+	app.get('/', function(req, res) {
+	  var helloMessage = g.format('%s Hello World', g.d(new Date()));
+	  w.info(helloMessage); // write only to the log file with 'info' level
+	  res.end(helloMessage);
+	});
+
+	var port = process.env.PORT || 8123;
+	app.listen(port, function() {
+	  g.log('Listening on %s by %s.', port, gsub.getUserName());
+	});
+
+	setInterval(function(){
+		g.owrite('Sending request to %s ...', port);
+		request('http://localhost:' + port,
+			function(error, response, body) {console.log(body);});
+	},1000);
+
+	g.info(gsub.getHelpText()); // write to both console and the log file with 'info' level
+
+```
+
+Note:
+`w.info(helloMessage)` directly calls the winston API `info` and write `helpMessage` to the log file.
+`g.info(gsub.getHelpText())` writes the localized help text to both console and the log file with `info` level.  The other strong-globalize API calls, i.e., `g.log` and `g.owrite` also write the localized message to both console and the log file with `info` level.

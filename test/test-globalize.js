@@ -1,4 +1,3 @@
-var Globalize = require('globalize');
 var g = require('../lib/globalize');
 var helper = require('../lib/helper');
 var test = require('tap').test;
@@ -6,12 +5,12 @@ var test = require('tap').test;
 test('setDefaultLanguage', function(t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage('ja');
-  systemLocale = Globalize.locale();
+  systemLocale = global.STRONGLOOP_GLB.locale();
   t.assert(systemLocale && systemLocale.attributes &&
     systemLocale.attributes.bundle && systemLocale.attributes.bundle === 'ja',
     'System language is set to ja.');
   g.setDefaultLanguage();
-  var systemLocale = Globalize.locale();
+  var systemLocale = global.STRONGLOOP_GLB.locale();
   t.assert(systemLocale && systemLocale.attributes &&
     systemLocale.attributes.bundle && systemLocale.attributes.bundle === 'en',
     'System language is set to en by default.');

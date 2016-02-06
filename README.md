@@ -49,6 +49,14 @@ alias of `formatMessage`
 ## `g.m(path, variables)`
 alias of `formatMessage`
 
+## `g.formatCurrency(value, currencySymbol, options)`
+- `value {number}` integer or float
+- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
+- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+
+## `g.c(value, currencySymbol, lang, options)`
+alias of `formatCurrency`
+
 ## `g.formatDate(value, options)`
 - `value {Date object}` Date
 - `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
@@ -63,14 +71,6 @@ alias of `formatDate`
 ## `g.n(value, options)`
 alias of `formatNumber`
 
-## `g.formatCurrency(value, currencySymbol, options)`
-- `value {number}` integer or float
-- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
-
-## `g.c(value, currencySymbol, lang, options)`
-alias of `formatCurrency`
-
 # API - Message Formatter Wrappers
 
 %s place folders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').
@@ -78,17 +78,11 @@ alias of `formatCurrency`
 ## `g.Error(path, ...)`
 returns Error with a formatted message.
 
-## `g.log(path, ...)`
-passes the result message from `formatMessage` to `console.log`, and log to file with `info` level if persistent logging is set.
+## `g.format(path, ...)`
+returns the result message from `formatMessage`.  intended to replace util.format.
 
-## `g.error(path, ...)`
-passes the result message from `formatMessage` to `console.error`, and log to file with `error` level if persistent logging is set.
-
-## `g.info(path, ...)`
-passes the result message from `formatMessage` to `console.info`, and log to file with `info` level if persistent logging is set.
-
-## `g.warn(path, ...)`
-passes the result message from `formatMessage` to `console.warn`, and log to file with `warn` level if persistent logging is set.
+## `g.f(path, ...)`
+alias of `format`
 
 ## `g.ewrite(path, ...)`
 passes the result message from `formatMessage` to `process.stderr.write`, and log to file with `error` level if persistent logging is set.
@@ -99,11 +93,62 @@ passes the result message from `formatMessage` to `process.stdout.write`, and lo
 ## `g.write(path, ...)`
 alias of `owrite`
 
-## `g.format(path, ...)`
-returns the result message from `formatMessage`.  intended to replace util.format.
+### RFC 5424 Syslog Message Severities
 
-## `g.f(path, ...)`
-alias of `format`
+## `g.emergency(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `emergency` level if persistent logging is set.
+
+## `g.alert(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `alert` level if persistent logging is set.
+
+## `g.critical(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `critical` level if persistent logging is set.
+
+## `g.error(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `error` level if persistent logging is set.
+
+## `g.warning(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `warning` level if persistent logging is set.
+
+## `g.notice(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `notice` level if persistent logging is set.
+
+## `g.informational(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `informational` level if persistent logging is set.
+
+## `g.debug(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `debug` level if persistent logging is set.
+
+### Node.js console
+
+## `g.warn(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `warn` level if persistent logging is set.
+
+## `g.info(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `info` level if persistent logging is set.
+
+## `g.log(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `log` level if persistent logging is set.
+
+### Misc Logging Levels
+
+## `g.help(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `help` level if persistent logging is set.
+
+## `g.data(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `data` level if persistent logging is set.
+
+## `g.prompt(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `prompt` level if persistent logging is set.
+
+## `g.verbose(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `verbose` level if persistent logging is set.
+
+## `g.input(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `input` level if persistent logging is set.
+
+## `g.silly(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `silly` level if persistent logging is set.
 
 # Usage Examples:
 

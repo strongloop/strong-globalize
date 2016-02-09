@@ -25,7 +25,7 @@ test('extract from JS and fill-in', function(t) {
   'g.write(\'write\');\n' +
   'msg = g.format(\'format of %s and %s\', \'zero\', \'one\');\n' +
   'msg = g.format(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
-  'msg = g.format(\'format of {zero} and {one}\', \n' +
+  'msg = g.f(\'format of {zero} and {one}\', \n' +
   '  {zero: \'zero\', one: \'one\'});\n';
   var targetMsgs = [
     'This is an error.',

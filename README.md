@@ -23,7 +23,7 @@ As shown in the Demo section of this README(bottom of the page), the globalized 
 # API - Set system defaults
 
 ## `g.setDefaultLanguage(lang)`
-- `lang` : {`string`} (optional, default: `'en'`) Language ID.  It tries to use OS language, then falls back to 'en'
+- `lang` : {`string`} (optional, default: `'en'`) Language ID.  It tries to use OS language, then falls back to 'en'  Supported langauges are: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
 ## `g.setRootDir(rootPath)`
 - `rootPath` : {`string`} App's root directory full path
@@ -97,6 +97,9 @@ alias of `owrite`
 
 ## `g.format(path, ...)`
 returns the result message from `formatMessage`.  intended to replace util.format.
+
+## `g.f(path, ...)`
+alias of `format`
 
 # Usage Examples:
 

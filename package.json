@@ -1,7 +1,7 @@
 {
   "name": "strong-globalize",
   "description": "StrongLoop Globalize - CLI and API",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": [
     "StrongLoop",
     "translate",

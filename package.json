@@ -34,6 +34,7 @@
     "g11n-pipeline": "^1.1.4",
     "globalize": "^1.1.0",
     "htmlparser2": "^3.9.0",
+    "lodash": "^4.3.0",
     "md5": "^2.0.0",
     "mkdirp": "^0.5.1",
     "optional": "^0.1.3",

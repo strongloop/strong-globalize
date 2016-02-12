@@ -4,6 +4,12 @@ var test = require('tap').test;
 
 test('setDefaultLanguage', function(t) {
   helper.setRootDir(__dirname);
+  var supportedLangs = helper.getSupportedLanguages();
+  t.comment('Supported languages: %s', supportedLangs);
+  t.assert(supportedLangs.indexOf(helper.ENGLISH) >= 0,
+    helper.ENGLISH + ' should be supported.');
+  t.assert(supportedLangs.indexOf('ja') >= 0,
+    'ja should be supported.');
   g.setDefaultLanguage('ja');
   systemLocale = global.STRONGLOOP_GLB.locale();
   t.assert(systemLocale && systemLocale.attributes &&

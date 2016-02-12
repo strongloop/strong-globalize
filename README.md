@@ -2,6 +2,63 @@
 
 StrongLoop Globalize API and CLI
 
+* [Architecture](#architecture)
+* [CLI](#cli)
+* [API - Set system defaults](#api---set-system-defaults)
+	* [g.setDefaultLanguage](#gsetdefaultlanguagelang)
+	* [g.setRootDir](#gsetrootdirrootpath)
+	* [g.setHtmlRegex](#gsethtmlregexregex-regexhead-regextail)
+	* [g.setPersistentLogging](#gsetpersistentlogginglogcallback-disableconsole)
+* [API - Formatters](#api---formatters)
+	* [g.formatMessage](#gformatmessagepath-variables)
+	* [g.t](#gtpath-variables)
+	* [g.m](#gmpath-variables)
+	* [g.formatCurrency](#gformatcurrencyvalue-currencysymbol-options)
+	* [g.c](#gcvalue-currencysymbol-options)
+	* [g.formatDate](#gformatdatevalue-options)
+	* [g.d](#gdvalue-options)
+	* [g.formatNumber](#gformatnumbervalue-options)
+	* [g.n](#gnvalue-options)
+* [API - Wrappers](#api---wrappers)
+	* [g.Error](#gerrorpath-capital-error)
+	* [g.format](#gformatpath-)
+	* [g.f](#gfpath-)
+	* [g.ewrite](#gewritepath-)
+	* [g.owrite](#gowritepath-)
+	* [g.write](#gwritepath-)
+* [API - RFC 5424 Syslog Message Severities](#wrappers-for-rfc-5424-syslog-message-severities)
+	* [g.emergency](#gemergencypath-)
+	* [g.alert](#galertpath-)
+	* [g.critical](#gcriticalpath-)
+	* [g.error](#gerrorpath-small-error)
+	* [g.warning](#gwarningpath-)
+	* [g.notice](#gnoticepath-)
+	* [g.informational](#ginformationalpath-)
+	* [g.debug](#gdebugpath-)
+* [API - Node.js Console](#wrappers-for-nodejs-console)
+	* [g.warn](#ghelppath-)
+	* [g.info](#gdebugpath-)
+	* [g.log](#gdatapath-)
+* [API - Misc Logging Levels](#wrappers-for-misc-logging-levels)
+	* [g.help](#ghelppath-)
+	* [g.debug](#gdebugpath-)
+	* [g.data](#gdatapath-)
+	* [g.prompt](#gpromptpath-)
+	* [g.verbose](#gverbosepath-)
+	* [g.input](#ginputpath-)
+	* [g.silly](#gsillypath-)
+* [Usage Examples](#usage-examples)
+	* [help txt files](#help-txt-files)
+	* [double curly braces not to translate](#double-curly-braces-not-to-translate)
+	* [use g.format for util.format](#use-gformat-for-utilformat)
+	* [use g.write for process.stdout.write](#use-gwrite-for-processstdoutwrite)
+	* [place holders](#place-holders)
+	* [other cases](#other-cases)
+	* [help txt files and msg keys](#help-txt-files-and-msg-keys)
+* [Demo](#demo)
+* [Globalize HTML Templates](#globalize-html-templates)
+* [Persistent Logging](#persistent-logging)
+
 # Architecture
 
 strong-globalize is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
@@ -11,183 +68,20 @@ strong-globalize is a JavaScript library for internationalization and localizati
 - automatic extraction of the strings from JS code and HTML templates and auto-creation of resource JSON,
 - machine translation of the resource JSON using IBM Globalization Pipeline on Bluemix,
 - in Node.js runtime, loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
+- function hook to grab localized user messages so that the client can log what is shown to the end user along with the original English message in its log file.
 
 As shown in the Demo section of this README(bottom of the page), the globalized code using strong-globalzie is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
 
 
-
+# CLI
 
 ## `npm install -g strong-globalize`
-## `var g = require('strong-globalize');`
 
-# API - Set system defaults
-
-## `g.setDefaultLanguage(lang)`
-- `lang` : {`string`} (optional, default: `'en'`) Language ID.  It tries to use OS language, then falls back to 'en'  Supported langauges are: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
-
-## `g.setRootDir(rootPath)`
-- `rootPath` : {`string`} App's root directory full path
-
-## `g.setHtmlRegex(regex, regexHead, regexTail)`
-- `regex` : {`RegExp`} to extract the whole string out of the HTML text
-- `regexHead` : {`RegExp`} to trim the head portion from the extracted string
-- `regexTail` : {`RegExp`} to trim the tail portion from the extracted string
-
-Most clients do not need to setHtmlRegex.  See "Globalize HTML Templates" for details.
-
-
-# API - Formatters
-
-## `g.formatMessage(path, variables)`
-- `path {string}` The message key
-- `variables {object}` (optional, default: null) List of placeholder key and content value pair
-
-## `g.t(path, variables)`
-alias of `formatMessage`
-
-## `g.formatDate(value, options)`
-- `value {Date object}` Date
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
-
-## `g.d(value, options)`
-alias of `formatDate`
-
-## `g.formatNumber(value, options)`
-- `value {number}` integer or float
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
-
-## `g.n(value, options)`
-alias of `formatNumber`
-
-## `g.formatCurrency(value, currencySymbol, options)`
-- `value {number}` integer or float
-- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
-
-## `g.c(value, currencySymbol, lang, options)`
-alias of `formatCurrency`
-
-# API - Message Formatter Wrappers
-
-%s place folders are supported.  Intended to direcly globalize strings embedded in the first parameter of Error, console.error, console.log and util.format by simply replacing console or util with require('strong-globalize').
-
-## `g.Error(path, ...)`
-returns Error with a formatted message.
-
-## `g.log(path, ...)`
-passes the result message from `formatMessage` to `console.log`.
-
-## `g.error(path, ...)`
-passes the result message from `formatMessage` to `console.error`.
-
-## `g.info(path, ...)`
-passes the result message from `formatMessage` to `console.info`.
-
-## `g.warn(path, ...)`
-passes the result message from `formatMessage` to `console.warn`.
-
-## `g.ewrite(path, ...)`
-passes the result message from `formatMessage` to `process.stderr.write`.
-
-## `g.owrite(path, ...)`
-passes the result message from `formatMessage` to `process.stdout.write`.
-
-## `g.write(path, ...)`
-alias of `owrite`
-
-## `g.format(path, ...)`
-returns the result message from `formatMessage`.  intended to replace util.format.
-
-## `g.f(path, ...)`
-alias of `format`
-
-# Usage Examples:
-
-`var g = require('strong-globalize');`
-
-## help *.txt files
-
-before:
+You can safely ignore these warnings becase strong-globalize statically bundles cldr-data.
 ```js
-	var help = fs.readFileSync(require.resolve('./sl-deploy.txt'), 'utf-8');
-````
-after:
-```js
-	var help = g.t('sl-deploy.txt');
+	npm WARN EPEERINVALID globalize@1.1.1 requires a peer of cldr-data@>=25 but none was installed.
+	npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none was installed.
 ```
-and store sl-deploy.txt file under intl/en.
-
-## double curly braces for "don't translate"
-Use double curly braces {{ }} as "don't translate" indicator.
-
-before:
-```js
-	console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
-```
-after:
-```js
-	g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
-```
-
-## use g.format for util.format
-
-before:
-```js
-	Error(util.format('Directory %s does not exist', workingDir));
-```
-after:
-```js
-	Error(g.format('Directory %s does not exist', workingDir));
-```
-or
-```js
-	g.Error('Directory %s does not exist', workingDir);
-```
-## use g.write for process.std.write
-
-before:
-```js
-	// don't concatenate string. word order varies from lanauage to language.
-	process.stdout.write('Directory ' + workingDir + ' does not exist...');
-```
-after:
-```js
-	g.write('Directory %s does not exist...', workingDir);
-```
-## place holders
-You can use place holders and parameters in one of these four ways if you'd like:
-
-before:
-```js
-	util.format('Deploy %s to %s failed: %s', what, url, err);
-```
-after
-```js
-	// 1
-	g.format('Deploy %s to %s failed: %s', what, url, err);
-	// 2
-	g.format('Deploy {0} to {1} failed: {2}', [what, url, err]);
-	// 3
-	g.format('Deploy {0} to {1} failed: {2}', {0: what, 1: url, 2: err});
-	// 4
-	g.format('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
-```
-## other cases
-In case you need to manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and will be translated.
-
-For example, frontend modules such as StrongLoop Arc contain many UI strings in HTML.  You can use a filter or a tool for the frontend rendering engine to extract strings to strong-globalize resource JSON, and use slt-globalize CLI.
-
-Note that strong-globalize supports multiple *.txt and multiple *.json files under intl/en.
-
-## help txt files and msg keys
-
-They must be uniquely named because they are used as-is in runtime message database where the messages come from other modules will be merged.  In case there are duplicate *.txt or msg*, it could be overwritten by other module(s) with the same name whichever is loaded later.  Best practice is to use your package name as part of the name.  For example, `msgMyPackage_ErrorMessage`.
-
-When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
-
-Rule of thumb is `strong-globalize` extracts messages from js files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or js files provided by the client.
-
-# CLI
 
 ### usage: `slt-globalize [options]`
 
@@ -220,6 +114,228 @@ Copy from the service dashboard and paste something like the following into lib/
 For example,
 
 `BLUEMIX_URL="https://gp-beta-rest.ng.bluemix.net/translate/rest" BLUEMIX_USER=6e41ceac9f14b493faxxxxxxxxxxxxxx BLUEMIX_PASSWORD=vLbqlkjPhJiwJlkjwou8woO82hk2huku BLUEMIX_INSTANCE=6888888888888e6d2f458b1b4b5fd010 slt-globalize -t`
+
+
+# API - Set system defaults
+
+## `var g = require('strong-globalize');`
+
+## `g.setDefaultLanguage(lang)`
+- `lang` : {`string`} (optional, default: `'en'`) Language ID.  It tries to use OS language, then falls back to 'en'  Supported langauges are: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
+
+## `g.setRootDir(rootPath)`
+- `rootPath` : {`string`} App's root directory full path
+
+## `g.setHtmlRegex(regex, regexHead, regexTail)`
+- `regex` : {`RegExp`} to extract the whole string out of the HTML text
+- `regexHead` : {`RegExp`} to trim the head portion from the extracted string
+- `regexTail` : {`RegExp`} to trim the tail portion from the extracted string
+
+Most clients do not need to setHtmlRegex.  See "Globalize HTML Templates" for details.
+
+
+# API - Formatters
+
+## `g.formatMessage(path, variables)`
+- `path {string}` The message key
+- `variables {object}` (optional, default: null) List of placeholder key and content value pair
+
+## `g.t(path, variables)`
+alias of `formatMessage`
+
+## `g.m(path, variables)`
+alias of `formatMessage`
+
+## `g.formatCurrency(value, currencySymbol, options)`
+- `value {number}` integer or float
+- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
+- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+
+## `g.c(value, currencySymbol, options)`
+alias of `formatCurrency`
+
+## `g.formatDate(value, options)`
+- `value {Date object}` Date
+- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+
+## `g.d(value, options)`
+alias of `formatDate`
+
+## `g.formatNumber(value, options)`
+- `value {number}` integer or float
+- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+
+## `g.n(value, options)`
+alias of `formatNumber`
+
+# API - Wrappers
+
+%s place folders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').
+
+## `g.Error(path, ...)`(capital Error)
+returns Error with a formatted message.
+
+## `g.format(path, ...)`
+returns the result message from `formatMessage`.  intended to replace util.format.
+
+## `g.f(path, ...)`
+alias of `format`
+
+## `g.ewrite(path, ...)`
+passes the result message from `formatMessage` to `process.stderr.write`, and log to file with `error` level if persistent logging is set.
+
+## `g.owrite(path, ...)`
+passes the result message from `formatMessage` to `process.stdout.write`, and log to file with `info` level if persistent logging is set.
+
+## `g.write(path, ...)`
+alias of `owrite`
+
+### Wrappers for RFC 5424 Syslog Message Severities
+
+## `g.emergency(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `emergency` level if persistent logging is set.
+
+## `g.alert(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `alert` level if persistent logging is set.
+
+## `g.critical(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `critical` level if persistent logging is set.
+
+## `g.error(path, ...)`(small error)
+passes the result message from `formatMessage` to `console.error`, and log to file with `error` level if persistent logging is set.
+
+## `g.warning(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `warning` level if persistent logging is set.
+
+## `g.notice(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `notice` level if persistent logging is set.
+
+## `g.informational(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `informational` level if persistent logging is set.
+
+## `g.debug(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `debug` level if persistent logging is set.
+
+### Wrappers for Node.js Console
+
+## `g.warn(path, ...)`
+passes the result message from `formatMessage` to `console.error`, and log to file with `warn` level if persistent logging is set.
+
+## `g.info(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `info` level if persistent logging is set.
+
+## `g.log(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `log` level if persistent logging is set.
+
+### Wrappers for Misc Logging Levels
+
+## `g.help(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `help` level if persistent logging is set.
+
+## `g.data(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `data` level if persistent logging is set.
+
+## `g.prompt(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `prompt` level if persistent logging is set.
+
+## `g.verbose(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `verbose` level if persistent logging is set.
+
+## `g.input(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `input` level if persistent logging is set.
+
+## `g.silly(path, ...)`
+passes the result message from `formatMessage` to `console.log`, and log to file with `silly` level if persistent logging is set.
+
+# Usage Examples
+
+`var g = require('strong-globalize');`
+
+## help txt files
+
+before:
+```js
+	var help = fs.readFileSync(require.resolve('./sl-deploy.txt'), 'utf-8');
+````
+after:
+```js
+	var help = g.t('sl-deploy.txt');
+```
+and store sl-deploy.txt file under intl/en.
+
+## double curly braces not to translate
+Use double curly braces {{ }} as "don't translate" indicator.
+
+before:
+```js
+	console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
+```
+after:
+```js
+	g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
+```
+
+## use g.format for util.format
+
+before:
+```js
+	Error(util.format('Directory %s does not exist', workingDir));
+```
+after:
+```js
+	Error(g.format('Directory %s does not exist', workingDir));
+```
+or
+```js
+	g.Error('Directory %s does not exist', workingDir);
+```
+## use g.write for process.stdout.write
+
+before:
+```js
+	// don't concatenate string. word order varies from language to language.
+	process.stdout.write('Directory ' + workingDir + ' does not exist...');
+```
+wrong:
+```js
+	process.stdout.write(g.t('Directory ') + workingDir + g.t(' does not exist...'));
+```
+correct:
+```js
+	g.write('Directory %s does not exist...', workingDir);
+```
+## place holders
+You can use place holders and parameters in one of these four ways if you'd like:
+
+before:
+```js
+	util.format('Deploy %s to %s failed: %s', what, url, err);
+```
+after
+```js
+	// 1 (recommended; simply replace `util` with `g`)
+	g.format('Deploy %s to %s failed: %s', what, url, err);
+	// 2
+	g.format('Deploy {0} to {1} failed: {2}', [what, url, err]);
+	// 3
+	g.format('Deploy {0} to {1} failed: {2}', {0: what, 1: url, 2: err});
+	// 4
+	g.format('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
+```
+## other cases
+In case you need to manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
+
+For example, frontend modules such as StrongLoop Arc contain many UI strings in HTML.  You can use a filter or a tool for the template engine to extract strings to strong-globalize resource JSON, and use slt-globalize CLI.
+
+Note that strong-globalize supports multiple *.txt and multiple *.json files under intl/en.
+
+## help txt files and msg keys
+
+They must be uniquely named because they are used as-is in runtime message database where the messages come from other modules will be merged.  In case there are duplicate *.txt or msg*, it could be overwritten by other module(s) with the same name whichever is loaded later.  Best practice is to use your package name as part of the name.  For example, `msgMyPackage_ErrorMessage`.
+
+When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
+
+The rule of thumb is `strong-globalize` extracts messages from JS and HTML template files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.
 
 # Demo
 
@@ -257,10 +373,9 @@ after:
 - `var g = require('strong-globalize');`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
-- then, run `slt-globalize -e` to exract and `slt-globalize -t` to machine translate the string resource.
+- then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-	var fs = require('fs');
 	var g = require('strong-globalize');
 
 	exports.getHelpText = getHelpText;
@@ -313,7 +428,7 @@ after:
 - replace `console` with `g`
 - replace `process.stdout` with `g`
 - wrap `new Date()` with `g.d()`
-- then, run `slt-globalize -e` to exract and `slt-globalize -t` to machine translate the string resource.
+- then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
 	var express = require('express');
@@ -344,7 +459,7 @@ after:
 
 # Globalize HTML Templates
 
-Many UI strings are included in HTML temaplates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
+Many UI strings are included in HTML templates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
 
 In the following example, the two strings `{{StrongLoop}} History Board` and `History board shows the access history to the e-commerce web site.` are extracted to JSON.
 
@@ -359,7 +474,7 @@ In the following example, the two strings `{{StrongLoop}} History Board` and `Hi
 	</div>
 ```
 
-`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for you template engine, you can set custom RegExp by `setHtmlRegex` API.
+`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
 
 The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
 
@@ -369,3 +484,86 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 	]]>
 ```
 
+# Persistent Logging
+
+strong-globalize provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
+
+## `g.setPersistentLogging(logCallback, disableConsole)`
+`logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
+
+```js
+	{
+		message: 'ホスト:localhostのポート:8123へ送っています。',
+		orig: 'Sending to host: %s, port: %d ...',
+		vars: ['localhost', 8123],
+	}
+```
+
+`disableConsole` (default: `false`) is a boolean to specify whether to send the messsage to `stdout` or `stderr`.  `disableConsole` should be set to `true` in case the client controls the user communication.  For example, if the client uses `winston` file transport for logging, the client code would look like this:
+
+Client:
+```js
+	var g = require('strong-globalize'); // strong-globalize handle
+	var w = require('winston'); // winston handle
+
+	g.setRootDir(__dirname);
+	g.setDefaultLanguage();
+	initWinston(w);
+	// let strong-globalize to show it to the user
+	var disableConsole = false;
+	g.setPersistentLogging(w.log, disableConsole);
+
+	function initWinston(w) {
+	  var options = {
+	    filename: __dirname + '/system.log',
+	    maxsize: 1000000,
+	    maxFiles: 10,
+	    zippedArchive: true,
+	  };
+	  w.add(w.transports.File, options);
+	  // let strong-globalize to show it to the user
+	  w.remove(w.transports.Console);
+	}
+
+```
+
+## Persistent Logging Demo `gmain/index.js`
+
+```js
+	var express = require('express');
+	var request = require('request');
+	var app = express();
+	var g = require('strong-globalize'); // strong-globalize handle
+	var gsub = require('gsub');
+	var w = require('winston'); // winston handle
+
+	g.setRootDir(__dirname);
+	g.setDefaultLanguage();
+	initWinston(w); // see the Client initialization
+	var disableConsole = false;
+	g.setPersistentLogging(w.log, disableConsole);
+
+	app.get('/', function(req, res) {
+	  var helloMessage = g.format('%s Hello World', g.d(new Date()));
+	  w.info(helloMessage); // write only to the log file with 'info' level
+	  res.end(helloMessage);
+	});
+
+	var port = process.env.PORT || 8123;
+	app.listen(port, function() {
+	  g.log('Listening on %s by %s.', port, gsub.getUserName());
+	});
+
+	setInterval(function(){
+		g.owrite('Sending request to %s ...', port);
+		request('http://localhost:' + port,
+			function(error, response, body) {console.log(body);});
+	},1000);
+
+	g.info(gsub.getHelpText()); // write to both console and the log file with 'info' level
+
+```
+
+Note:
+`w.info(helloMessage)` directly calls the winston API `info` and write `helpMessage` to the log file.
+`g.info(gsub.getHelpText())` writes the localized help text to both console and the log file with `info` level.  The other strong-globalize API calls, i.e., `g.log` and `g.owrite` also write the localized message to both console and the log file with `info` level.

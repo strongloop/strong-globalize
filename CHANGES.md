@@ -1,3 +1,12 @@
+2016-02-12, Version 1.2.1
+=========================
+
+ * Use zlib backport to support Node v0.10 (Tetsuo Seto)
+
+
+2016-02-10, Version 1.2.0
+=========================
+
 
 
 2016-02-10, Version 1.1.0

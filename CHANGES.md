@@ -1,3 +1,21 @@
+2016-02-12, Version 1.3.0
+=========================
+
+ * Make zlb backport optional consistency and readme cleanup (Tetsuo Seto)
+
+ * Implement getSupportedLanguages (Setogit)
+
+ * Use zlib backport to support Node v0.10 (merge v1.2.1) (Tetsuo Seto)
+
+ * Make console log client controlable with enumerateFilesSync (Tetsuo Seto)
+
+ * Add persistent logging test (Tetsuo Seto)
+
+ * RFC 5424 syslog levels and misc logging levels (Tetsuo Seto)
+
+ * Support persistent logging (Tetsuo Seto)
+
+
 2016-02-12, Version 1.2.1
 =========================
 

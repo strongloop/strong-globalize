@@ -37,11 +37,13 @@
     "lodash": "^4.3.0",
     "md5": "^2.0.0",
     "mkdirp": "^0.5.1",
-    "node-zlib-backport": "^0.11.15",
     "optional": "^0.1.3",
     "os-locale": "^1.4.0",
     "posix-getopt": "^1.2.0",
     "word-count": "^0.2.1"
+  },
+  "optionalDependencies": {
+    "node-zlib-backport": "^0.11.15"
   },
   "devDependencies": {
     "eslint": "^1.10.3",

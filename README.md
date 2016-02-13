@@ -1,9 +1,9 @@
 # strong-globalize
 
-StrongLoop Globalize API and CLI
+StrongLoop Globalize CLI and API
 
 * [Architecture](#architecture)
-* [CLI](#cli)
+* [CLI](#cli---extract-lint-an-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [g.setDefaultLanguage](#gsetdefaultlanguagelang)
 	* [g.setRootDir](#gsetrootdirrootpath)
@@ -64,23 +64,30 @@ StrongLoop Globalize API and CLI
 strong-globalize is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
 
 strong-globalize is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package built on top of jquery/globalize.  strong-globalize provides these features:
-- shorthands and wrappers for the format functions supported by Node.js console, jquery/globalize, and util.format,
-- automatic extraction of the strings from JS code and HTML templates and auto-creation of resource JSON,
-- machine translation of the resource JSON using IBM Globalization Pipeline on Bluemix,
-- in Node.js runtime, loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
-- function hook to grab localized user messages so that the client can log what is shown to the end user along with the original English message in its log file.
+- [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
+- [automatic extraction](#cli---extract-lint-an-translate) of the strings from JS code and [HTML templates](#globalize-html-templates) and auto-creation of resource JSON,
+- [machine translation](#cli---extract-lint-an-translate) of the resource JSON using [IBM Globalization Pipeline on Bluemix](#liblocal-credentialsjson),
+- in [Node.js runtime](#api---set-system-defaults), loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
+- [function hook for logging](#persistent-logging) localized user messages so that the client can log what is shown to the end user along with the original English message.
 
-As shown in the Demo section of this README(bottom of the page), the globalized code using strong-globalzie is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
+As shown in the [Demo section](#demo) of this README(bottom of the page), the globalized code using strong-globalzie is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
 
+- supported Node.js versions: 0.10, 0.12, 4.0, 5.0
+- supported lcdr version: 28.0.3
+- supported languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant
 
-# CLI
+# CLI - extract, lint, and translate
 
 ## `npm install -g strong-globalize`
 
-You can safely ignore these warnings becase strong-globalize statically bundles cldr-data.
+You can safely ignore these warnings because strong-globalize statically bundles cldr-data for production use.
 ```js
-	npm WARN EPEERINVALID globalize@1.1.1 requires a peer of cldr-data@>=25 but none was installed.
-	npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none was installed.
+npm WARN EPEERINVALID globalize@1.1.1 requires a peer of cldr-data@>=25 but none was installed.
+npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none was installed.
+```
+You can safely ignore this warning on Node.js 0.12, 4.0 or 5.0.
+```js
+npm WARN engine node-zlib-backport@0.11.15: wanted: {"node":">=0.10 <0.11"} ...
 ```
 
 ### usage: `slt-globalize [options]`
@@ -124,14 +131,14 @@ For example,
 - `lang` : {`string`} (optional, default: `'en'`) Language ID.  It tries to use OS language, then falls back to 'en'  Supported langauges are: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
 ## `g.setRootDir(rootPath)`
-- `rootPath` : {`string`} App's root directory full path
+- `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.
 
 ## `g.setHtmlRegex(regex, regexHead, regexTail)`
 - `regex` : {`RegExp`} to extract the whole string out of the HTML text
 - `regexHead` : {`RegExp`} to trim the head portion from the extracted string
 - `regexTail` : {`RegExp`} to trim the tail portion from the extracted string
 
-Most clients do not need to setHtmlRegex.  See "Globalize HTML Templates" for details.
+Most clients do not need to setHtmlRegex.  See [the Globalize HTML Templates section](#globalize-html-templates) for details.
 
 
 # API - Formatters
@@ -314,13 +321,13 @@ before:
 after
 ```js
 	// 1 (recommended; simply replace `util` with `g`)
-	g.format('Deploy %s to %s failed: %s', what, url, err);
+	g.f('Deploy %s to %s failed: %s', what, url, err);
 	// 2
-	g.format('Deploy {0} to {1} failed: {2}', [what, url, err]);
+	g.f('Deploy {0} to {1} failed: {2}', [what, url, err]);
 	// 3
-	g.format('Deploy {0} to {1} failed: {2}', {0: what, 1: url, 2: err});
+	g.f('Deploy {0} to {1} failed: {2}', {0: what, 1: url, 2: err});
 	// 4
-	g.format('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
+	g.f('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
 ```
 ## other cases
 In case you need to manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
@@ -382,7 +389,7 @@ after:
 	exports.getUserName = getUserName;
 
 	function getUserName() {
-	  var userName = g.format('user: %s', process.env.USER);
+	  var userName = g.f('user: %s', process.env.USER);
 	  return userName;
 	}
 
@@ -438,7 +445,7 @@ after:
 	var gsub = require('gsub');
 
 	app.get('/', function(req, res) {
-	  var helloMessage = g.format('%s Hello World', g.d(new Date()));
+	  var helloMessage = g.f('%s Hello World', g.d(new Date()));
 	  res.end(helloMessage);
 	});
 
@@ -544,7 +551,7 @@ Client:
 	g.setPersistentLogging(w.log, disableConsole);
 
 	app.get('/', function(req, res) {
-	  var helloMessage = g.format('%s Hello World', g.d(new Date()));
+	  var helloMessage = g.f('%s Hello World', g.d(new Date()));
 	  w.info(helloMessage); // write only to the log file with 'info' level
 	  res.end(helloMessage);
 	});

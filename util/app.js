@@ -1,27 +1,61 @@
 var _ = require('lodash');
+var debug = require('debug')('strong-globalize');
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
 var zlib = require('zlib');
+try {
+  var nodeVersion = process.version.replace(
+    /(^v[0-9]+\.[0-9]+)\.[0-9]+$/, '$1');
+  if (nodeVersion === 'v0.10') {
+    zlib = require('node-zlib-backport');
+    debug('Zlib backported on %s', process.version);
+  }
+} catch (e) {
+  debug('Zlib backport failed on %s', process.version);
+}
 
 var LANGS = [
-  'en', 'de', 'es', 'fr', 'it', 'pt', 'ru',
-  'ja', 'ko', 'zh-Hans', 'zh-Hant',
+  'en', // English
+  'de', // German
+  'es', // Spanish
+  'fr', // French
+  'it', // Italian
+  'pt', // Portuguese
+  'ru', // Russian
+  'ja', // Japanese
+  'ko', // Korean
+  'zh-Hans', // Chinese (Simplified)
+  'zh-Hant', // Chinese (traditional)
+  // 'ar', // Araic
+  // 'cs', // Czech
+  // 'da', // Danish
+  // 'nl', // Dutch
+  // 'fi', // Finnish
+  // 'el', // Greek
+  // 'he', // Hebrew
+  // 'hi', // Hindi
+  // 'lo', // Lao
+  // 'it', // Lithuanian
+  // 'ms', // Malay
+  // 'nb', // Norwegian Bokmål
+  // 'fa', // Persian
+  // 'pl', // Polish
+  // 'ro', // Romanian
+  // 'sv', // Swedish
+  // 'th', // Thai
+  // 'vi', // Vietnamese
 ];
 
 var cldrVersion = require(path.resolve(__dirname,
   'node_modules', 'cldr-data', 'package.json')).version;
-var cldrRevision = null;
 var CLDR = {};
 
 LANGS.forEach(function(lang) {
   loadCldr(lang);
 });
 
-cldrRevision = CLDR.main.en.identity.version._number.replace(
-  /^\$Revision: ([0-9]+) \$$/, '$1');
-var CLDR_FILE = path.join(__dirname, 'cldr_' + cldrVersion
-  + '_' + cldrRevision);
+var CLDR_FILE = path.join(__dirname, 'cldr_' + cldrVersion);
 var CLDR_FILE_GZ = CLDR_FILE + '.gz';
 
 fs.writeFileSync(CLDR_FILE, JSON.stringify(CLDR, null, 2));
@@ -30,7 +64,8 @@ var zipped = zlib.gzipSync(
 fs.writeFileSync(CLDR_FILE_GZ, zipped);
 
 function loadCldr(lang) {
-  var mainPath = path.join('cldr-data', 'main', '%s');
+  var mainPath = path.join(__dirname, 'node_modules',
+    'cldr-data', 'main', '%s');
   var bundleCa = path.join(mainPath, 'ca-gregorian');
   var bundleCurrencies = path.join(mainPath, 'currencies');
   var bundleDates = path.join(mainPath, 'dateFields');

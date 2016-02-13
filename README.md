@@ -3,7 +3,8 @@
 StrongLoop Globalize CLI and API
 
 * [Architecture](#architecture)
-* [CLI](#cli---extract-lint-an-translate)
+* [Language Config Customization](#language-config-customization)
+* [CLI - extract, lint, and translate](#cli---extract-lint-an-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [g.setDefaultLanguage](#gsetdefaultlanguagelang)
 	* [g.setRootDir](#gsetrootdirrootpath)
@@ -65,16 +66,32 @@ strong-globalize is built on top of two foundation layers: Unicode CLDR and jque
 
 strong-globalize is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package built on top of jquery/globalize.  strong-globalize provides these features:
 - [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
-- [automatic extraction](#cli---extract-lint-an-translate) of the strings from JS code and [HTML templates](#globalize-html-templates) and auto-creation of resource JSON,
-- [machine translation](#cli---extract-lint-an-translate) of the resource JSON using [IBM Globalization Pipeline on Bluemix](#liblocal-credentialsjson),
+- [automatic extraction](#cli---extract-lint-and-translate) of the strings from JS code and [HTML templates](#globalize-html-templates) and auto-creation of resource JSON,
+- [machine translation](#cli---extract-lint-and-translate) of the resource JSON using [IBM Globalization Pipeline on Bluemix](#liblocal-credentialsjson),
 - in [Node.js runtime](#api---set-system-defaults), loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
 - [function hook for logging](#persistent-logging) localized user messages so that the client can log what is shown to the end user along with the original English message.
 
-As shown in the [Demo section](#demo) of this README(bottom of the page), the globalized code using strong-globalzie is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
+As shown in the [Demo section](#demo) of this README(bottom of the page), the globalized code using strong-globalize is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
 
 - supported Node.js versions: 0.10, 0.12, 4.0, 5.0
-- supported lcdr version: 28.0.3
-- supported languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant
+- supported cldr version: 28.0.3
+- out-of-box supported languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
+
+You can customize (add/remove) any languages supported by the Unicode CLDR in your strong-globalize installation.
+
+# Language Config Customization
+
+Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR standas for Common Locale Data Repository.  the `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of strong-globalize in your package, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) are defined in the Unicode CLDR v28.  Note that there are 40+ variations of French and 100+ variations of English.
+
+strong-globalize provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your strong-globalize installation.  For example, the out-of-box gz file for the 11 languages is 134KB.  See README of the utility under util directory.
+
+In runtime, string-globalize dynamically loads in memory just the CLDR data required for the specific language by setDefaultLanguage().  First, it examines all the gz files under cldr directory in alphabetical order, then search for the language to load in memory.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
+
+## Message String Resource
+
+English string resource files must exsit under `intl/en` directory.  Translated string resource files are stored on each language sub-directory under `intl`  If the corresponding message is not found in the translated resource files, the English message is displayed.
+
+Message string resources and CLDR data are independent.  For example, you can load 100 langauge CLDR data and no translated message string resources.  However, if there is a translated message string resource exists for langage xx under `intl/xx` the CLDR data for `xx` must be loaded.
 
 # CLI - extract, lint, and translate
 

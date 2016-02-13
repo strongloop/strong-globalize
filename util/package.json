@@ -1,0 +1,28 @@
+{
+  "name": "strong-globalize-custom",
+  "description": "StrongLoop Globalize - CLI and API Customization",
+  "version": "1.3.1",
+  "keywords": [
+    "StrongLoop",
+    "globalize",
+    "cldr"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/strongloop/strong-globalize.git"
+  },
+  "author": "Tetsuo Seto <tseto@us.ibm.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "readmeFilename": "README.md",
+  "main": "app.js",
+  "bugs": {
+    "url": "https://github.com/strongloop/strong-globalize/issues"
+  },
+  "dependencies": {
+    "cldr-data": "^28.0.3",
+    "lodash": "^4.3.0"
+  },
+  "optionalDependencies": {
+    "node-zlib-backport": "^0.11.15"
+  }
+}

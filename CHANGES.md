@@ -1,3 +1,9 @@
+2016-02-13, Version 1.3.1
+=========================
+
+ * Add more links and fix typos in README (Tetsuo Seto)
+
+
 2016-02-12, Version 1.3.0
 =========================
 

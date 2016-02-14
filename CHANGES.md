@@ -1,3 +1,9 @@
+2016-02-14, Version 1.4.0
+=========================
+
+ * Support language customization (Tetsuo Seto)
+
+
 2016-02-13, Version 1.3.1
 =========================
 

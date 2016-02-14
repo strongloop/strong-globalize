@@ -4,7 +4,7 @@ StrongLoop Globalize CLI and API
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
-* [CLI - extract, lint, and translate](#cli---extract-lint-an-translate)
+* [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [g.setDefaultLanguage](#gsetdefaultlanguagelang)
 	* [g.setRootDir](#gsetrootdirrootpath)
@@ -49,13 +49,13 @@ StrongLoop Globalize CLI and API
 	* [g.input](#ginputpath-)
 	* [g.silly](#gsillypath-)
 * [Usage Examples](#usage-examples)
-	* [help txt files](#help-txt-files)
-	* [double curly braces not to translate](#double-curly-braces-not-to-translate)
-	* [use g.format for util.format](#use-gformat-for-utilformat)
+	* [use g.f for util.format](#use-gf-for-utilformat)
 	* [use g.write for process.stdout.write](#use-gwrite-for-processstdoutwrite)
 	* [place holders](#place-holders)
-	* [other cases](#other-cases)
+	* [double curly braces not to translate](#double-curly-braces-not-to-translate)
+	* [help txt files](#help-txt-files)
 	* [help txt files and msg keys](#help-txt-files-and-msg-keys)
+	* [manually add message strings](#manually-add-message-strings)
 * [Demo](#demo)
 * [Globalize HTML Templates](#globalize-html-templates)
 * [Persistent Logging](#persistent-logging)
@@ -81,7 +81,7 @@ You can customize (add/remove) any languages supported by the Unicode CLDR in yo
 
 # Language Config Customization
 
-Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR standas for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of strong-globalize in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) are defined in the Unicode CLDR v28.  Note that there are 40+ variations of French and 100+ variations of English.
+Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR standas for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of strong-globalize in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR v28.  Among them, there are 40+ variations of French and 100+ variations of English.
 
 strong-globalize provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your strong-globalize installation.  For example, the out-of-box gz file for the 11 languages is 134KB.  See README of the utility under util directory.
 
@@ -91,7 +91,7 @@ In runtime, string-globalize dynamically loads to memory just the CLDR data requ
 
 English string resource files must exsit under `intl/en` directory.  Translated string resource files are stored on each language sub-directory under `intl`  If a message is not found in the translated resource files, the correspoinding English message is displayed.
 
-Message string resources and CLDR data are independent.  For example, you can load 100 langauge CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for langage xx under `intl/xx` the CLDR data for `xx` must be loaded.
+CLDR data has no dependencies on string resources.  For example, you can load 100 langauge CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for langage xx under `intl/xx` the CLDR data for `xx` must be loaded.
 
 # CLI - extract, lint, and translate
 
@@ -144,11 +144,11 @@ For example,
 
 ## `var g = require('strong-globalize');`
 
-## `g.setDefaultLanguage(lang)`
-- `lang` : {`string`} (optional, default: `'en'`) Language ID.  It tries to use OS language, then falls back to 'en'  Supported langauges are: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
-
 ## `g.setRootDir(rootPath)`
-- `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.
+- `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.  setRootDir must be called once and only once.  If called multiple times with different root directories, runtime message resuorces will be loaded in different memory spaces, which will result in 'message not found' errors.  In that case, `strong-globalize` falls back to English.
+
+## `g.setDefaultLanguage(lang)`
+- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, strong-globalize tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times. 
 
 ## `g.setHtmlRegex(regex, regexHead, regexTail)`
 - `regex` : {`RegExp`} to extract the whole string out of the HTML text
@@ -275,31 +275,7 @@ passes the result message from `formatMessage` to `console.log`, and log to file
 
 `var g = require('strong-globalize');`
 
-## help txt files
-
-before:
-```js
-	var help = fs.readFileSync(require.resolve('./sl-deploy.txt'), 'utf-8');
-````
-after:
-```js
-	var help = g.t('sl-deploy.txt');
-```
-and store sl-deploy.txt file under intl/en.
-
-## double curly braces not to translate
-Use double curly braces {{ }} as "don't translate" indicator.
-
-before:
-```js
-	console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
-```
-after:
-```js
-	g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
-```
-
-## use g.format for util.format
+## use g.f for util.format
 
 before:
 ```js
@@ -307,12 +283,13 @@ before:
 ```
 after:
 ```js
-	Error(g.format('Directory %s does not exist', workingDir));
+	Error(g.f('Directory %s does not exist', workingDir));
 ```
 or
 ```js
 	g.Error('Directory %s does not exist', workingDir);
 ```
+
 ## use g.write for process.stdout.write
 
 before:
@@ -320,7 +297,7 @@ before:
 	// don't concatenate string. word order varies from language to language.
 	process.stdout.write('Directory ' + workingDir + ' does not exist...');
 ```
-wrong:
+wrong: (don't concatenate words;  word order varies from language to language)
 ```js
 	process.stdout.write(g.t('Directory ') + workingDir + g.t(' does not exist...'));
 ```
@@ -328,6 +305,7 @@ correct:
 ```js
 	g.write('Directory %s does not exist...', workingDir);
 ```
+
 ## place holders
 You can use place holders and parameters in one of these four ways if you'd like:
 
@@ -346,20 +324,42 @@ after
 	// 4
 	g.f('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
 ```
-## other cases
-In case you need to manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
+When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
 
-For example, frontend modules such as StrongLoop Arc contain many UI strings in HTML.  You can use a filter or a tool for the template engine to extract strings to strong-globalize resource JSON, and use slt-globalize CLI.
+## double curly braces not to translate
+Use double curly braces {{ }} as "don't translate" indicator.
 
-Note that strong-globalize supports multiple *.txt and multiple *.json files under intl/en.
+before:
+```js
+	console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
+```
+after:
+```js
+	g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
+```
+
+## help txt files
+
+before:
+```js
+	var help = fs.readFileSync(require.resolve('./help.txt'), 'utf-8');
+````
+after:
+```js
+	var help = g.t('help.txt');
+```
+and store help.txt file under intl/en.
 
 ## help txt files and msg keys
 
 They must be uniquely named because they are used as-is in runtime message database where the messages come from other modules will be merged.  In case there are duplicate *.txt or msg*, it could be overwritten by other module(s) with the same name whichever is loaded later.  Best practice is to use your package name as part of the name.  For example, `msgMyPackage_ErrorMessage`.
 
-When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
-
 The rule of thumb is `strong-globalize` extracts messages from JS and HTML template files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.
+
+Note that strong-globalize supports multiple *.txt and multiple *.json files under intl/en.
+
+## manually add message strings
+`slt-globalize -e` command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
 
 # Demo
 

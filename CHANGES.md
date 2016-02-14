@@ -1,4 +1,12 @@
-2016-02-14, Version 1.4.0
+2016-02-14, Version 1.4.1
+=========================
+
+ * Fix a lint error (Setogit)
+
+ * Clean up README (Tetsuo Seto)
+
+
+2016-02-13, Version 1.4.0
 =========================
 
  * Support language customization (Tetsuo Seto)

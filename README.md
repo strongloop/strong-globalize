@@ -4,6 +4,8 @@ StrongLoop Globalize CLI and API
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
+* [Runtime Language Switching](#runtime-language-switching)
+* [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [g.setDefaultLanguage](#gsetdefaultlanguagelang)
@@ -93,6 +95,70 @@ English string resource files must exsit under `intl/en` directory.  Translated 
 
 CLDR data has no dependencies on string resources.  For example, you can load 100 langauge CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for langage xx under `intl/xx` the CLDR data for `xx` must be loaded.
 
+# Runtime Language Switching
+
+There are two primary types of Node.js packages `strong-globalize` is targetting:
+- Command line interface utility (short life; static language setting) such as [`slt-globalize` itself](#cli---extract-lint-and-translate),
+- Web applications such as LoopBack apps (long life; dynamic language switching to respect browser language set in HTTP `Accept-Language` header)
+
+## Common part
+```js
+	var SG = require('strong-globalize');
+	SG.SetRootDir(__dirname);
+	SG.SetDefaultLanguage(); // user the OS language, or fallback to English
+	var g = SG(); // use the default
+
+```
+## Static language setting in CLI utility
+```js
+	// the common part comes here.
+
+	// then, use formatters and wrappers API always in the same language
+	g.log('Welcome!');
+
+```
+## Dynamic language switching in Web application
+
+Setting language to `strong-globalize` instance is pretty cheap.  CLDR data set and translatged messages are pre-loaded at the initial use.
+```js
+	// the common part comes here.
+
+	// set language first, then, use formatters and wrappers API
+	g.setLauguage(getAcceptLanguage()); // once per session
+	
+	g.log('Welcome!');
+
+```
+## Upgrade from v1.x to v2.0
+
+Changes to be made to the client source code are minimal.
+
+v1.x:
+
+```js
+	var g = require('strong-globalize');
+	g.setRootDir(__dirname);
+	g.setDefaultLanuage();
+
+	// use formatters and wrappers API
+
+	g.log('Welcome!');
+
+```
+v2.0:
+
+```js
+	var SG = require('strong-globalize');
+	SG.SetRootDir(__dirname);
+	SG.SetDefaultLanuage();
+	var g = SG({language: 'en'});
+
+	// use formatters and wrappers API
+
+	g.log('Welcome!');
+
+```
+
 # CLI - extract, lint, and translate
 
 ## `npm install -g strong-globalize`
@@ -142,15 +208,15 @@ For example,
 
 # API - Set system defaults
 
-## `var g = require('strong-globalize');`
+### `var SG = require('strong-globalize);`
 
-## `g.setRootDir(rootPath)`
+## `SG.SetRootDir(rootPath)`
 - `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.  setRootDir must be called once and only once.  If called multiple times with different root directories, runtime message resuorces will be loaded in different memory spaces, which will result in 'message not found' errors.  In that case, `strong-globalize` falls back to English.
 
-## `g.setDefaultLanguage(lang)`
+## `SG.SetDefaultLanguage(lang)`
 - `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, strong-globalize tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times. 
 
-## `g.setHtmlRegex(regex, regexHead, regexTail)`
+## `SG.SetHtmlRegex(regex, regexHead, regexTail)`
 - `regex` : {`RegExp`} to extract the whole string out of the HTML text
 - `regexHead` : {`RegExp`} to trim the head portion from the extracted string
 - `regexTail` : {`RegExp`} to trim the tail portion from the extracted string
@@ -159,6 +225,8 @@ Most clients do not need to setHtmlRegex.  See [the Globalize HTML Templates sec
 
 
 # API - Formatters
+
+### `var g = SG({language: 'en'});`
 
 ## `g.formatMessage(path, variables)`
 - `path {string}` The message key
@@ -394,13 +462,13 @@ before:
 	}
 ```
 after:
-- `var g = require('strong-globalize');`
+- `var g = require('strong-globalize')();`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-	var g = require('strong-globalize');
+	var g = require('strong-globalize')();
 
 	exports.getHelpText = getHelpText;
 	exports.getUserName = getUserName;
@@ -447,7 +515,8 @@ before:
 
 ```
 after:
-- `var g = require('strong-globalize');`
+- `var SG = require('strong-globalize');`
+- `var g = SG();`
 - replace `util` with `g`
 - replace `console` with `g`
 - replace `process.stdout` with `g`
@@ -458,8 +527,12 @@ after:
 	var express = require('express');
 	var request = require('request');
 	var app = express();
-	var g = require('strong-globalize');
+	var SG = require('strong-globalize');
 	var gsub = require('gsub');
+
+	SG.SetRootDir(__dirname);
+	SG.SetDefaultLanguage();
+	var g = SG();
 
 	app.get('/', function(req, res) {
 	  var helloMessage = g.f('%s Hello World', g.d(new Date()));
@@ -512,7 +585,7 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 
 strong-globalize provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
 
-## `g.setPersistentLogging(logCallback, disableConsole)`
+## `SG.SetPersistentLogging(logCallback, disableConsole)`
 `logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
 
 ```js
@@ -527,11 +600,12 @@ strong-globalize provides 'persistent logging' by passing all the localized mess
 
 Client:
 ```js
-	var g = require('strong-globalize'); // strong-globalize handle
+	var SG = require('strong-globalize');
+	var g = SG(); // strong-globalize handle
 	var w = require('winston'); // winston handle
 
-	g.setRootDir(__dirname);
-	g.setDefaultLanguage();
+	SG.SetRootDir(__dirname);
+	SG.SetDefaultLanguage();
 	initWinston(w);
 	// let strong-globalize to show it to the user
 	var disableConsole = false;
@@ -557,15 +631,16 @@ Client:
 	var express = require('express');
 	var request = require('request');
 	var app = express();
-	var g = require('strong-globalize'); // strong-globalize handle
+	var SG = require('strong-globalize'); 
 	var gsub = require('gsub');
 	var w = require('winston'); // winston handle
 
-	g.setRootDir(__dirname);
-	g.setDefaultLanguage();
+	SG.SetRootDir(__dirname);
+	SG.SetDefaultLanguage();
+	var g = SG(); // strong-globalize handle
 	initWinston(w); // see the Client initialization
 	var disableConsole = false;
-	g.setPersistentLogging(w.log, disableConsole);
+	SG.SetPersistentLogging(w.log, disableConsole);
 
 	app.get('/', function(req, res) {
 	  var helloMessage = g.f('%s Hello World', g.d(new Date()));

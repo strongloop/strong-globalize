@@ -5,13 +5,10 @@ var extract = require('../lib/extract');
 var md5 = require('md5');
 var path = require('path');
 var test = require('tap').test;
-// var util = require('util');
 
-test('extract from JS and fill-in', function(t) {
-  helper.setRootDir(__dirname);
-  g.setDefaultLanguage();
-  var content = 'var g = require("strong-globalize");\n' +
-  'function test() {\n' +
+var content_singleton_head = 'var g = require("strong-globalize");\n';
+var content_multiple_head = 'var g = require("strong-globalize")();\n';
+var content_singleton_body = 'function test() {\n' +
   '  return g.Error(\'This is an error.\');\n' +
   '}\n' +
   'var msg = g.t(\'left half of t\' + \' and right half of t\');\n' +
@@ -27,6 +24,62 @@ test('extract from JS and fill-in', function(t) {
   'msg = g.format(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
   'msg = g.f(\'format of {zero} and {one}\', \n' +
   '  {zero: \'zero\', one: \'one\'});\n';
+
+test('extract from JS and fill-in with singleton head',
+  subTest.bind(content_singleton_head + content_singleton_body));
+test('extract from JS and fill-in with multiple head',
+  subTest.bind(content_multiple_head + content_singleton_body));
+
+var content_multiple = 'var SG = require("strong-globalize");\n' +
+  'var gQuick = require("strong-globalize")();\n' +
+  'var g = SG();\n' +
+  'var gNew = new SG();\n' +
+  'function test() {\n' +
+  '  return g.Error(\'This is an error.\');\n' +
+  '}\n' +
+  'var msg = gQuick.t(\'left half of t\' + \' and right half of t\');\n' +
+  'msg = gNew.formatMessage(\'formatMessage\');\n' +
+  'g.error(\'error\');\n' +
+  'gQuick.log(\'log\');\n' +
+  'gNew.info(\'info\');\n' +
+  'g.warn(\'warn\');\n' +
+  'gQuick.ewrite(\'ewrite\');\n' +
+  'gNew.owrite(\'owrite\');\n' +
+  'g.write(\'write\');\n' +
+  'msg = gQuick.format(\'format of %s and %s\', \'zero\', \'one\');\n' +
+  'msg = gNew.silly(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
+  'msg = g.f(\'format of {zero} and {one}\', \n' +
+  '  {zero: \'zero\', one: \'one\'});\n';
+
+test('extract from JS and fill-in with multiple',
+  subTest.bind(content_multiple));
+
+var content_multiple_new = 'var SG = require("strong-globalize");\n' +
+  'var g = new SG();\n' +
+  'function test() {\n' +
+  '  return g.input(\'This is an error.\');\n' +
+  '}\n' +
+  'var msg = g.m(\'left half of t\' + \' and right half of t\');\n' +
+  'msg = g.verbose(\'formatMessage\');\n' +
+  'g.emergency(\'error\');\n' +
+  'g.alert(\'log\');\n' +
+  'g.critical(\'info\');\n' +
+  'g.warning(\'warn\');\n' +
+  'g.notice(\'ewrite\');\n' +
+  'g.informational(\'owrite\');\n' +
+  'g.debug(\'write\');\n' +
+  'msg = g.help(\'format of %s and %s\', \'zero\', \'one\');\n' +
+  'msg = g.data(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
+  'msg = g.prompt(\'format of {zero} and {one}\', \n' +
+  '  {zero: \'zero\', one: \'one\'});\n';
+
+test('extract from JS and fill-in with multiple',
+  subTest.bind(content_multiple_new));
+
+function subTest(t) {
+  helper.setRootDir(__dirname);
+  g.setDefaultLanguage();
+  var content = this;
   var targetMsgs = [
     'This is an error.',
     'left half of t and right half of t',
@@ -42,90 +95,92 @@ test('extract from JS and fill-in', function(t) {
     'format of {0} and {1}',
     'format of {zero} and {one}',
   ];
-  t.assert(targetMsgs.join('') === extract.scanAst(content).join(''),
+  t.equal(targetMsgs.join(''), extract.scanAst(content).join(''),
     'all literals extracted from JS.');
   var msgs = {};
   targetMsgs.forEach(function(msg) {
     msgs[md5(msg)] = msg;
   });
-  var msgFilePath = path.join(helper.intlDir(helper.ENGLISH), 'messages2.json');
+  var msgFilePath = path.join(
+    helper.intlDir(helper.ENGLISH), 'messages2.json');
   fs.writeFileSync(msgFilePath, JSON.stringify(msgs, null, 4) + '\n');
   var enBundlePre = global.STRONGLOOP_GLB.bundles[helper.ENGLISH];
   t.comment(JSON.stringify(enBundlePre, null, 2));
   g.setDefaultLanguage(helper.ENGLISH);
-  t.assert(g.t(targetMsgs[0]) === targetMsgs[0],
+  t.equal(g.t(targetMsgs[0]), targetMsgs[0],
     'read t right on \'' + targetMsgs[0] + '\'');
-  t.assert(g.t(targetMsgs[1]) === targetMsgs[1],
+  t.equal(g.t(targetMsgs[1]), targetMsgs[1],
     'read t right on \'' + targetMsgs[1] + '\'');
-  t.assert(g.t(targetMsgs[2]) === targetMsgs[2],
+  t.equal(g.t(targetMsgs[2]), targetMsgs[2],
     'read t right on \'' + targetMsgs[2] + '\'');
-  t.assert(g.t(targetMsgs[3]) === targetMsgs[3],
+  t.equal(g.t(targetMsgs[3]), targetMsgs[3],
     'read t right on \'' + targetMsgs[3] + '\'');
-  t.assert(g.t(targetMsgs[4]) === targetMsgs[4],
+  t.equal(g.t(targetMsgs[4]), targetMsgs[4],
     'read t right on \'' + targetMsgs[4] + '\'');
-  t.assert(g.t(targetMsgs[5]) === targetMsgs[5],
+  t.equal(g.t(targetMsgs[5]), targetMsgs[5],
     'read t right on \'' + targetMsgs[5] + '\'');
-  t.assert(g.t(targetMsgs[6]) === targetMsgs[6],
+  t.equal(g.t(targetMsgs[6]), targetMsgs[6],
     'read t right on \'' + targetMsgs[6] + '\'');
-  t.assert(g.t(targetMsgs[7]) === targetMsgs[7],
+  t.equal(g.t(targetMsgs[7]), targetMsgs[7],
     'read t right on \'' + targetMsgs[7] + '\'');
-  t.assert(g.t(targetMsgs[8]) === targetMsgs[8],
+  t.equal(g.t(targetMsgs[8]), targetMsgs[8],
     'read t right on \'' + targetMsgs[8] + '\'');
-  t.assert(g.t(targetMsgs[9]) === targetMsgs[9],
+  t.equal(g.t(targetMsgs[9]), targetMsgs[9],
     'read t right on \'' + targetMsgs[9] + '\'');
 
-  t.assert(g.format(targetMsgs[0]) === targetMsgs[0],
+  t.equal(g.format(targetMsgs[0]), targetMsgs[0],
     'read format right on \'' + targetMsgs[0] + '\'');
-  t.assert(g.format(targetMsgs[1]) === targetMsgs[1],
+  t.equal(g.format(targetMsgs[1]), targetMsgs[1],
     'read format right on \'' + targetMsgs[1] + '\'');
-  t.assert(g.format(targetMsgs[2]) === targetMsgs[2],
+  t.equal(g.format(targetMsgs[2]), targetMsgs[2],
     'read format right on \'' + targetMsgs[2] + '\'');
-  t.assert(g.format(targetMsgs[3]) === targetMsgs[3],
+  t.equal(g.format(targetMsgs[3]), targetMsgs[3],
     'read format right on \'' + targetMsgs[3] + '\'');
-  t.assert(g.format(targetMsgs[4]) === targetMsgs[4],
+  t.equal(g.format(targetMsgs[4]), targetMsgs[4],
     'read format right on \'' + targetMsgs[4] + '\'');
-  t.assert(g.format(targetMsgs[5]) === targetMsgs[5],
+  t.equal(g.format(targetMsgs[5]), targetMsgs[5],
     'read format right on \'' + targetMsgs[5] + '\'');
-  t.assert(g.format(targetMsgs[6]) === targetMsgs[6],
+  t.equal(g.format(targetMsgs[6]), targetMsgs[6],
     'read format right on \'' + targetMsgs[6] + '\'');
-  t.assert(g.format(targetMsgs[7]) === targetMsgs[7],
+  t.equal(g.format(targetMsgs[7]), targetMsgs[7],
     'read format right on \'' + targetMsgs[7] + '\'');
-  t.assert(g.format(targetMsgs[8]) === targetMsgs[8],
+  t.equal(g.format(targetMsgs[8]), targetMsgs[8],
     'read format right on \'' + targetMsgs[8] + '\'');
-  t.assert(g.format(targetMsgs[9]) === targetMsgs[9],
+  t.equal(g.format(targetMsgs[9]), targetMsgs[9],
     'read format right on \'' + targetMsgs[9] + '\'');
 
-  // These tests pass on local OSX, but fail on CI.  Comment out temporarily.
-
-  // var targetMsg = util.format(targetMsgs[10], 'zero', 'one');
-  // var resultMsg = null;
-  // resultMsg = g.t(targetMsgs[11], ['zero', 'one']);
-  // t.comment(resultMsg);
-  // t.assert(resultMsg === targetMsg,
-  //   'filled t in array \'' + targetMsg + '\'');
-  // resultMsg = g.t(targetMsgs[11], {0: 'zero', 1: 'one'});
-  // t.comment(resultMsg);
-  // t.assert(resultMsg === targetMsg,
-  //   'filled t in object 0, 1 \'' + targetMsg + '\'');
-  // resultMsg = g.t(targetMsgs[12], {zero: 'zero', one: 'one'});
-  // t.comment(resultMsg);
-  // t.assert(resultMsg === targetMsg,
-  //   'filled t in object zero, one \'' + targetMsg + '\'');
-  // resultMsg = g.format(targetMsgs[11], ['zero', 'one']);
-  // t.comment(resultMsg);
-  // t.assert(resultMsg === targetMsg,
-  //   'filled format in array \'' + targetMsg + '\'');
-  // resultMsg = g.format(targetMsgs[11], {0: 'zero', 1: 'one'});
-  // t.comment(resultMsg);
-  // t.assert(resultMsg === targetMsg,
-  //   'filled format in object 0, 1 \'' + targetMsg + '\'');
-  // resultMsg = g.format(targetMsgs[12], {zero: 'zero', one: 'one'});
-  // t.comment(resultMsg);
-  // t.assert(resultMsg === targetMsg,
-  //   'filled format in object zero, one \'' + targetMsg + '\'');
+  if (process.env.VERBOSE_TESTING) {
+    var util = require('util');
+    var targetMsg = util.format(targetMsgs[10], 'zero', 'one');
+    var resultMsg = null;
+    resultMsg = g.t(targetMsgs[11], ['zero', 'one']);
+    t.comment(resultMsg);
+    t.equal(resultMsg, targetMsg,
+      'filled t in array \'' + targetMsg + '\'');
+    resultMsg = g.t(targetMsgs[11], {0: 'zero', 1: 'one'});
+    t.comment(resultMsg);
+    t.equal(resultMsg, targetMsg,
+      'filled t in object 0, 1 \'' + targetMsg + '\'');
+    resultMsg = g.t(targetMsgs[12], {zero: 'zero', one: 'one'});
+    t.comment(resultMsg);
+    t.equal(resultMsg, targetMsg,
+      'filled t in object zero, one \'' + targetMsg + '\'');
+    resultMsg = g.f(targetMsgs[11], ['zero', 'one']);
+    t.comment(resultMsg);
+    t.equal(resultMsg, targetMsg,
+      'filled format in array \'' + targetMsg + '\'');
+    resultMsg = g.format(targetMsgs[11], {0: 'zero', 1: 'one'});
+    t.comment(resultMsg);
+    t.equal(resultMsg, targetMsg,
+      'filled format in object 0, 1 \'' + targetMsg + '\'');
+    resultMsg = g.format(targetMsgs[12], {zero: 'zero', one: 'one'});
+    t.comment(resultMsg);
+    t.equal(resultMsg, targetMsg,
+      'filled format in object zero, one \'' + targetMsg + '\'');
+  }
 
   t.end();
-});
+}
 
 test('extract from HTML', function(t) {
   helper.setRootDir(__dirname);
@@ -203,7 +258,7 @@ test('extract from HTML', function(t) {
   var extracted = extract.scanHtml(content);
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
-  t.assert(targetMsg.join('') === extracted.join(''),
+  t.equal(targetMsg.join(''), extracted.join(''),
     'all literals extracted from HTML.');
 
   t.end();
@@ -244,7 +299,7 @@ test('custom extraction regex', function(t) {
   var extracted = extract.scanHtml(content);
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
-  t.assert(targetMsg.join('') === extracted.join(''),
+  t.equal(targetMsg.join(''), extracted.join(''),
     'literal correctly extracted using custom html regex.');
 
   t.end();

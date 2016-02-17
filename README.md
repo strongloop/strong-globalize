@@ -105,31 +105,29 @@ There are two primary types of Node.js packages `strong-globalize` is targeting:
 
 ## Common part
 ```js
-	var SG = require('strong-globalize');
-	SG.SetRootDir(__dirname);
-	SG.SetDefaultLanguage(); // user the OS language, or falls back to English
-	var g = SG(); // use the default
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage(); // user the OS language, or falls back to English
+var g = SG(); // use the default
 
 ```
 ## Static language setting in CLI utility
 ```js
-	// the common part comes here.
+// the common part comes here.
 
-	// then, use formatters and wrappers API always in the same language
-	g.log('Welcome!');
-
+// then, use formatters and wrappers API always in the same language
+g.log('Welcome!');
 ```
 ## Dynamic language switching in Web application
 
 Setting language to `strong-globalize` instance is pretty cheap.  CLDR data set and translated messages are preloaded at the initial use.
 ```js
-	// the common part comes here.
+// the common part comes here.
 
-	// set language first, then, use formatters and wrappers API
-	g.setLauguage(getAcceptLanguage()); // once per session
-	
-	g.log('Welcome!');
+// set language first, then, use formatters and wrappers API
+g.setLauguage(getAcceptLanguage()); // once per session
 
+g.log('Welcome!');
 ```
 ## Upgrade from v1.x to v2.0
 
@@ -138,27 +136,25 @@ Changes to be made to the client source code are minimal.
 v1.x:
 
 ```js
-	var g = require('strong-globalize');
-	g.setRootDir(__dirname);
-	g.setDefaultLanuage();
+var g = require('strong-globalize');
+g.setRootDir(__dirname);
+g.setDefaultLanuage();
 
-	// use formatters and wrappers API
+// use formatters and wrappers API
 
-	g.log('Welcome!');
-
+g.log('Welcome!');
 ```
 v2.0:
 
 ```js
-	var SG = require('strong-globalize');
-	SG.SetRootDir(__dirname);
-	SG.SetDefaultLanuage();
-	var g = SG({language: 'en'});
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanuage();
+var g = SG({language: 'en'});
 
-	// use formatters and wrappers API
+// use formatters and wrappers API
 
-	g.log('Welcome!');
-
+g.log('Welcome!');
 ```
 
 # CLI - extract, lint, and translate
@@ -192,20 +188,28 @@ To access Globalization Pipeline on Bluemix service for machine translation, cre
 
 Copy from the service dashboard and paste something like the following into lib/local-credentials.json.
 
-`{
+```js
+{
   "credentials": {
     "url": "https://gp-beta-rest.ng.bluemix.net/translate/rest",
     "userId": "6e41ceac9f14b493faxxxxxxxxxxxxxx",
     "password": "vLbqlkjPhJiwJlkjwou8woO82hk2huku",
     "instanceId": "6888888888888e6d2f458b1b4b5fd010"
   }
-}`
+}
+```
 
 (2) By environment variables
 
 For example,
 
-`BLUEMIX_URL="https://gp-beta-rest.ng.bluemix.net/translate/rest" BLUEMIX_USER=6e41ceac9f14b493faxxxxxxxxxxxxxx BLUEMIX_PASSWORD=vLbqlkjPhJiwJlkjwou8woO82hk2huku BLUEMIX_INSTANCE=6888888888888e6d2f458b1b4b5fd010 slt-globalize -t`
+```js
+BLUEMIX_URL="https://gp-beta-rest.ng.bluemix.net/translate/rest" &&
+BLUEMIX_USER=6e41ceac9f14b493faxxxxxxxxxxxxxx &&
+BLUEMIX_PASSWORD=vLbqlkjPhJiwJlkjwou8woO82hk2huku &&
+BLUEMIX_INSTANCE=6888888888888e6d2f458b1b4b5fd010 &&
+slt-globalize -t
+```
 
 
 # API - Set system defaults
@@ -349,31 +353,31 @@ passes the result message from `formatMessage` to `console.log`, and log to file
 
 before:
 ```js
-	Error(util.format('Directory %s does not exist', workingDir));
+Error(util.format('Directory %s does not exist', workingDir));
 ```
 after:
 ```js
-	Error(g.f('Directory %s does not exist', workingDir));
+Error(g.f('Directory %s does not exist', workingDir));
 ```
 or
 ```js
-	g.Error('Directory %s does not exist', workingDir);
+g.Error('Directory %s does not exist', workingDir);
 ```
 
 ## use g.write for process.stdout.write
 
 before:
 ```js
-	// don't concatenate string. word order varies from language to language.
-	process.stdout.write('Directory ' + workingDir + ' does not exist...');
+// don't concatenate string. word order varies from language to language.
+process.stdout.write('Directory ' + workingDir + ' does not exist...');
 ```
 wrong: (don't concatenate words;  word order varies from language to language)
 ```js
-	process.stdout.write(g.t('Directory ') + workingDir + g.t(' does not exist...'));
+process.stdout.write(g.t('Directory ') + workingDir + g.t(' does not exist...'));
 ```
 correct:
 ```js
-	g.write('Directory %s does not exist...', workingDir);
+g.write('Directory %s does not exist...', workingDir);
 ```
 
 ## place holders
@@ -381,18 +385,18 @@ You can use place holders and parameters in one of these four ways if you'd like
 
 before:
 ```js
-	util.format('Deploy %s to %s failed: %s', what, url, err);
+util.format('Deploy %s to %s failed: %s', what, url, err);
 ```
 after
 ```js
-	// 1 (recommended; simply replace `util` with `g`)
-	g.f('Deploy %s to %s failed: %s', what, url, err);
-	// 2
-	g.f('Deploy {0} to {1} failed: {2}', [what, url, err]);
-	// 3
-	g.f('Deploy {0} to {1} failed: {2}', {0: what, 1: url, 2: err});
-	// 4
-	g.f('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
+// 1 (recommended; simply replace `util` with `g`)
+g.f('Deploy %s to %s failed: %s', what, url, err);
+// 2
+g.f('Deploy {0} to {1} failed: {2}', [what, url, err]);
+// 3
+g.f('Deploy {0} to {1} failed: {2}', {0: what, 1: url, 2: err});
+// 4
+g.f('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
 ```
 When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
 
@@ -401,22 +405,22 @@ Use double curly braces {{ }} as "don't translate" indicator.
 
 before:
 ```js
-	console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
+console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
 ```
 after:
 ```js
-	g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
+g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
 ```
 
 ## help txt files
 
 before:
 ```js
-	var help = fs.readFileSync(require.resolve('./help.txt'), 'utf-8');
+var help = fs.readFileSync(require.resolve('./help.txt'), 'utf-8');
 ````
 after:
 ```js
-	var help = g.t('help.txt');
+var help = g.t('help.txt');
 ```
 and store help.txt file under intl/en.
 
@@ -438,8 +442,8 @@ To quickly switch the locale, change the OS's system locale or set STRONGLOOP_GL
 For example, on OSX:
 
 ```js
-	cd gmain
-	LANG=ja node index.js
+cd gmain
+LANG=ja node index.js
 ```
 
 ## `gsub/index.js`
@@ -447,21 +451,21 @@ For example, on OSX:
 before:
 
 ```js
-	var fs = require('fs');
-	var util = require('util');
+var fs = require('fs');
+var util = require('util');
 
-	exports.getHelpText = getHelpText;
-	exports.getUserName = getUserName;
+exports.getHelpText = getHelpText;
+exports.getUserName = getUserName;
 
-	function getUserName() {
-	  var userName = util.format('user: %s', process.env.USER);
-	  return userName;
-	}
+function getUserName() {
+  var userName = util.format('user: %s', process.env.USER);
+  return userName;
+}
 
-	function getHelpText() {
-	  var helpText = fs.readFileSync(require.resolve('./gsub.txt'), 'utf-8');
-	  return helpText;
-	}
+function getHelpText() {
+  var helpText = fs.readFileSync(require.resolve('./gsub.txt'), 'utf-8');
+  return helpText;
+}
 ```
 after:
 - `var g = require('strong-globalize')();`
@@ -470,20 +474,19 @@ after:
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-	var g = require('strong-globalize')();
+var g = require('strong-globalize')();
 
-	exports.getHelpText = getHelpText;
-	exports.getUserName = getUserName;
+exports.getHelpText = getHelpText;
+exports.getUserName = getUserName;
 
-	function getUserName() {
-	  var userName = g.f('user: %s', process.env.USER);
-	  return userName;
-	}
+function getUserName() {
+  var userName = g.f('user: %s', process.env.USER);
+  return userName;
+}
 
-	function getHelpText() {
-	  return g.t('gsub.txt');
-	}
-
+function getHelpText() {
+  return g.t('gsub.txt');
+}
 ```
 
 ## `gmain/index.js`
@@ -491,30 +494,29 @@ after:
 before:
 
 ```js
-	var express = require('express');
-	var request = require('request');
-	var app = express();
-	var util = require('util');
-	var gsub = require('gsub');
+var express = require('express');
+var request = require('request');
+var app = express();
+var util = require('util');
+var gsub = require('gsub');
 
-	app.get('/', function(req, res) {
-	  var helloMessage = util.format('%s Hello World', new Date());
-	  res.end(helloMessage);
-	});
+app.get('/', function(req, res) {
+  var helloMessage = util.format('%s Hello World', new Date());
+  res.end(helloMessage);
+});
 
-	var port = process.env.PORT || 8123;
-	app.listen(port, function() {
-	  console.log('Listening on %s by %s.', port, gsub.getUserName());
-	});
+var port = process.env.PORT || 8123;
+app.listen(port, function() {
+  console.log('Listening on %s by %s.', port, gsub.getUserName());
+});
 
-	setInterval(function(){
-		process.stdout.write('Sending request to ' + port + '...');
-		request('http://localhost:' + port,
-			function(error, response, body) {console.log(body);});
-	},1000);
+setInterval(function(){
+	process.stdout.write('Sending request to ' + port + '...');
+	request('http://localhost:' + port,
+		function(error, response, body) {console.log(body);});
+},1000);
 
-	console.log(gsub.getHelpText());
-
+console.log(gsub.getHelpText());
 ```
 after:
 - `var SG = require('strong-globalize');`
@@ -526,34 +528,33 @@ after:
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-	var express = require('express');
-	var request = require('request');
-	var app = express();
-	var SG = require('strong-globalize');
-	var gsub = require('gsub');
+var express = require('express');
+var request = require('request');
+var app = express();
+var SG = require('strong-globalize');
+var gsub = require('gsub');
 
-	SG.SetRootDir(__dirname);
-	SG.SetDefaultLanguage();
-	var g = SG();
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage();
+var g = SG();
 
-	app.get('/', function(req, res) {
-	  var helloMessage = g.f('%s Hello World', g.d(new Date()));
-	  res.end(helloMessage);
-	});
+app.get('/', function(req, res) {
+  var helloMessage = g.f('%s Hello World', g.d(new Date()));
+  res.end(helloMessage);
+});
 
-	var port = process.env.PORT || 8123;
-	app.listen(port, function() {
-	  g.log('Listening on %s by %s.', port, gsub.getUserName());
-	});
+var port = process.env.PORT || 8123;
+app.listen(port, function() {
+  g.log('Listening on %s by %s.', port, gsub.getUserName());
+});
 
-	setInterval(function(){
-		g.owrite('Sending request to %s ...', port);
-		request('http://localhost:' + port,
-			function(error, response, body) {console.log(body);});
-	},1000);
+setInterval(function(){
+	g.owrite('Sending request to %s ...', port);
+	request('http://localhost:' + port,
+		function(error, response, body) {console.log(body);});
+},1000);
 
-	console.log(gsub.getHelpText());
-
+console.log(gsub.getHelpText());
 ```
 
 # Globalize HTML Templates
@@ -562,25 +563,25 @@ Many UI strings are included in HTML templates.  `slt-globalize -e` supports str
 
 In the following example, the two strings `{{StrongLoop}} History Board` and `History board shows the access history to the e-commerce web site.` are extracted to JSON.
 
-```
-	<div class="board-header section-header">
-		<h2>{{{{StrongLoop}} History Board | globalize}}</h2>
-	</div>
-	<div role="help-note">
-		<p>
-			{{ History board shows the access history to the e-commerce web site. | globalize }}
-		</p>
-	</div>
+```html
+<div class="board-header section-header">
+	<h2>{{{{StrongLoop}} History Board | globalize}}</h2>
+</div>
+<div role="help-note">
+	<p>
+		{{ History board shows the access history to the e-commerce web site. | globalize }}
+	</p>
+</div>
 ```
 
 `strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
 
 The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
 
-```
-	<![CDATA[
-		{{Text in cdata | globalize }}
-	]]>
+```html
+<![CDATA[
+	{{Text in cdata | globalize }}
+]]>
 ```
 
 # Persistent Logging
@@ -591,78 +592,76 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 `logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
 
 ```js
-	{
-		message: 'ホスト:localhostのポート:8123へ送っています。',
-		orig: 'Sending to host: %s, port: %d ...',
-		vars: ['localhost', 8123],
-	}
+{
+	message: 'ホスト:localhostのポート:8123へ送っています。',
+	orig: 'Sending to host: %s, port: %d ...',
+	vars: ['localhost', 8123],
+}
 ```
 
 `disableConsole` (default: `false`) is a boolean to specify whether to send the messsage to `stdout` or `stderr`.  `disableConsole` should be set to `true` in case the client controls the user communication.  For example, if the client uses `winston` file transport for logging, the client code would look like this:
 
 Client:
 ```js
-	var SG = require('strong-globalize');
-	var g = SG(); // strong-globalize handle
-	var w = require('winston'); // winston handle
+var SG = require('strong-globalize');
+var g = SG(); // strong-globalize handle
+var w = require('winston'); // winston handle
 
-	SG.SetRootDir(__dirname);
-	SG.SetDefaultLanguage();
-	initWinston(w);
-	// let strong-globalize to show it to the user
-	var disableConsole = false;
-	g.setPersistentLogging(w.log, disableConsole);
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage();
+initWinston(w);
+// let strong-globalize to show it to the user
+var disableConsole = false;
+g.setPersistentLogging(w.log, disableConsole);
 
-	function initWinston(w) {
-	  var options = {
-	    filename: __dirname + '/system.log',
-	    maxsize: 1000000,
-	    maxFiles: 10,
-	    zippedArchive: true,
-	  };
-	  w.add(w.transports.File, options);
-	  // let strong-globalize to show it to the user
-	  w.remove(w.transports.Console);
-	}
-
+function initWinston(w) {
+  var options = {
+    filename: __dirname + '/system.log',
+    maxsize: 1000000,
+    maxFiles: 10,
+    zippedArchive: true,
+  };
+  w.add(w.transports.File, options);
+  // let strong-globalize to show it to the user
+  w.remove(w.transports.Console);
+}
 ```
 
 ## Persistent Logging Demo `gmain/index.js`
 
 ```js
-	var express = require('express');
-	var request = require('request');
-	var app = express();
-	var SG = require('strong-globalize'); 
-	var gsub = require('gsub');
-	var w = require('winston'); // winston handle
+var express = require('express');
+var request = require('request');
+var app = express();
+var SG = require('strong-globalize'); 
+var gsub = require('gsub');
+var w = require('winston'); // winston handle
 
-	SG.SetRootDir(__dirname);
-	SG.SetDefaultLanguage();
-	var g = SG(); // strong-globalize handle
-	initWinston(w); // see the Client initialization
-	var disableConsole = false;
-	SG.SetPersistentLogging(w.log, disableConsole);
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage();
+var g = SG(); // strong-globalize handle
+initWinston(w); // see the Client initialization
+var disableConsole = false;
+SG.SetPersistentLogging(w.log, disableConsole);
 
-	app.get('/', function(req, res) {
-	  var helloMessage = g.f('%s Hello World', g.d(new Date()));
-	  w.info(helloMessage); // write only to the log file with 'info' level
-	  res.end(helloMessage);
-	});
+app.get('/', function(req, res) {
+  var helloMessage = g.f('%s Hello World', g.d(new Date()));
+  w.info(helloMessage); // write only to the log file with 'info' level
+  res.end(helloMessage);
+});
 
-	var port = process.env.PORT || 8123;
-	app.listen(port, function() {
-	  g.log('Listening on %s by %s.', port, gsub.getUserName());
-	});
+var port = process.env.PORT || 8123;
+app.listen(port, function() {
+  g.log('Listening on %s by %s.', port, gsub.getUserName());
+});
 
-	setInterval(function(){
-		g.owrite('Sending request to %s ...', port);
-		request('http://localhost:' + port,
-			function(error, response, body) {console.log(body);});
-	},1000);
+setInterval(function(){
+	g.owrite('Sending request to %s ...', port);
+	request('http://localhost:' + port,
+		function(error, response, body) {console.log(body);});
+},1000);
 
-	g.info(gsub.getHelpText()); // write to both console and the log file with 'info' level
-
+g.info(gsub.getHelpText()); // write to both console and the log file with 'info' level
 ```
 
 Note:

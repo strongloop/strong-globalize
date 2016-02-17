@@ -109,7 +109,6 @@ var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage(); // user the OS language, or falls back to English
 var g = SG(); // use the default
-
 ```
 ## Static language setting in CLI utility
 ```js

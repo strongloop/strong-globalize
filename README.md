@@ -8,10 +8,10 @@ StrongLoop Globalize CLI and API
 * [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
-	* [g.setDefaultLanguage](#gsetdefaultlanguagelang)
-	* [g.setRootDir](#gsetrootdirrootpath)
-	* [g.setHtmlRegex](#gsethtmlregexregex-regexhead-regextail)
-	* [g.setPersistentLogging](#gsetpersistentlogginglogcallback-disableconsole)
+	* [SG.SetDefaultLanguage](#sgsetdefaultlanguagelang)
+	* [SG.SetRootDir](#sgsetrootdirrootpath)
+	* [SG.SetHtmlRegex](#sgsethtmlregexregex-regexhead-regextail)
+	* [SG.SetPersistentLogging](#sgsetpersistentlogginglogcallback-disableconsole)
 * [API - Formatters](#api---formatters)
 	* [g.formatMessage](#gformatmessagepath-variables)
 	* [g.t](#gtpath-variables)
@@ -64,40 +64,42 @@ StrongLoop Globalize CLI and API
 
 # Architecture
 
-strong-globalize is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
+`strong-globalize` is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
 
-strong-globalize is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package built on top of jquery/globalize.  strong-globalize provides these features:
+`strong-globalize` is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package built on top of jquery/globalize.  `strong-globalize` provides these features:
 - [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
 - [automatic extraction](#cli---extract-lint-and-translate) of the strings from JS code and [HTML templates](#globalize-html-templates) and auto-creation of resource JSON,
 - [machine translation](#cli---extract-lint-and-translate) of the resource JSON using [IBM Globalization Pipeline on Bluemix](#liblocal-credentialsjson),
 - in [Node.js runtime](#api---set-system-defaults), loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
 - [function hook for logging](#persistent-logging) localized user messages so that the client can log what is shown to the end user along with the original English message.
 
-As shown in the [Demo section](#demo) of this README(bottom of the page), the globalized code using strong-globalize is simpler and easier to read than the original code written without strong-globalize; and more importantly, you get all the features at no extra effort.
+As shown in the [Demo section](#demo), the code written with `strong-globalize` is simpler, better structured, and easier to read than the original code written as an English-only product; and more importantly, you get all the features at no extra effort.
+
+With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
 - supported Node.js versions: 0.10, 0.12, 4.0, 5.0
 - supported cldr version: 28.0.3
 - out-of-box supported languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
-You can customize (add/remove) any languages supported by the Unicode CLDR in your strong-globalize installation.
+You can customize (add/remove) any languages supported by the Unicode CLDR in your `strong-globalize` installation.
 
 # Language Config Customization
 
-Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR standas for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of strong-globalize in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR v28.  Among them, there are 40+ variations of French and 100+ variations of English.
+Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR v28.  Among them, there are 40+ variations of French and 100+ variations of English.
 
-strong-globalize provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your strong-globalize installation.  For example, the out-of-box gz file for the 11 languages is 134KB.  See README of the utility under util directory.
+`strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 134KB.  See README of the utility under util directory.
 
-In runtime, string-globalize dynamically loads to memory just the CLDR data required for the specific language by setDefaultLanguage().  First, it examines all the gz files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
+In runtime, `string-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
 
 ## Message String Resource
 
-English string resource files must exsit under `intl/en` directory.  Translated string resource files are stored on each language sub-directory under `intl`  If a message is not found in the translated resource files, the correspoinding English message is displayed.
+English string resource files must exist under `intl/en` directory.  Translated string resource files are stored on each language sub-directory under `intl`  If a message is not found in the translated resource files, the corresponding English message is displayed.
 
-CLDR data has no dependencies on string resources.  For example, you can load 100 langauge CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for langage xx under `intl/xx` the CLDR data for `xx` must be loaded.
+CLDR data has no dependencies on string resources.  For example, you can load 100 language CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for language xx under `intl/xx` the CLDR data for `xx` must be loaded.
 
 # Runtime Language Switching
 
-There are two primary types of Node.js packages `strong-globalize` is targetting:
+There are two primary types of Node.js packages `strong-globalize` is targeting:
 - Command line interface utility (short life; static language setting) such as [`slt-globalize` itself](#cli---extract-lint-and-translate),
 - Web applications such as LoopBack apps (long life; dynamic language switching to respect browser language set in HTTP `Accept-Language` header)
 
@@ -105,7 +107,7 @@ There are two primary types of Node.js packages `strong-globalize` is targetting
 ```js
 	var SG = require('strong-globalize');
 	SG.SetRootDir(__dirname);
-	SG.SetDefaultLanguage(); // user the OS language, or fallback to English
+	SG.SetDefaultLanguage(); // user the OS language, or falls back to English
 	var g = SG(); // use the default
 
 ```
@@ -119,7 +121,7 @@ There are two primary types of Node.js packages `strong-globalize` is targetting
 ```
 ## Dynamic language switching in Web application
 
-Setting language to `strong-globalize` instance is pretty cheap.  CLDR data set and translatged messages are pre-loaded at the initial use.
+Setting language to `strong-globalize` instance is pretty cheap.  CLDR data set and translated messages are preloaded at the initial use.
 ```js
 	// the common part comes here.
 
@@ -163,7 +165,7 @@ v2.0:
 
 ## `npm install -g strong-globalize`
 
-You can safely ignore these warnings because strong-globalize statically bundles cldr-data for production use.
+You can safely ignore these warnings because `strong-globalize` statically bundles cldr-data for production use.
 ```js
 npm WARN EPEERINVALID globalize@1.1.1 requires a peer of cldr-data@>=25 but none was installed.
 npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none was installed.
@@ -211,10 +213,10 @@ For example,
 ### `var SG = require('strong-globalize);`
 
 ## `SG.SetRootDir(rootPath)`
-- `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.  setRootDir must be called once and only once.  If called multiple times with different root directories, runtime message resuorces will be loaded in different memory spaces, which will result in 'message not found' errors.  In that case, `strong-globalize` falls back to English.
+- `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.  setRootDir must be called once and only once.  If called multiple times with different root directories, runtime message resources will be loaded in different memory spaces, which will result in 'message not found' errors.  In that case, `strong-globalize` falls back to English.
 
 ## `SG.SetDefaultLanguage(lang)`
-- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, strong-globalize tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times. 
+- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times. 
 
 ## `SG.SetHtmlRegex(regex, regexHead, regexTail)`
 - `regex` : {`RegExp`} to extract the whole string out of the HTML text
@@ -241,21 +243,21 @@ alias of `formatMessage`
 ## `g.formatCurrency(value, currencySymbol, options)`
 - `value {number}` integer or float
 - `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+- `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
 
 ## `g.c(value, currencySymbol, options)`
 alias of `formatCurrency`
 
 ## `g.formatDate(value, options)`
 - `value {Date object}` Date
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+- `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
 
 ## `g.d(value, options)`
 alias of `formatDate`
 
 ## `g.formatNumber(value, options)`
 - `value {number}` integer or float
-- `options {object}` (optional) Strongly recommended to set NO options and let strong-globalize use the StrongLoop default for consistency across StrongLoop products.
+- `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
 
 ## `g.n(value, options)`
 alias of `formatNumber`
@@ -424,7 +426,7 @@ They must be uniquely named because they are used as-is in runtime message datab
 
 The rule of thumb is `strong-globalize` extracts messages from JS and HTML template files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.
 
-Note that strong-globalize supports multiple *.txt and multiple *.json files under intl/en.
+Note that `strong-globalize` supports multiple *.txt and multiple *.json files under intl/*/.
 
 ## manually add message strings
 `slt-globalize -e` command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
@@ -583,7 +585,7 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 
 # Persistent Logging
 
-strong-globalize provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
+`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
 
 ## `SG.SetPersistentLogging(logCallback, disableConsole)`
 `logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
@@ -665,4 +667,4 @@ Client:
 
 Note:
 `w.info(helloMessage)` directly calls the winston API `info` and write `helpMessage` to the log file.
-`g.info(gsub.getHelpText())` writes the localized help text to both console and the log file with `info` level.  The other strong-globalize API calls, i.e., `g.log` and `g.owrite` also write the localized message to both console and the log file with `info` level.
+`g.info(gsub.getHelpText())` writes the localized help text to both console and the log file with `info` level.  The other `strong-globalize` API calls, i.e., `g.log` and `g.owrite` also write the localized message to both console and the log file with `info` level.

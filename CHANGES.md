@@ -1,3 +1,9 @@
+2016-02-17, Version 2.0.2
+=========================
+
+ * Remove extra indent from js code in README (Tetsuo Seto)
+
+
 2016-02-17, Version 2.0.1
 =========================
 

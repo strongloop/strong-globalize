@@ -1,4 +1,10 @@
-2016-02-17, Version 2.0.0
+2016-02-17, Version 2.0.1
+=========================
+
+ * Fix typos and clean up README (Tetsuo Seto)
+
+
+2016-02-16, Version 2.0.0
 =========================
 
  * Support multiple StrongGlobalize instances (Tetsuo Seto)

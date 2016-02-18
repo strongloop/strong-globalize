@@ -611,7 +611,7 @@ SG.SetDefaultLanguage();
 initWinston(w);
 // let strong-globalize to show it to the user
 var disableConsole = false;
-g.setPersistentLogging(w.log, disableConsole);
+SG.SetPersistentLogging(w.log, disableConsole);
 
 function initWinston(w) {
   var options = {

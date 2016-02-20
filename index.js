@@ -6,10 +6,12 @@
 // Multi-instance strong-globalize
 var globalize = require('./lib/globalize');
 var helper = require('./lib/helper');
+var path = require('path');
+var translate = require('./lib/translate');
 var xtend = require('xtend');
 
 exports = module.exports = StrongGlobalize;
-exports.SetRootDir = globalize.setRootDir;
+exports.SetRootDir = SetRootDir;
 exports.SetDefaultLanguage = globalize.setDefaultLanguage;
 exports.SetPersistentLogging = globalize.setPersistentLogging;
 
@@ -22,6 +24,17 @@ function StrongGlobalize(options) {
     language: global.STRONGLOOP_GLB.DEFAULT_LANG,
   };
   this._options = options ? xtend(defaults, options) : defaults;
+}
+
+function SetRootDir(rootDir) {
+  globalize.setRootDir(rootDir);
+  if (global.STRONGLOOP_GLB && path.resolve(rootDir) !==
+    path.resolve(global.STRONGLOOP_GLB.ROOT_DIR)) {
+    var langs = Object.keys(global.STRONGLOOP_GLB.bundles);
+    langs.forEach(function(lang) {
+      translate.loadMsgFromFile(lang, rootDir);
+    });
+  }
 }
 
 StrongGlobalize.prototype.setLanguage = function(lang) {

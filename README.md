@@ -70,7 +70,7 @@ StrongLoop Globalize CLI and API
 - [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
 - [automatic extraction](#cli---extract-lint-and-translate) of the strings from JS code and [HTML templates](#globalize-html-templates) and auto-creation of resource JSON,
 - [machine translation](#cli---extract-lint-and-translate) of the resource JSON using [IBM Globalization Pipeline on Bluemix](#liblocal-credentialsjson),
-- in [Node.js runtime](#api---set-system-defaults), loads not only the CLDR data sets but the localized string resources of your module as well as all the dependent modules.
+- in [Node.js runtime](#api---set-system-defaults), loads not only the CLDR data sets but the localized string resources of your module as well as all the statically and dynamically dependent modules.
 - [function hook for logging](#persistent-logging) localized user messages so that the client can log what is shown to the end user along with the original English message.
 
 As shown in the [Demo section](#demo), the code written with `strong-globalize` is simpler, better structured, and easier to read than the original code written as an English-only product; and more importantly, you get all the features at no extra effort.
@@ -109,7 +109,6 @@ var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage(); // user the OS language, or falls back to English
 var g = SG(); // use the default
-
 ```
 ## Static language setting in CLI utility
 ```js
@@ -204,10 +203,10 @@ Copy from the service dashboard and paste something like the following into lib/
 For example,
 
 ```js
-BLUEMIX_URL="https://gp-beta-rest.ng.bluemix.net/translate/rest" &&
-BLUEMIX_USER=6e41ceac9f14b493faxxxxxxxxxxxxxx &&
-BLUEMIX_PASSWORD=vLbqlkjPhJiwJlkjwou8woO82hk2huku &&
-BLUEMIX_INSTANCE=6888888888888e6d2f458b1b4b5fd010 &&
+BLUEMIX_URL="https://gp-beta-rest.ng.bluemix.net/translate/rest"
+BLUEMIX_USER=6e41ceac9f14b493faxxxxxxxxxxxxxx
+BLUEMIX_PASSWORD=vLbqlkjPhJiwJlkjwou8woO82hk2huku
+BLUEMIX_INSTANCE=6888888888888e6d2f458b1b4b5fd010
 slt-globalize -t
 ```
 
@@ -217,7 +216,7 @@ slt-globalize -t
 ### `var SG = require('strong-globalize);`
 
 ## `SG.SetRootDir(rootPath)`
-- `rootPath` : {`string`} App's root directory full path.  All resources under this directory including dependent modules are loaded in runtime.  setRootDir must be called once and only once.  If called multiple times with different root directories, runtime message resources will be loaded in different memory spaces, which will result in 'message not found' errors.  In that case, `strong-globalize` falls back to English.
+- `rootPath` : {`string`} App's root directory full path.  Every client must set its root directory where `package.json` and `intl` directory exist.  All resources under this directory including dependent modules are loaded in runtime.  `SetRootDir` must be called once and only once.
 
 ## `SG.SetDefaultLanguage(lang)`
 - `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times. 
@@ -347,8 +346,6 @@ passes the result message from `formatMessage` to `console.log`, and log to file
 
 # Usage Examples
 
-`var g = require('strong-globalize');`
-
 ## use g.f for util.format
 
 before:
@@ -437,7 +434,7 @@ Note that `strong-globalize` supports multiple *.txt and multiple *.json files u
 
 # Demo
 
-To quickly switch the locale, change the OS's system locale or set STRONGLOOP_GLOBALIZE_APP_LANGUAGE environment variable to one of the supported languages such as `ja` for Japanese, `zh-Hans` for Simplified Chinese, or `de` for German.
+To quickly switch the locale, change the OS's system locale or set `STRONGLOOP_GLOBALIZE_APP_LANGUAGE` environment variable to one of the supported languages such as `ja` for Japanese or `de` for German.
 
 For example, on OSX:
 
@@ -468,13 +465,17 @@ function getHelpText() {
 }
 ```
 after:
-- `var g = require('strong-globalize')();`
+- `var SG = require('strong-globalize');`
+- `SG.SetRoonDir( ... );`
+- `var g = SG();`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-var g = require('strong-globalize')();
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+var g = SG();
 
 exports.getHelpText = getHelpText;
 exports.getUserName = getUserName;
@@ -520,6 +521,8 @@ console.log(gsub.getHelpText());
 ```
 after:
 - `var SG = require('strong-globalize');`
+- `SG.SetRoonDir( ... );`
+- `SG.SetDefaultLanguage( ... );`
 - `var g = SG();`
 - replace `util` with `g`
 - replace `console` with `g`
@@ -604,15 +607,14 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 Client:
 ```js
 var SG = require('strong-globalize');
-var g = SG(); // strong-globalize handle
-var w = require('winston'); // winston handle
-
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
+var g = SG(); // strong-globalize handle
+var w = require('winston'); // winston handle
 initWinston(w);
 // let strong-globalize to show it to the user
 var disableConsole = false;
-g.setPersistentLogging(w.log, disableConsole);
+SG.SetPersistentLogging(w.log, disableConsole);
 
 function initWinston(w) {
   var options = {

@@ -1,3 +1,21 @@
+2016-02-21, Version 2.1.0
+=========================
+
+ * Update README (Setogit)
+
+ * Generalize SetRootDir for indirect dependencies to load messages (Setogit)
+
+ * Pass language to persistent logging callback (Setogit)
+
+ * Fix a bug in sample code in README (Setogit)
+
+ * Make extract error msg directly actionable (Tetsuo Seto)
+
+ * Empty json shouldn't be created if no msgs are extracted (Tetsuo Seto)
+
+ * Remove extra space in README (Setogit)
+
+
 2016-02-17, Version 2.0.2
 =========================
 

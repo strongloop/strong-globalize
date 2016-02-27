@@ -2,6 +2,8 @@
 
 StrongLoop Globalize CLI and API
 
+[![npm version](https://badge.fury.io/js/strong-globalize.svg)](https://badge.fury.io/js/strong-globalize)
+
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
 * [Runtime Language Switching](#runtime-language-switching)

@@ -27,3 +27,4 @@ build/Release
 node_modules
 lib/local-credentials.json
 .nyc_output
+!test/node_modules

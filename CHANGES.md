@@ -1,3 +1,17 @@
+2016-03-22, Version 2.2.0
+=========================
+
+ * Support npm v3 dependency resolution (Setogit)
+
+ * Add npm package badge (Setogit)
+
+ * Record version info of globalize packages (Setogit)
+
+ * Rreturn null if package.json does not exist (Tetsuo Seto)
+
+ * Minor fix up for language property of persistent logging (Setogit)
+
+
 2016-02-21, Version 2.1.0
 =========================
 

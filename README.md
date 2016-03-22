@@ -2,6 +2,8 @@
 
 StrongLoop Globalize CLI and API
 
+[![npm version](https://badge.fury.io/js/strong-globalize.svg)](https://badge.fury.io/js/strong-globalize)
+
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
 * [Runtime Language Switching](#runtime-language-switching)
@@ -107,7 +109,7 @@ There are two primary types of Node.js packages `strong-globalize` is targeting:
 ```js
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage(); // user the OS language, or falls back to English
+SG.SetDefaultLanguage(); // uses the OS language, or falls back to English
 var g = SG(); // use the default
 ```
 ## Static language setting in CLI utility
@@ -596,6 +598,7 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 
 ```js
 {
+	language: 'ja',
 	message: 'ホスト:localhostのポート:8123へ送っています。',
 	orig: 'Sending to host: %s, port: %d ...',
 	vars: ['localhost', 8123],

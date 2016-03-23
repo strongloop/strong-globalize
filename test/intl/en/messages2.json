@@ -1,0 +1,15 @@
+{
+    "9e785aa70c7e0ede58fbce69115b4f4c": "This is an error.",
+    "79fd1d0354104e38041286ef4bc85bd3": "left half of t and right half of t",
+    "31001bc2acb0122a877248e11d4ab857": "formatMessage",
+    "cb5e100e5a9a3e7f6d1fd97512215282": "error",
+    "dc1d71bbb5c4d2a5e936db79ef10c19f": "log",
+    "caf9b6b99962bf5c2264824231d7a40c": "info",
+    "1ea4c3ab05ee0c6d4de30740443769cb": "warn",
+    "9cb637d03543c9638b58fd1a675ce060": "ewrite",
+    "ecf8a82e85fbcbe07306270f9c1b08d1": "owrite",
+    "efb2a684e4afb7d55e6147fbe5a332ee": "write",
+    "53b9a0a12408f96ac1a898dd18d469e2": "format of %s and %s",
+    "3ba58e5f95dd0f0aabc20a8559fcef3b": "format of {0} and {1}",
+    "04d00d2496bdcf2d3641fcbac2788aba": "format of {zero} and {one}"
+}

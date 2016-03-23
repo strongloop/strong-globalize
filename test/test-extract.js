@@ -97,13 +97,13 @@ function subTest(t) {
   ];
   t.equal(targetMsgs.join(''), extract.scanAst(content).join(''),
     'all literals extracted from JS.');
-  var msgs = {};
-  targetMsgs.forEach(function(msg) {
-    msgs[md5(msg)] = msg;
-  });
-  var msgFilePath = path.join(
-    helper.intlDir(helper.ENGLISH), 'messages2.json');
-  fs.writeFileSync(msgFilePath, JSON.stringify(msgs, null, 4) + '\n');
+  // var msgs = {};
+  // targetMsgs.forEach(function(msg) {
+  //   msgs[md5(msg)] = msg;
+  // });
+  // var msgFilePath = path.join(
+  //   helper.intlDir(helper.ENGLISH), 'messages2.json');
+  // fs.writeFileSync(msgFilePath, JSON.stringify(msgs, null, 4) + '\n');
   var enBundlePre = global.STRONGLOOP_GLB.bundles[helper.ENGLISH];
   t.comment(JSON.stringify(enBundlePre, null, 2));
   g.setDefaultLanguage(helper.ENGLISH);
@@ -149,35 +149,33 @@ function subTest(t) {
   t.equal(g.format(targetMsgs[9]), targetMsgs[9],
     'read format right on \'' + targetMsgs[9] + '\'');
 
-  if (process.env.VERBOSE_TESTING) {
-    var util = require('util');
-    var targetMsg = util.format(targetMsgs[10], 'zero', 'one');
-    var resultMsg = null;
-    resultMsg = g.t(targetMsgs[11], ['zero', 'one']);
-    t.comment(resultMsg);
-    t.equal(resultMsg, targetMsg,
-      'filled t in array \'' + targetMsg + '\'');
-    resultMsg = g.t(targetMsgs[11], {0: 'zero', 1: 'one'});
-    t.comment(resultMsg);
-    t.equal(resultMsg, targetMsg,
-      'filled t in object 0, 1 \'' + targetMsg + '\'');
-    resultMsg = g.t(targetMsgs[12], {zero: 'zero', one: 'one'});
-    t.comment(resultMsg);
-    t.equal(resultMsg, targetMsg,
-      'filled t in object zero, one \'' + targetMsg + '\'');
-    resultMsg = g.f(targetMsgs[11], ['zero', 'one']);
-    t.comment(resultMsg);
-    t.equal(resultMsg, targetMsg,
-      'filled format in array \'' + targetMsg + '\'');
-    resultMsg = g.format(targetMsgs[11], {0: 'zero', 1: 'one'});
-    t.comment(resultMsg);
-    t.equal(resultMsg, targetMsg,
-      'filled format in object 0, 1 \'' + targetMsg + '\'');
-    resultMsg = g.format(targetMsgs[12], {zero: 'zero', one: 'one'});
-    t.comment(resultMsg);
-    t.equal(resultMsg, targetMsg,
-      'filled format in object zero, one \'' + targetMsg + '\'');
-  }
+  var util = require('util');
+  var targetMsg = util.format(targetMsgs[10], 'zero', 'one');
+  var resultMsg = null;
+  resultMsg = g.t(targetMsgs[11], ['zero', 'one']);
+  t.comment(resultMsg);
+  t.equal(resultMsg, targetMsg,
+    'filled t in array \'' + targetMsg + '\'');
+  resultMsg = g.t(targetMsgs[11], {0: 'zero', 1: 'one'});
+  t.comment(resultMsg);
+  t.equal(resultMsg, targetMsg,
+    'filled t in object 0, 1 \'' + targetMsg + '\'');
+  resultMsg = g.t(targetMsgs[12], {zero: 'zero', one: 'one'});
+  t.comment(resultMsg);
+  t.equal(resultMsg, targetMsg,
+    'filled t in object zero, one \'' + targetMsg + '\'');
+  resultMsg = g.f(targetMsgs[11], ['zero', 'one']);
+  t.comment(resultMsg);
+  t.equal(resultMsg, targetMsg,
+    'filled format in array \'' + targetMsg + '\'');
+  resultMsg = g.format(targetMsgs[11], {0: 'zero', 1: 'one'});
+  t.comment(resultMsg);
+  t.equal(resultMsg, targetMsg,
+    'filled format in object 0, 1 \'' + targetMsg + '\'');
+  resultMsg = g.format(targetMsgs[12], {zero: 'zero', one: 'one'});
+  t.comment(resultMsg);
+  t.equal(resultMsg, targetMsg,
+    'filled format in object zero, one \'' + targetMsg + '\'');
 
   t.end();
 }

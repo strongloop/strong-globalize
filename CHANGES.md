@@ -1,4 +1,10 @@
-2016-03-23, Version 2.2.1
+2016-03-23, Version 2.2.2
+=========================
+
+ * Add missing deep dependency (Setogit)
+
+
+2016-03-22, Version 2.2.1
 =========================
 
  * Add test to load msges from dependencies (Setogit)

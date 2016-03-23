@@ -1,4 +1,10 @@
-2016-03-22, Version 2.2.0
+2016-03-23, Version 2.2.1
+=========================
+
+ * Add test to load msges from dependencies (Setogit)
+
+
+2016-03-21, Version 2.2.0
 =========================
 
  * Support npm v3 dependency resolution (Setogit)

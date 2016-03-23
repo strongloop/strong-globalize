@@ -72,6 +72,9 @@ test('load messages from dependencies', function(t) {
     msgFound.push(msg.message);
   }
 
+  var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
+  'ko', 'pt', 'zh-Hans', 'zh-Hant'];
+
   // use the secondary module as the root
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
@@ -84,7 +87,7 @@ test('load messages from dependencies', function(t) {
 
   var secondary = require('secondary');
   helper.enumerateLanguageSync(function(lang) {
-    if (lang === 'ru') return; // test data unavailable
+    if (wellKnownLangs.indexOf(lang) < 0) return; // test data unavailable
     msgFound = [];
     t.comment('Language: ' + lang);
     SG.SetDefaultLanguage(lang);

@@ -93,7 +93,6 @@ test('load messages from dependencies', function(t) {
       'all user messages for ' + lang + ' logged');
     if (msgFound.length === msgWanted[lang].length) {
       for (var i = 0; i < msgWanted[lang].length; i++) {
-        if (i === 2 && !process.env.RUN_FOURTH_CHECK) continue;
         t.equal(msgFound[i], msgWanted[lang][i],
           lang  + ' message ' + i.toString() + ' is correct.');
       }

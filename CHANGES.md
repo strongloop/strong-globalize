@@ -1,4 +1,14 @@
-2016-03-23, Version 2.2.2
+2016-03-26, Version 2.2.3
+=========================
+
+ * Remove backslash escape from quotation marks in MT results (Setogit)
+
+ * Disable dependency scan in loadMsgFromFile by default (perf) (Setogit)
+
+ * Add well known lang check to msg loading test (Setogit)
+
+
+2016-03-22, Version 2.2.2
 =========================
 
  * Add missing deep dependency (Setogit)

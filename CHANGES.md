@@ -1,4 +1,10 @@
-2016-03-26, Version 2.2.3
+2016-04-02, Version 2.2.4
+=========================
+
+ * Add test to load msges in child process and fixed the argument order of logFn (Setogit)
+
+
+2016-03-25, Version 2.2.3
 =========================
 
  * Remove backslash escape from quotation marks in MT results (Setogit)

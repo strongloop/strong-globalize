@@ -107,47 +107,18 @@ function subTest(t) {
   var enBundlePre = global.STRONGLOOP_GLB.bundles[helper.ENGLISH];
   t.comment(JSON.stringify(enBundlePre, null, 2));
   g.setDefaultLanguage(helper.ENGLISH);
-  t.equal(g.t(targetMsgs[0]), targetMsgs[0],
-    'read t right on \'' + targetMsgs[0] + '\'');
-  t.equal(g.t(targetMsgs[1]), targetMsgs[1],
-    'read t right on \'' + targetMsgs[1] + '\'');
-  t.equal(g.t(targetMsgs[2]), targetMsgs[2],
-    'read t right on \'' + targetMsgs[2] + '\'');
-  t.equal(g.t(targetMsgs[3]), targetMsgs[3],
-    'read t right on \'' + targetMsgs[3] + '\'');
-  t.equal(g.t(targetMsgs[4]), targetMsgs[4],
-    'read t right on \'' + targetMsgs[4] + '\'');
-  t.equal(g.t(targetMsgs[5]), targetMsgs[5],
-    'read t right on \'' + targetMsgs[5] + '\'');
-  t.equal(g.t(targetMsgs[6]), targetMsgs[6],
-    'read t right on \'' + targetMsgs[6] + '\'');
-  t.equal(g.t(targetMsgs[7]), targetMsgs[7],
-    'read t right on \'' + targetMsgs[7] + '\'');
-  t.equal(g.t(targetMsgs[8]), targetMsgs[8],
-    'read t right on \'' + targetMsgs[8] + '\'');
-  t.equal(g.t(targetMsgs[9]), targetMsgs[9],
-    'read t right on \'' + targetMsgs[9] + '\'');
 
-  t.equal(g.format(targetMsgs[0]), targetMsgs[0],
-    'read format right on \'' + targetMsgs[0] + '\'');
-  t.equal(g.format(targetMsgs[1]), targetMsgs[1],
-    'read format right on \'' + targetMsgs[1] + '\'');
-  t.equal(g.format(targetMsgs[2]), targetMsgs[2],
-    'read format right on \'' + targetMsgs[2] + '\'');
-  t.equal(g.format(targetMsgs[3]), targetMsgs[3],
-    'read format right on \'' + targetMsgs[3] + '\'');
-  t.equal(g.format(targetMsgs[4]), targetMsgs[4],
-    'read format right on \'' + targetMsgs[4] + '\'');
-  t.equal(g.format(targetMsgs[5]), targetMsgs[5],
-    'read format right on \'' + targetMsgs[5] + '\'');
-  t.equal(g.format(targetMsgs[6]), targetMsgs[6],
-    'read format right on \'' + targetMsgs[6] + '\'');
-  t.equal(g.format(targetMsgs[7]), targetMsgs[7],
-    'read format right on \'' + targetMsgs[7] + '\'');
-  t.equal(g.format(targetMsgs[8]), targetMsgs[8],
-    'read format right on \'' + targetMsgs[8] + '\'');
-  t.equal(g.format(targetMsgs[9]), targetMsgs[9],
-    'read format right on \'' + targetMsgs[9] + '\'');
+  targetMsgs.forEach(function(tgtMsg, ix) {
+    if (ix > 9) return;
+    t.equal(g.t(tgtMsg), tgtMsg,
+      'read t right on \'' + tgtMsg + '\'');
+  });
+
+  targetMsgs.forEach(function(tgtMsg, ix) {
+    if (ix > 9) return;
+    t.equal(g.format(tgtMsg), tgtMsg,
+      'read format right on \'' + tgtMsg + '\'');
+  });
 
   var util = require('util');
   var targetMsg = util.format(targetMsgs[10], 'zero', 'one');

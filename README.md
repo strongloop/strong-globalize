@@ -429,10 +429,10 @@ They must be uniquely named because they are used as-is in runtime message datab
 
 The rule of thumb is `strong-globalize` extracts messages from JS and HTML template files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.
 
-Note that `strong-globalize` supports multiple *.txt and multiple *.json files under intl/*/.
+Note that `strong-globalize` supports multiple txt and multiple json files under `intl/--/` directory.
 
 ## manually add message strings
-`slt-globalize -e` command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
+`slt-globalize -e` command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key that begins with `msg` such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
 
 # Demo
 

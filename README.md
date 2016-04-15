@@ -537,10 +537,10 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var SG = require('strong-globalize');
-var gsub = require('gsub');
-
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
+var gsub = require('gsub');
+
 var g = SG();
 
 app.get('/', function(req, res) {
@@ -639,11 +639,11 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var SG = require('strong-globalize'); 
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage();
 var gsub = require('gsub');
 var w = require('winston'); // winston handle
 
-SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
 var g = SG(); // strong-globalize handle
 initWinston(w); // see the Client initialization
 var disableConsole = false;

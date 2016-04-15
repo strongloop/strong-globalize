@@ -6,6 +6,8 @@ var md5 = require('md5');
 var path = require('path');
 var test = require('tap').test;
 
+var testFileName = 'test-extract.js';
+
 var content_singleton_head = 'var g = require("strong-globalize");\n';
 var content_multiple_head = 'var g = require("strong-globalize")();\n';
 var content_singleton_body = 'function test() {\n' +
@@ -95,8 +97,17 @@ function subTest(t) {
     'format of {0} and {1}',
     'format of {zero} and {one}',
   ];
-  t.equal(targetMsgs.join(''), extract.scanAst(content).join(''),
+  var extracted = [];
+  var extractedLoc = [];
+  var targetLoc = require('./test-extract.json');
+  extract.scanAst(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+    extractedLoc.push(m.loc);
+  });
+  t.equal(targetMsgs.join(''), extracted.join(''),
     'all literals extracted from JS.');
+  t.equal(targetLoc.join(''), extractedLoc.join(''),
+    'all locs extracted from JS.');
   // var msgs = {};
   // targetMsgs.forEach(function(msg) {
   //   msgs[md5(msg)] = msg;
@@ -224,7 +235,10 @@ test('extract from HTML', function(t) {
     'such as {{userSettings.timeout}}ms which will be ' +
     'rendered as something like 400ms.',
   ];
-  var extracted = extract.scanHtml(content);
+  var extracted = [];
+  extract.scanHtml(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+  });
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
   t.equal(targetMsg.join(''), extracted.join(''),
@@ -242,7 +256,10 @@ test('extract from CDATA', function(t) {
   var targetMsg = [
     'Text in cdata',
   ];
-  var extracted = extract.scanHtml(content);
+  var extracted = [];
+  extract.scanHtml(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+  });
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
   t.assert(targetMsg.join('') === extracted.join(''),
@@ -265,7 +282,10 @@ test('custom extraction regex', function(t) {
       /{{LOCALIZE:/m,
       /}}/m
   );
-  var extracted = extract.scanHtml(content);
+  var extracted = [];
+  extract.scanHtml(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+  });
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
   t.equal(targetMsg.join(''), extracted.join(''),

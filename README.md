@@ -6,7 +6,8 @@ StrongLoop Globalize CLI and API
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
-* [Runtime Language Switching](#runtime-language-switching)
+* [Runtime Language Switching](#runtime-localization-switching)
+* [Pseudo Localization Support](#pseudo-localization-support)
 * [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
@@ -158,6 +159,52 @@ var g = SG({language: 'en'});
 g.log('Welcome!');
 ```
 
+# Pseudo Localization Support
+
+`strong-globalize` has a feature similar to traditional `pseudo localization.`
+
+First, Machine Translation with `slt-globalize -t` can be used like the traditional `pseudo localization.`  See [the CLI - extract, lint, and translate section](#cli---extract-lint-and-translate) for details of `slt-globalize -t` command.
+
+Second, in runtime, set the environment variable `STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE` and `strong-globalize` adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.
+
+Third, `string-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` which shows the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates `intl/en/messages.json:
+
+```
+{
+  "21610b057179c7177036c1719f8922cc": "user: {0}"
+}
+```
+and, intl/zz/messages.json:
+```
+{
+  "21610b057179c7177036c1719f8922cc": [
+    {
+      "fileName": "/Users/user/gmain/index.js",
+      "start": {
+        "line": 15,
+        "column": 2
+      },
+      "end": {
+        "line": 15,
+        "column": 40
+      }
+    },
+    {
+      "fileName": "/Users/user/gsub/index.js",
+      "start": {
+        "line": 11,
+        "column": 17
+      },
+      "end": {
+        "line": 11,
+        "column": 55
+      }
+    }
+  ]
+}
+```
+
+
 # CLI - extract, lint, and translate
 
 ## `npm install -g strong-globalize`
@@ -221,7 +268,9 @@ slt-globalize -t
 - `rootPath` : {`string`} App's root directory full path.  Every client must set its root directory where `package.json` and `intl` directory exist.  All resources under this directory including dependent modules are loaded in runtime.  `SetRootDir` must be called once and only once.
 
 ## `SG.SetDefaultLanguage(lang)`
-- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times. 
+- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times.
+
+`strong-globalize` uses the language code in a form of a combination of ISO 639-1 language code and ISO 15924 script code such as `zh-Hans` for Chinese - Han (Simplified variant).
 
 ## `SG.SetHtmlRegex(regex, regexHead, regexTail)`
 - `regex` : {`RegExp`} to extract the whole string out of the HTML text
@@ -348,6 +397,10 @@ passes the result message from `formatMessage` to `console.log`, and log to file
 
 # Usage Examples
 
+Rule of thumb for auto-extraction with `slt-globalize -e`:
+- String literal defined as the first argument (`path`) of the APIs is extracted.
+- String literals concatenated with '+' in the first argument are extracted as a single message.
+
 ## use g.f for util.format
 
 before:
@@ -429,10 +482,10 @@ They must be uniquely named because they are used as-is in runtime message datab
 
 The rule of thumb is `strong-globalize` extracts messages from JS and HTML template files and creates the `messages.json` file (or appends extracted messages to the `messages.json` if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.
 
-Note that `strong-globalize` supports multiple *.txt and multiple *.json files under intl/*/.
+Note that `strong-globalize` supports multiple txt and multiple json files under `intl/--/` directory.
 
 ## manually add message strings
-`slt-globalize -e` command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key: msg* such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
+`slt-globalize -e` command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key that begins with `msg` such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.
 
 # Demo
 
@@ -537,10 +590,10 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var SG = require('strong-globalize');
-var gsub = require('gsub');
-
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
+var gsub = require('gsub');
+
 var g = SG();
 
 app.get('/', function(req, res) {
@@ -639,11 +692,11 @@ var express = require('express');
 var request = require('request');
 var app = express();
 var SG = require('strong-globalize'); 
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage();
 var gsub = require('gsub');
 var w = require('winston'); // winston handle
 
-SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
 var g = SG(); // strong-globalize handle
 initWinston(w); // see the Client initialization
 var disableConsole = false;

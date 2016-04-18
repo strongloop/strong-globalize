@@ -28,6 +28,7 @@ function StrongGlobalize(options) {
 
 function SetRootDir(rootDir) {
   globalize.setRootDir(rootDir);
+  if (!global.STRONGLOOP_GLB) globalize.setDefaultLanguage();
   if (global.STRONGLOOP_GLB && path.resolve(rootDir) !==
     path.resolve(global.STRONGLOOP_GLB.ROOT_DIR)) {
     var langs = Object.keys(global.STRONGLOOP_GLB.bundles);

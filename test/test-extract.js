@@ -6,6 +6,8 @@ var md5 = require('md5');
 var path = require('path');
 var test = require('tap').test;
 
+var testFileName = 'test-extract.js';
+
 var content_singleton_head = 'var g = require("strong-globalize");\n';
 var content_multiple_head = 'var g = require("strong-globalize")();\n';
 var content_singleton_body = 'function test() {\n' +
@@ -95,8 +97,17 @@ function subTest(t) {
     'format of {0} and {1}',
     'format of {zero} and {one}',
   ];
-  t.equal(targetMsgs.join(''), extract.scanAst(content).join(''),
+  var extracted = [];
+  var extractedLoc = [];
+  var targetLoc = require('./test-extract.json');
+  extract.scanAst(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+    extractedLoc.push(m.loc);
+  });
+  t.equal(targetMsgs.join(''), extracted.join(''),
     'all literals extracted from JS.');
+  t.equal(targetLoc.join(''), extractedLoc.join(''),
+    'all locs extracted from JS.');
   // var msgs = {};
   // targetMsgs.forEach(function(msg) {
   //   msgs[md5(msg)] = msg;
@@ -107,47 +118,18 @@ function subTest(t) {
   var enBundlePre = global.STRONGLOOP_GLB.bundles[helper.ENGLISH];
   t.comment(JSON.stringify(enBundlePre, null, 2));
   g.setDefaultLanguage(helper.ENGLISH);
-  t.equal(g.t(targetMsgs[0]), targetMsgs[0],
-    'read t right on \'' + targetMsgs[0] + '\'');
-  t.equal(g.t(targetMsgs[1]), targetMsgs[1],
-    'read t right on \'' + targetMsgs[1] + '\'');
-  t.equal(g.t(targetMsgs[2]), targetMsgs[2],
-    'read t right on \'' + targetMsgs[2] + '\'');
-  t.equal(g.t(targetMsgs[3]), targetMsgs[3],
-    'read t right on \'' + targetMsgs[3] + '\'');
-  t.equal(g.t(targetMsgs[4]), targetMsgs[4],
-    'read t right on \'' + targetMsgs[4] + '\'');
-  t.equal(g.t(targetMsgs[5]), targetMsgs[5],
-    'read t right on \'' + targetMsgs[5] + '\'');
-  t.equal(g.t(targetMsgs[6]), targetMsgs[6],
-    'read t right on \'' + targetMsgs[6] + '\'');
-  t.equal(g.t(targetMsgs[7]), targetMsgs[7],
-    'read t right on \'' + targetMsgs[7] + '\'');
-  t.equal(g.t(targetMsgs[8]), targetMsgs[8],
-    'read t right on \'' + targetMsgs[8] + '\'');
-  t.equal(g.t(targetMsgs[9]), targetMsgs[9],
-    'read t right on \'' + targetMsgs[9] + '\'');
 
-  t.equal(g.format(targetMsgs[0]), targetMsgs[0],
-    'read format right on \'' + targetMsgs[0] + '\'');
-  t.equal(g.format(targetMsgs[1]), targetMsgs[1],
-    'read format right on \'' + targetMsgs[1] + '\'');
-  t.equal(g.format(targetMsgs[2]), targetMsgs[2],
-    'read format right on \'' + targetMsgs[2] + '\'');
-  t.equal(g.format(targetMsgs[3]), targetMsgs[3],
-    'read format right on \'' + targetMsgs[3] + '\'');
-  t.equal(g.format(targetMsgs[4]), targetMsgs[4],
-    'read format right on \'' + targetMsgs[4] + '\'');
-  t.equal(g.format(targetMsgs[5]), targetMsgs[5],
-    'read format right on \'' + targetMsgs[5] + '\'');
-  t.equal(g.format(targetMsgs[6]), targetMsgs[6],
-    'read format right on \'' + targetMsgs[6] + '\'');
-  t.equal(g.format(targetMsgs[7]), targetMsgs[7],
-    'read format right on \'' + targetMsgs[7] + '\'');
-  t.equal(g.format(targetMsgs[8]), targetMsgs[8],
-    'read format right on \'' + targetMsgs[8] + '\'');
-  t.equal(g.format(targetMsgs[9]), targetMsgs[9],
-    'read format right on \'' + targetMsgs[9] + '\'');
+  targetMsgs.forEach(function(tgtMsg, ix) {
+    if (ix > 9) return;
+    t.equal(g.t(tgtMsg), tgtMsg,
+      'read t right on \'' + tgtMsg + '\'');
+  });
+
+  targetMsgs.forEach(function(tgtMsg, ix) {
+    if (ix > 9) return;
+    t.equal(g.format(tgtMsg), tgtMsg,
+      'read format right on \'' + tgtMsg + '\'');
+  });
 
   var util = require('util');
   var targetMsg = util.format(targetMsgs[10], 'zero', 'one');
@@ -253,7 +235,10 @@ test('extract from HTML', function(t) {
     'such as {{userSettings.timeout}}ms which will be ' +
     'rendered as something like 400ms.',
   ];
-  var extracted = extract.scanHtml(content);
+  var extracted = [];
+  extract.scanHtml(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+  });
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
   t.equal(targetMsg.join(''), extracted.join(''),
@@ -271,7 +256,10 @@ test('extract from CDATA', function(t) {
   var targetMsg = [
     'Text in cdata',
   ];
-  var extracted = extract.scanHtml(content);
+  var extracted = [];
+  extract.scanHtml(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+  });
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
   t.assert(targetMsg.join('') === extracted.join(''),
@@ -294,7 +282,10 @@ test('custom extraction regex', function(t) {
       /{{LOCALIZE:/m,
       /}}/m
   );
-  var extracted = extract.scanHtml(content);
+  var extracted = [];
+  extract.scanHtml(content, testFileName).forEach(function(m) {
+    extracted.push(m.msg);
+  });
   t.comment('Extracted: ' + extracted.toString());
   t.comment('   Target: ' + targetMsg);
   t.equal(targetMsg.join(''), extracted.join(''),

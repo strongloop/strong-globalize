@@ -1,4 +1,28 @@
-2016-04-02, Version 2.2.4
+2016-04-18, Version 2.2.5
+=========================
+
+ * Add notes for 'pseudo localization support' (Setogit)
+
+ * Pseudoloc: Get a string from env variable and add to every message (Setogit)
+
+ * Improve the sample code (Setogit)
+
+ * Support variations in 'globalize' html filter; Check max number of msges per file (Setogit)
+
+ * Cleanup for readability (Setogit)
+
+ * Adjust spacing in user messages (Setogit)
+
+ * Exit from infinite check loop in case GPB is out of sync (Setogit)
+
+ * Delete formatting conflict with Mark-Down styles (Setogit)
+
+ * Simplify the iteration in test-extract (Setogit)
+
+ * Make SetRootDir the single required entry point (Setogit)
+
+
+2016-04-01, Version 2.2.4
 =========================
 
  * Add test to load msges in child process and fixed the argument order of logFn (Setogit)

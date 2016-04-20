@@ -2,7 +2,6 @@ var loadMsgHelper = require('./load-msg-helper');
 var test = require('tap').test;
 
 var wellKnownLangs = loadMsgHelper.wellKnownLangs;
-var msgWanted = loadMsgHelper.msgWanted;
 var secondaryMgr = loadMsgHelper.secondaryMgr;
 
 test('secondary test NOT forking', function(t) {

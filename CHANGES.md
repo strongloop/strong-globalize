@@ -1,4 +1,10 @@
-2016-04-18, Version 2.2.5
+2016-04-20, Version 2.2.6
+=========================
+
+ * Record positions of all detected messages: hashed or not (Setogit)
+
+
+2016-04-17, Version 2.2.5
 =========================
 
  * Add notes for 'pseudo localization support' (Setogit)

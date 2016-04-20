@@ -8,19 +8,21 @@ var test = require('tap').test;
 
 var testFileName = 'test-extract.js';
 
-var content_singleton_head = 'var g = require("strong-globalize");\n';
-var content_multiple_head = 'var g = require("strong-globalize")();\n';
+var content_singleton_head = '// line 1\n//line 2\n//line 3\n' +
+  'var g = require("strong-globalize");\n';
+var content_multiple_head = '// line 1\n//line 2\n//line 3\n' +
+  'var g = require("strong-globalize")();\n';
 var content_singleton_body = 'function test() {\n' +
   '  return g.Error(\'This is an error.\');\n' +
   '}\n' +
   'var msg = g.t(\'left half of t\' + \' and right half of t\');\n' +
   'msg = g.formatMessage(\'formatMessage\');\n' +
-  'g.error(\'error\');\n' +
-  'g.log(\'log\');\n' +
-  'g.info(\'info\');\n' +
-  'g.warn(\'warn\');\n' +
+  'g.error    (\'error\');\n' +
+  'g.log  (\'log\');\n' +
+  'g.info    (\'info\');\n' +
+  'g.warn   (\'warn\');\n' +
   'g.ewrite(\'ewrite\');\n' +
-  'g.owrite(\'owrite\');\n' +
+  'g.owrite       (\'owrite\');\n' +
   'g.write(\'write\');\n' +
   'msg = g.format(\'format of %s and %s\', \'zero\', \'one\');\n' +
   'msg = g.format(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
@@ -28,41 +30,44 @@ var content_singleton_body = 'function test() {\n' +
   '  {zero: \'zero\', one: \'one\'});\n';
 
 test('extract from JS and fill-in with singleton head',
-  subTest.bind(content_singleton_head + content_singleton_body));
+  subTest.bind(content_singleton_head + content_singleton_body,
+  'singleton_head + singleton_body'));
 test('extract from JS and fill-in with multiple head',
-  subTest.bind(content_multiple_head + content_singleton_body));
+  subTest.bind(content_multiple_head + content_singleton_body,
+  'multiple_head + singleton_body'));
 
 var content_multiple = 'var SG = require("strong-globalize");\n' +
-  'var gQuick = require("strong-globalize")();\n' +
+  'var Q = require("strong-globalize")();\n' +
   'var g = SG();\n' +
-  'var gNew = new SG();\n' +
+  'var N = new SG();\n' +
   'function test() {\n' +
   '  return g.Error(\'This is an error.\');\n' +
   '}\n' +
-  'var msg = gQuick.t(\'left half of t\' + \' and right half of t\');\n' +
-  'msg = gNew.formatMessage(\'formatMessage\');\n' +
-  'g.error(\'error\');\n' +
-  'gQuick.log(\'log\');\n' +
-  'gNew.info(\'info\');\n' +
-  'g.warn(\'warn\');\n' +
-  'gQuick.ewrite(\'ewrite\');\n' +
-  'gNew.owrite(\'owrite\');\n' +
+  'var msg = Q.t(\'left half of t\' + \' and right half of t\');\n' +
+  'msg = N.formatMessage(\'formatMessage\');\n' +
+  'g.error    (\'error\');\n' +
+  'Q.log  (\'log\');\n' +
+  'N.info    (\'info\');\n' +
+  'g.warn   (\'warn\');\n' +
+  'Q.ewrite(\'ewrite\');\n' +
+  'N.owrite       (\'owrite\');\n' +
   'g.write(\'write\');\n' +
-  'msg = gQuick.format(\'format of %s and %s\', \'zero\', \'one\');\n' +
-  'msg = gNew.silly(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
+  'msg = Q.data  (\'format of %s and %s\', \'zero\', \'one\');\n' +
+  'msg = N.format(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
   'msg = g.f(\'format of {zero} and {one}\', \n' +
   '  {zero: \'zero\', one: \'one\'});\n';
 
 test('extract from JS and fill-in with multiple',
-  subTest.bind(content_multiple));
+  subTest.bind(content_multiple, 'content_multiple'));
 
-var content_multiple_new = 'var SG = require("strong-globalize");\n' +
+var content_multiple_new = '// line 1\n//line 2\n' +
+  'var SG = require("strong-globalize");\n' +
   'var g = new SG();\n' +
   'function test() {\n' +
   '  return g.input(\'This is an error.\');\n' +
   '}\n' +
   'var msg = g.m(\'left half of t\' + \' and right half of t\');\n' +
-  'msg = g.verbose(\'formatMessage\');\n' +
+  'msg = g.informational(\'formatMessage\');\n' +
   'g.emergency(\'error\');\n' +
   'g.alert(\'log\');\n' +
   'g.critical(\'info\');\n' +
@@ -70,15 +75,15 @@ var content_multiple_new = 'var SG = require("strong-globalize");\n' +
   'g.notice(\'ewrite\');\n' +
   'g.informational(\'owrite\');\n' +
   'g.debug(\'write\');\n' +
-  'msg = g.help(\'format of %s and %s\', \'zero\', \'one\');\n' +
-  'msg = g.data(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
+  'msg = g.help  (\'format of %s and %s\', \'zero\', \'one\');\n' +
+  'msg = g.notice(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
   'msg = g.prompt(\'format of {zero} and {one}\', \n' +
   '  {zero: \'zero\', one: \'one\'});\n';
 
-test('extract from JS and fill-in with multiple',
-  subTest.bind(content_multiple_new));
+test('extract from JS and fill-in with multiple new',
+  subTest.bind(content_multiple_new, 'content_multiple_new'));
 
-function subTest(t) {
+function subTest(mode, t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var content = this;
@@ -104,17 +109,10 @@ function subTest(t) {
     extracted.push(m.msg);
     extractedLoc.push(m.loc);
   });
-  t.equal(targetMsgs.join(''), extracted.join(''),
-    'all literals extracted from JS.');
-  t.equal(targetLoc.join(''), extractedLoc.join(''),
-    'all locs extracted from JS.');
-  // var msgs = {};
-  // targetMsgs.forEach(function(msg) {
-  //   msgs[md5(msg)] = msg;
-  // });
-  // var msgFilePath = path.join(
-  //   helper.intlDir(helper.ENGLISH), 'messages2.json');
-  // fs.writeFileSync(msgFilePath, JSON.stringify(msgs, null, 4) + '\n');
+  t.equal(extracted.join(''), targetMsgs.join(''),
+    mode + ': all literals extracted from JS.');
+  t.equal(JSON.stringify(extractedLoc), JSON.stringify(targetLoc),
+    mode + ': all locs extracted from JS.');
   var enBundlePre = global.STRONGLOOP_GLB.bundles[helper.ENGLISH];
   t.comment(JSON.stringify(enBundlePre, null, 2));
   g.setDefaultLanguage(helper.ENGLISH);

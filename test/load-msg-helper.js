@@ -1,9 +1,4 @@
 var SG = require('../index');
-var _ = require('lodash');
-var assert = require('assert');
-var helper = require('../lib/helper');
-var path = require('path');
-var test = require('tap').test;
 var f = require('util').format;
 
 var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
@@ -11,68 +6,67 @@ var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
 exports.wellKnownLangs = wellKnownLangs;
 
 var msgWanted = {
-  en:[
+  en: [
     'second - primary depth message',
     'third - primary depth message',
     'fourth - second depth message',
     'fifth - primary depth message',
   ],
-  de:[
+  de: [
     'Sekunde - Haupttiefennachricht',
     'Drittel - Haupttiefennachricht',
     'Viertel - zweite Tiefennachricht',
     'Fünftel - Haupttiefennachricht',
   ],
-  es:[
+  es: [
     'Segundo mensaje principal profundidad',
     'Tercer mensaje principal profundidad',
     'Cuarto segundo mensaje profundidad',
     'Quinto mensaje principal profundidad',
   ],
-  fr:[
+  fr: [
     'Deuxième message-profondeur primaire',
     'Message tiers-profondeur primaire',
     'Quatrième message-deuxième profondeur',
     'Message de cinquième primaire profondeur',
   ],
-  it:[
+  it: [
     'Secondo - messaggio di profondità principale',
     'Terzo - messaggio di profondità principale',
     'Quarto - secondo messaggio di profondità',
     'Quinto - messaggio di profondità principale',
   ],
-  ja:[
+  ja: [
     '秒- 主要な深さメッセージ',
     '3番目- 主要な深さメッセージ',
     '4番目- 第2の深さメッセージ',
     '5番目- 主要な深さメッセージ',
   ],
-  ko:[
+  ko: [
     '두 번째-주요한 깊이 메시지',
     '3 번째-주요한 깊이 메시지',
     '4 번째-두 번째 깊이 메시지',
     '5 번째-주요한 깊이 메시지',
   ],
-  pt:[
+  pt: [
     'Segunda mensagem primária de profundidade',
     'Terceira mensagem primária de profundidade',
     'Na quarta segundo a profundidade da mensagem',
     'Quinta mensagem primária de profundidade',
   ],
-  'zh-Hans':[
+  'zh-Hans': [
     '秒-最重要深度信息',
     '第三-最重要深度信息',
     '第四-第二深度信息',
     '第五-最重要深度信息',
   ],
-  'zh-Hant':[
+  'zh-Hant': [
     '秒-最重要深度訊息',
     '第三-最重要深度訊息',
     '第四-第二深度訊息',
     '第五-最重要深度訊息',
   ],
 };
-exports.msgWanted = msgWanted;
 
 function secondaryMgr(lang, t) {
   var msg = f('running language loading test: %s in process %d',
@@ -95,7 +89,7 @@ function secondaryMgr(lang, t) {
   if (msgFound.length === msgWanted[lang].length) {
     for (var i = 0; i < msgWanted[lang].length; i++) {
       t.equal(msgFound[i], msgWanted[lang][i],
-        lang  + ' message ' + i.toString() + ' is correct.');
+        lang + ' message ' + i.toString() + ' is correct.');
     }
   }
 }

@@ -1,9 +1,6 @@
 var g = require('../lib/globalize');
 var helper = require('../lib/helper');
-var fs = require('fs');
 var extract = require('../lib/extract');
-var md5 = require('md5');
-var path = require('path');
 var test = require('tap').test;
 
 var testFileName = 'test-extract.js';

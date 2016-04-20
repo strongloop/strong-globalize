@@ -3,14 +3,13 @@ var test = require('tap').test;
 var f = require('util').format;
 
 var wellKnownLangs = loadMsgHelper.wellKnownLangs;
-var msgWanted = loadMsgHelper.msgWanted;
 var secondaryMgr = loadMsgHelper.secondaryMgr;
 
 var cluster = require('cluster');
 
 test('secondary test on forking', function(t) {
   if (cluster.isMaster && !process.argv[2]) {
-    msg = f('Master is %s', process.pid);
+    var msg = f('Master is %s', process.pid);
     console.log(msg);
     cluster.setupMaster({
       exec: __filename,

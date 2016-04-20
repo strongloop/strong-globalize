@@ -1,4 +1,12 @@
-2016-04-20, Version 2.2.6
+2016-04-20, Version 2.2.7
+=========================
+
+ * Unlist 'zz' from supported languages (Tetsuo Seto)
+
+ * Clean up lint errors detected on windows (Setogit)
+
+
+2016-04-19, Version 2.2.6
 =========================
 
  * Record positions of all detected messages: hashed or not (Setogit)

@@ -62,6 +62,7 @@ StrongLoop Globalize CLI and API
 	* [help txt files and msg keys](#help-txt-files-and-msg-keys)
 	* [manually add message strings](#manually-add-message-strings)
 * [Demo](#demo)
+* [Demo - Pseudo Localization](#pseudo-localization-demo)
 * [Globalize HTML Templates](#globalize-html-templates)
 * [Persistent Logging](#persistent-logging)
 
@@ -69,7 +70,7 @@ StrongLoop Globalize CLI and API
 
 `strong-globalize` is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
 
-`strong-globalize` is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package built on top of jquery/globalize.  `strong-globalize` provides these features:
+`strong-globalize` is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package.  `strong-globalize` provides these features:
 - [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
 - [automatic extraction](#cli---extract-lint-and-translate) of the strings from JS code and [HTML templates](#globalize-html-templates) and auto-creation of resource JSON,
 - [machine translation](#cli---extract-lint-and-translate) of the resource JSON using [IBM Globalization Pipeline on Bluemix](#liblocal-credentialsjson),
@@ -203,7 +204,7 @@ and, intl/zz/messages.json:
   ]
 }
 ```
-
+See an additional example in the [`pseudo localization demo`](#pseudo-localization-demo) section.
 
 # CLI - extract, lint, and translate
 
@@ -613,6 +614,92 @@ setInterval(function(){
 },1000);
 
 console.log(gsub.getHelpText());
+```
+
+## pseudo localization demo
+
+Running `slt-globalize -e` over the above `gmain/index.js` will generate these two messages.json.  Please note that every literal string appears as the first argument of a function call is extracted with its positional information into intl/zz/messages.json.  In the example here, '/' and 'http://localhost' are included in intl/zz/messages.json, but not in intl/en/messages.json because `strong-globalize` text formatter function is not used with the two literals since they should not be translated.
+
+Also note that all the translatable message keys are hashed, but the ones not to be translated show up as readable text and are appende to intl/zz/messages.json.  It can help detect a globalization bug typically done in Pseudo Localization Testing.  See the [`Pseudo Localization Support`](#pseudo-localization-support) section for more details.
+
+intl/en/messages.json:
+```
+{
+  "6ffc5986cc983ff9c0dc2019e0f57686": "{0} Hello World",
+  "9f50ab5d3c2a6a071918321ec156ac04": "Listening on {0} by {1}.",
+  "fc20d00d156310f57cfd31d283210b22": "Sending request to {0} ..."
+}
+```
+
+and, intl/zz/messages.json:
+```
+{
+  "6ffc5986cc983ff9c0dc2019e0f57686": [
+    {
+      "fileName": "/Users/user/gmain/index.js",
+      "start": {
+        "line": 12,
+        "column": 21
+      },
+      "end": {
+        "line": 12,
+        "column": 59
+      }
+    }
+  ],
+  "9f50ab5d3c2a6a071918321ec156ac04": [
+    {
+      "fileName": "/Users/user/gmain/index.js",
+      "start": {
+        "line": 18,
+        "column": 2
+      },
+      "end": {
+        "line": 18,
+        "column": 59
+      }
+    }
+  ],
+  "fc20d00d156310f57cfd31d283210b22": [
+    {
+      "fileName": "/Users/user/gmain/index.js",
+      "start": {
+        "line": 22,
+        "column": 2
+      },
+      "end": {
+        "line": 22,
+        "column": 45
+      }
+    }
+  ],
+  "/": [
+    {
+      "fileName": "/Users/user/gmain/index.js",
+      "start": {
+        "line": 11,
+        "column": 8
+      },
+      "end": {
+        "line": 11,
+        "column": 11
+      }
+    }
+  ],
+  "http://localhost:": [
+    {
+      "fileName": "/Users/user/gmain/index.js",
+      "start": {
+        "line": 23,
+        "column": 10
+      },
+      "end": {
+        "line": 23,
+        "column": 29
+      }
+    }
+  ]
+}
 ```
 
 # Globalize HTML Templates

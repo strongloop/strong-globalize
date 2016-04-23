@@ -1,4 +1,10 @@
-2016-04-20, Version 2.2.7
+2016-04-23, Version 2.2.8
+=========================
+
+ * Record all literal positions appear in the first argument of calls (Setogit)
+
+
+2016-04-19, Version 2.2.7
 =========================
 
  * Unlist 'zz' from supported languages (Tetsuo Seto)

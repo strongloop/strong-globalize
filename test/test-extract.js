@@ -99,16 +99,16 @@ function subTest(mode, t) {
     'format of {0} and {1}',
     'format of {zero} and {one}',
   ];
-  var extracted = [];
-  var extractedLoc = [];
-  var targetLoc = require('./test-extract.json');
+  var extractedMsgs = [];
+  var extractedLocs = [];
+  var targetLocs = require('./test-extract.json');
   extract.scanAst(content, testFileName).forEach(function(m) {
-    extracted.push(m.msg);
-    extractedLoc.push(m.loc);
+    extractedMsgs.push(m.msg);
+    extractedLocs.push(m.loc);
   });
-  t.equal(extracted.join(''), targetMsgs.join(''),
+  t.equal(extractedMsgs.join(''), targetMsgs.join(''),
     mode + ': all literals extracted from JS.');
-  t.equal(JSON.stringify(extractedLoc), JSON.stringify(targetLoc),
+  t.equal(JSON.stringify(extractedLocs), JSON.stringify(targetLocs),
     mode + ': all locs extracted from JS.');
   var enBundlePre = global.STRONGLOOP_GLB.bundles[helper.ENGLISH];
   t.comment(JSON.stringify(enBundlePre, null, 2));
@@ -214,7 +214,7 @@ test('extract from HTML', function(t) {
   '                Line 3\n' +
   '  </p>'
   ;
-  var targetMsg = [
+  var targetMsgs = [
     '{{StrongLoop}} History Board',
     'History board shows the access history to the e-commerce web site.',
     'ABC Web Site',
@@ -230,13 +230,13 @@ test('extract from HTML', function(t) {
     'such as {{userSettings.timeout}}ms which will be ' +
     'rendered as something like 400ms.',
   ];
-  var extracted = [];
+  var extractedMsgs = [];
   extract.scanHtml(content, testFileName).forEach(function(m) {
-    extracted.push(m.msg);
+    extractedMsgs.push(m.msg);
   });
-  t.comment('Extracted: ' + extracted.toString());
-  t.comment('   Target: ' + targetMsg);
-  t.equal(targetMsg.join(''), extracted.join(''),
+  t.comment('Extracted: ' + extractedMsgs.toString());
+  t.comment('   Target: ' + targetMsgs);
+  t.equal(targetMsgs.join(''), extractedMsgs.join(''),
     'all literals extracted from HTML.');
 
   t.end();
@@ -248,16 +248,16 @@ test('extract from CDATA', function(t) {
   var content = '<![CDATA[\n' +
   '      {{Text in cdata | globalize }}\n' +
   '    ]]>\n';
-  var targetMsg = [
+  var targetMsgs = [
     'Text in cdata',
   ];
-  var extracted = [];
+  var extractedMsgs = [];
   extract.scanHtml(content, testFileName).forEach(function(m) {
-    extracted.push(m.msg);
+    extractedMsgs.push(m.msg);
   });
-  t.comment('Extracted: ' + extracted.toString());
-  t.comment('   Target: ' + targetMsg);
-  t.assert(targetMsg.join('') === extracted.join(''),
+  t.comment('Extracted: ' + extractedMsgs.toString());
+  t.comment('   Target: ' + targetMsgs);
+  t.assert(targetMsgs.join('') === extractedMsgs.join(''),
     'all literals extracted from CDATA.');
 
   t.end();
@@ -269,7 +269,7 @@ test('custom extraction regex', function(t) {
   var content = '<![CDATA[\n' +
   '      {{LOCALIZE:Text in cdata}}\n' +
   '    ]]>\n';
-  var targetMsg = [
+  var targetMsgs = [
     'Text in cdata',
   ];
   extract.setHtmlRegex(
@@ -277,14 +277,73 @@ test('custom extraction regex', function(t) {
       /{{LOCALIZE:/m,
       /}}/m
   );
-  var extracted = [];
+  var extractedMsgs = [];
   extract.scanHtml(content, testFileName).forEach(function(m) {
-    extracted.push(m.msg);
+    extractedMsgs.push(m.msg);
   });
-  t.comment('Extracted: ' + extracted.toString());
-  t.comment('   Target: ' + targetMsg);
-  t.equal(targetMsg.join(''), extracted.join(''),
+  t.comment('Extracted: ' + extractedMsgs.toString());
+  t.comment('   Target: ' + targetMsgs);
+  t.equal(targetMsgs.join(''), extractedMsgs.join(''),
     'literal correctly extracted using custom html regex.');
+
+  t.end();
+});
+
+test('pseudo loc extraction', function(t) {
+  helper.setRootDir(__dirname);
+  g.setDefaultLanguage();
+  var content = 'process.stdout.write(\'ps_arg1\' + \'ps_arg2\')\n' +
+    'console.log(\'cs_arg\')';
+  var extractedMsgs = [];
+  var extractedLocs = [];
+  var targetMsgs = [
+    helper.PSEUDO_TAG + 'ps_arg1',
+    helper.PSEUDO_TAG + 'ps_arg2',
+    helper.PSEUDO_TAG + 'cs_arg',
+  ];
+  var targetLocs = [
+    {
+      'fileName': testFileName,
+      'start': {
+        'line': 1,
+        'column': 21
+      },
+      'end': {
+        'line': 1,
+        'column': 30
+      },
+    },
+    {
+      'fileName': testFileName,
+      'start': {
+        'line': 1,
+        'column': 33
+      },
+      'end': {
+        'line': 1,
+        'column': 42
+      },
+    },
+    {
+      'fileName': testFileName,
+      'start': {
+        'line': 2,
+        'column': 12
+      },
+      'end': {
+        'line': 2,
+        'column': 20
+      },
+    },
+  ];
+  extract.scanAst(content, testFileName).forEach(function(m) {
+    extractedMsgs.push(m.msg);
+    extractedLocs.push(m.loc);
+  });
+  t.equal(extractedMsgs.join(''), targetMsgs.join(''),
+    'pseudo msgs: all literals extracted from JS.');
+  t.equal(JSON.stringify(extractedLocs), JSON.stringify(targetLocs),
+    'pseudo locs: all locs extracted from JS.');
 
   t.end();
 });

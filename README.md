@@ -8,6 +8,7 @@ StrongLoop Globalize CLI and API
 * [Language Config Customization](#language-config-customization)
 * [Runtime Language Switching](#runtime-localization-switching)
 * [Pseudo Localization Support](#pseudo-localization-support)
+* [Deep String Resource Extraction](#deep-string-resource-extraction)
 * [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
@@ -179,32 +180,104 @@ and, intl/zz/messages.json:
 ```
 {
   "21610b057179c7177036c1719f8922cc": [
-    {
-      "fileName": "/Users/user/gmain/index.js",
-      "start": {
-        "line": 15,
-        "column": 2
-      },
-      "end": {
-        "line": 15,
-        "column": 40
-      }
-    },
-    {
-      "fileName": "/Users/user/gsub/index.js",
-      "start": {
-        "line": 11,
-        "column": 17
-      },
-      "end": {
-        "line": 11,
-        "column": 55
-      }
-    }
+    "index.js:8",
+    "lib/util.js:12"
   ]
 }
 ```
 See an additional example in the [`pseudo localization demo`](#pseudo-localization-demo) section.
+
+# Deep String Resource Extraction
+
+`strong-globalize` CLI supports string resource auto-extraction in two modes: `regular extraction` mode and `deep extraction` mode.  The regular extraction mode is invoked with `slt-globalize -e` and typically used in package development phase.  The deep extraction mode `slt-globalzie -d` is designed to be used in globalization of enterprise-scale applications.
+
+## Regular Extraction
+
+Suppose you have a package named `gmain` which has two JS files: `index.js` and `lib/util.js` and the two JS files contain the same `g.log('user: %s', userName)` call in line# 8 and line# 12 respectively.  Running `slt-globalize -e` under the application root directory, `/Users/user/gmain` will generate `intl/en/messages.json` and `intl/zz/messages.json` as shown in the [Pseudo Localization Support](#pseudo-localization-support) section.  Note that `slt-globalize -e` extracts all strong-globalized literal strings as well as non-globalized literal string with positional information in to `intl/zz/messages.json`.  It is useful to pin-point untranslated strings in the source code.
+
+In the regular extraction mode, `strong-globalize` scans all JS and Html templates owned by the `gmain` package no mater how deep the directory structure goes -- for example, `gmain/lib/usa/california/sanfrancisco/util.js` is scanned.  However, it does not examine dependent files under `node_modules` or `test` directory.  All `strong-globalized` literal strings in JS and Html files of the target package will be extracted and stored in `intl/en/messages.json` along with the positional information stored in `intl/zz/messages.json`.  All non-strong-globalized literal strings in the first argument of all JS function calls are extracted and stored in `intl/zz/messages.json` along with the positional information.
+
+In runtime, the string resource JSON files under `intl` will be loaded on to memory as needed.
+
+Self contained CLI utility package is code-globalized and distributed with or without translated messages.json.  API library packages are typically code-globalized and distributed without translation.  Such library packages are then downloaded and used as part of enterprise-scale applications.
+
+```
+/Users/user
+          └── gmain
+              ├── index.js
+              ├── intl
+              │   ├── de
+              │   ├── en
+              │   ├── es
+              │   ├── fr
+              │   ├── it
+              │   ├── ja
+              │   ├── ko
+              │   ├── pt
+              │   ├── ru
+              │   ├── zh-Hans
+              │   ├── zh-Hant
+              │   └── zz
+              ├── lib
+              │   └── usa
+              │       └── california
+              │           └── sanfrancisco
+              │               └── util.js
+              ├── node_modules
+              │   ├── express
+              │   ├── request
+              │   └── strong-globalize -> /usr/local/lib/node_modules/strong-globalize
+              └── package.json
+```
+
+## Deep Extraction
+
+Enterprise-scale applications may depend on hundreds of third party packages directly or indirectly.  Such applications typically download dependent packages using `npm install` and can globalize them using the `Deep Extraction` mode.
+
+For example, suppose `gmain` package has one dependent package `gsub` which is installed under `gmain/node_modules` as shown in the directory structure diagram below.  `slt-globalize -d` traverses the `npm v3 style` dependency tree and extracts all the strong-globalized string literals in to `gmain/intl/en/messages.json`.  This way, all the literal strings in your package `gmain` as well as all the dependent modules are extracted and translated consistently at `gmain/intl` level.  Note that the `package.json` dependency traversal is different from simple directory traversal.
+
+## `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable
+
+As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on `gmain/intl/zz/messages.json`, `gmain/intl/zz/messages.json` may also grow exponentially and cause `slt-globalize -d` to run out of resource of your computer.
+
+To manage such situations, you can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by `package.json` (production) dependency.
+
+For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under `/Users/user/gmain` works as follows.  `gmain/index.js` is depth 1 thus examined.  `gmain/lib/usa/california/sanfrancisco/util.js` is depth 5, not examined although it's part of your `gmain` package.  `gmain/node_modules/gsub/index.js` is level 3, thus examined.  Likewise, all the files directly under `gmain/node_modules/express` and `gmain/node_modules/request` will also be examined and literal strings are extracted in to `gmain/intl/zz/messages.json`.
+
+```
+/Users/user
+          └── gmain
+              ├── index.js
+              ├── intl
+              │   ├── de
+              │   ├── en
+              │   ├── es
+              │   ├── fr
+              │   ├── it
+              │   ├── ja
+              │   ├── ko
+              │   ├── pt
+              │   ├── ru
+              │   ├── zh-Hans
+              │   ├── zh-Hant
+              │   └── zz
+              ├── lib
+              │   └── usa
+              │       └── california
+              │           └── sanfrancisco
+              │               └── util.js
+              ├── node_modules
+              │   ├── express
+              │   ├── gsub
+              │   │   ├── index.js
+              │   │   ├── node_modules
+              │   │   │   └── strong-globalize -> /usr/local/lib/node_modules/strong-globalize
+              │   │   └── package.json
+              │   ├── request
+              │   └── strong-globalize -> /usr/local/lib/node_modules/strong-globalize
+              └── package.json
+```
+
 
 # CLI - extract, lint, and translate
 
@@ -223,6 +296,7 @@ npm WARN engine node-zlib-backport@0.11.15: wanted: {"node":">=0.10 <0.11"} ...
 ### usage: `slt-globalize [options]`
 
 Options:
+-  `-d,--deepextract [black list]`  Deep-extract resource strings.
 -  `-e,--extract [black list]`      Extract resource strings to en/messages.json except for directories on [black list] separated by a space.
 -  `-h,--help`         Print this message and exit.
 -  `-l,--lint`         Check validity of string resource.
@@ -620,7 +694,7 @@ console.log(gsub.getHelpText());
 
 Running `slt-globalize -e` over the above `gmain/index.js` will generate these two messages.json.  Please note that every literal string appears as the first argument of a function call is extracted with its positional information into intl/zz/messages.json.  In the example here, '/' and 'http://localhost' are included in intl/zz/messages.json, but not in intl/en/messages.json because `strong-globalize` text formatter function is not used with the two literals since they should not be translated.
 
-Also note that all the translatable message keys are hashed, but the ones not to be translated show up as readable text and are appende to intl/zz/messages.json.  It can help detect a globalization bug typically done in Pseudo Localization Testing.  See the [`Pseudo Localization Support`](#pseudo-localization-support) section for more details.
+Also note that all the translatable message keys are hashed, but the ones not to be translated show up as readable text and are appended to intl/zz/messages.json.  It can help detect a globalization bug typically in Pseudo Localization Testing.  See the [`Pseudo Localization Support`](#pseudo-localization-support) section for more details.
 
 intl/en/messages.json:
 ```
@@ -635,69 +709,19 @@ and, intl/zz/messages.json:
 ```
 {
   "6ffc5986cc983ff9c0dc2019e0f57686": [
-    {
-      "fileName": "/Users/user/gmain/index.js",
-      "start": {
-        "line": 12,
-        "column": 21
-      },
-      "end": {
-        "line": 12,
-        "column": 59
-      }
-    }
+    "index.js:12"
   ],
   "9f50ab5d3c2a6a071918321ec156ac04": [
-    {
-      "fileName": "/Users/user/gmain/index.js",
-      "start": {
-        "line": 18,
-        "column": 2
-      },
-      "end": {
-        "line": 18,
-        "column": 59
-      }
-    }
+    "index.js:18"
   ],
   "fc20d00d156310f57cfd31d283210b22": [
-    {
-      "fileName": "/Users/user/gmain/index.js",
-      "start": {
-        "line": 22,
-        "column": 2
-      },
-      "end": {
-        "line": 22,
-        "column": 45
-      }
-    }
+    "index.js:22"
   ],
   "/": [
-    {
-      "fileName": "/Users/user/gmain/index.js",
-      "start": {
-        "line": 11,
-        "column": 8
-      },
-      "end": {
-        "line": 11,
-        "column": 11
-      }
-    }
+    "index.js:11"
   ],
   "http://localhost:": [
-    {
-      "fileName": "/Users/user/gmain/index.js",
-      "start": {
-        "line": 23,
-        "column": 10
-      },
-      "end": {
-        "line": 23,
-        "column": 29
-      }
-    }
+    "index.js:23"
   ]
 }
 ```

@@ -1,4 +1,5 @@
 var SG = require('../index');
+var _ = require('lodash');
 var f = require('util').format;
 
 var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
@@ -6,17 +7,17 @@ var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
 exports.wellKnownLangs = wellKnownLangs;
 
 var msgWanted = {
-  en: [
-    'second - primary depth message',
-    'third - primary depth message',
-    'fourth - second depth message',
-    'fifth - primary depth message',
-  ],
   de: [
     'Sekunde - Haupttiefennachricht',
     'Drittel - Haupttiefennachricht',
     'Viertel - zweite Tiefennachricht',
     'Fünftel - Haupttiefennachricht',
+  ],
+  en: [
+    'second - primary depth message',
+    'third - primary depth message',
+    'fourth - second depth message',
+    'fifth - primary depth message',
   ],
   es: [
     'Segundo mensaje principal profundidad',
@@ -68,29 +69,27 @@ var msgWanted = {
   ],
 };
 
-function secondaryMgr(lang, t) {
+function secondaryMgr(lang, t, callback) {
   var msg = f('running language loading test: %s in process %d',
     lang, process.pid);
-  console.log(msg);
   var msgFound = [];
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage(lang);
   var disableConsole = true;
   SG.SetPersistentLogging(function(level, msg) {
     msgFound.push(msg.message);
+    if (msgFound.length === (msgWanted[lang].length + 1)) {
+      for (var i = 0; i < msgFound.length - 1; i++) {
+        console.log('checking', msgWanted[lang][i]);
+        t.equal(msgFound[i + 1], msgWanted[lang][i],
+          lang + ' message ' + i.toString() + ' is correct.');
+      }
+      callback();
+    }
   }, disableConsole);
   t.ok(msgFound[0].indexOf(
     'StrongGlobalize persistent logging started') === 0,
     'StrongGlobalize persistent logging started');
-  msgFound = [];
   require('secondary')();
-  t.equal(msgFound.length, msgWanted[lang].length,
-    'all user messages for ' + lang + ' logged');
-  if (msgFound.length === msgWanted[lang].length) {
-    for (var i = 0; i < msgWanted[lang].length; i++) {
-      t.equal(msgFound[i], msgWanted[lang][i],
-        lang + ' message ' + i.toString() + ' is correct.');
-    }
-  }
 }
 exports.secondaryMgr = secondaryMgr;

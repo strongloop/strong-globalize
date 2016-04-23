@@ -3,6 +3,7 @@ usage: %MAIN% [options]
 StrongLoop Globalize
 
 Options:
+  -d,--deepextract [black list] Deep-extract resource strings.
   -e,--extract [black list]     Extract resource strings to
       en/messages.json except for directories on [black list]
       separated by a space.

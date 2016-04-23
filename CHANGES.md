@@ -1,4 +1,10 @@
-2016-04-23, Version 2.2.8
+2016-04-23, Version 2.2.9
+=========================
+
+ * Remove assert (Tetsuo Seto)
+
+
+2016-04-22, Version 2.2.8
 =========================
 
  * Record all literal positions appear in the first argument of calls (Setogit)

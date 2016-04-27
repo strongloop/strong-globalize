@@ -1,3 +1,9 @@
+2016-04-27, Version 2.3.0
+=========================
+
+ * Deep String Resource Extraction (Setogit)
+
+
 2016-04-23, Version 2.2.9
 =========================
 

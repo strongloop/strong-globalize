@@ -1,5 +1,6 @@
 var SG = require('../index');
 var helper = require('../lib/helper');
+var md5 = require('md5');
 var path = require('path');
 var test = require('tap').test;
 var translate = require('../lib/translate');
@@ -21,12 +22,20 @@ var g = SG();
 test('register resource tag', function(t) {
   var rootDir = path.resolve(__dirname);
   var lang = helper.ENGLISH;
+  var txtFile = 'test-help.txt';
+  var currentPath = path.join(rootDir, 'intl', lang, txtFile);
+  var hash = md5(currentPath);
+  var appName = helper.getPackageName(currentPath);
+  var appVersion = helper.getPackageVersion(currentPath);
   var tagType = 'test_tag';
-  t.notOk(helper.resTagExists(rootDir, lang, tagType),
+  t.notOk(helper.resTagExists(hash, txtFile, appName, appVersion,
+    lang, tagType),
     'Res tag should not exist.');
-  t.ok(helper.registerResTag(rootDir, lang, tagType),
+  t.ok(helper.registerResTag(hash, txtFile, appName, appVersion,
+    lang, tagType),
     'Res tag should be successfully registered.');
-  t.ok(helper.resTagExists(rootDir, lang, tagType),
+  t.ok(helper.resTagExists(hash, txtFile, appName, appVersion,
+    lang, tagType),
     'Res tag should exist.');
   t.end();
 });

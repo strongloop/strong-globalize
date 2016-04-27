@@ -5,8 +5,9 @@
 var Parser = require('posix-getopt').BasicParser;
 var extract = require('../lib/extract');
 var fs = require('fs');
-var path = require('path');
+var helper = require('../lib/helper');
 var lint = require('../lib/lint');
+var path = require('path');
 var translate = require('../lib/translate');
 
 function printHelp($0, prn) {
@@ -21,6 +22,7 @@ function main(argv, callback) {
   callback = callback || function() {};
 
   var parser = new Parser([':',
+    'd(deepextract)',
     'e(extract)',
     'h(help)',
     'l(lint)',
@@ -40,6 +42,7 @@ function main(argv, callback) {
       case 'h':
         printHelp($0, console.log);
         return callback();
+      case 'd':
       case 'e':
         cmd = option.option;
         // slt-global -e vendor node_modules
@@ -62,10 +65,12 @@ function main(argv, callback) {
     }
   }
 
-  if (cmd !== 'e' && parser.optind() !== argv.length) {
+  if (cmd !== 'd' && cmd !== 'e' && parser.optind() !== argv.length) {
     console.error('Invalid usage (extra arguments), try `%s --help`.', $0);
     return callback(true);
   }
+
+  helper.initGlobForSltGlobalize();
 
   if (cmd === 't') {
     translate.translateResource(function(err, result) {
@@ -81,7 +86,13 @@ function main(argv, callback) {
   }
 
   if (cmd === 'e') {
-    extract.extractMessages(blackList, function(err, result) {
+    extract.extractMessages(blackList, false, function(err, result) {
+      return callback(err);
+    });
+  }
+
+  if (cmd === 'd') {
+    extract.extractMessages(blackList, true, function(err, result) {
       return callback(err);
     });
   }

@@ -1,4 +1,14 @@
-2016-04-27, Version 2.3.0
+2016-05-01, Version 2.3.1
+=========================
+
+ * Scan Html in 'slt-globalize -e' mode only (Setogit)
+
+ * Avoid redundant directory scan (perf) (Setogit)
+
+ * Skip redundant En lint check against En (Setogit)
+
+
+2016-04-26, Version 2.3.0
 =========================
 
  * Deep String Resource Extraction (Setogit)

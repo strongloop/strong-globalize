@@ -236,6 +236,8 @@ Enterprise-scale applications may depend on hundreds of third party packages dir
 
 For example, suppose `gmain` package has one dependent package `gsub` which is installed under `gmain/node_modules` as shown in the directory structure diagram below.  `slt-globalize -d` traverses the `npm v3 style` dependency tree and extracts all the strong-globalized string literals in to `gmain/intl/en/messages.json`.  This way, all the literal strings in your package `gmain` as well as all the dependent modules are extracted and translated consistently at `gmain/intl` level.  Note that the `package.json` dependency traversal is different from simple directory traversal.
 
+Note that [string resource extraction from Html templates](#globalize-html-templates) is supported in the regular extraction mode only.
+
 ## `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable
 
 As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on `gmain/intl/zz/messages.json`, `gmain/intl/zz/messages.json` may also grow exponentially and cause `slt-globalize -d` to run out of resource of your computer.

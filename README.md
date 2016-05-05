@@ -169,20 +169,36 @@ First, Machine Translation with `slt-globalize -t` can be used like the traditio
 
 Second, in runtime, set the environment variable `STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE` and `strong-globalize` adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.
 
-Third, `string-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` which shows the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates `intl/en/messages.json:
+Third, `string-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json`which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
+`intl/en/messages.json`:
 
 ```
 {
   "21610b057179c7177036c1719f8922cc": "user: {0}"
 }
 ```
-and, intl/zz/messages.json:
+`intl/zz/messages.json`:
 ```
 {
   "21610b057179c7177036c1719f8922cc": [
     "index.js:8",
     "lib/util.js:12"
   ]
+}
+```
+and, `intl/zz/messages_inverted.json`:
+```
+{
+  "index.js": {
+    "8": [
+      "21610b057179c7177036c1719f8922cc"
+    ]
+  },
+  "lib/util.js": {
+    "12": [
+      "21610b057179c7177036c1719f8922cc"
+    ]
+  }
 }
 ```
 See an additional example in the [`pseudo localization demo`](#pseudo-localization-demo) section.
@@ -703,7 +719,7 @@ Running `slt-globalize -e` over the above `gmain/index.js` will generate these t
 
 Also note that all the translatable message keys are hashed, but the ones not to be translated show up as readable text and are appended to intl/zz/messages.json.  It can help detect a globalization bug typically in Pseudo Localization Testing.  See the [`Pseudo Localization Support`](#pseudo-localization-support) section for more details.
 
-intl/en/messages.json:
+`intl/en/messages.json`:
 ```
 {
   "6ffc5986cc983ff9c0dc2019e0f57686": "{0} Hello World",
@@ -712,7 +728,7 @@ intl/en/messages.json:
 }
 ```
 
-and, intl/zz/messages.json:
+`intl/zz/messages.json`:
 ```
 {
   "6ffc5986cc983ff9c0dc2019e0f57686": [
@@ -730,6 +746,29 @@ and, intl/zz/messages.json:
   "http://localhost:": [
     "index.js:23"
   ]
+}
+```
+
+and, `intl/zz/messages_inverted.json`
+```
+{
+  "index.js": {
+    "11": [
+      "/"
+    ],
+    "12": [
+      "6ffc5986cc983ff9c0dc2019e0f57686"
+    ],
+    "18": [
+      "9f50ab5d3c2a6a071918321ec156ac04"
+    ],
+    "22": [
+      "fc20d00d156310f57cfd31d283210b22"
+    ],
+    "23": [
+      "http://localhost:"
+    ]
+  }
 }
 ```
 

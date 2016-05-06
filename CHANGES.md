@@ -1,4 +1,16 @@
-2016-05-01, Version 2.3.1
+2016-05-06, Version 2.3.2
+=========================
+
+ * Support filtering of extracted hard-coded strings (Setogit)
+
+ * Resolve multi-level symbolic links (Setogit)
+
+ * Generate zz/messages_inverted.json in -e and -d modes (Setogit)
+
+ * Assert if nothing is passed to setRootDir (Setogit)
+
+
+2016-04-30, Version 2.3.1
 =========================
 
  * Scan Html in 'slt-globalize -e' mode only (Setogit)

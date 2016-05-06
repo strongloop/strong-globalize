@@ -169,20 +169,36 @@ First, Machine Translation with `slt-globalize -t` can be used like the traditio
 
 Second, in runtime, set the environment variable `STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE` and `strong-globalize` adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.
 
-Third, `string-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` which shows the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates `intl/en/messages.json:
+Third, `string-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json`which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
+`intl/en/messages.json`:
 
 ```
 {
   "21610b057179c7177036c1719f8922cc": "user: {0}"
 }
 ```
-and, intl/zz/messages.json:
+`intl/zz/messages.json`:
 ```
 {
   "21610b057179c7177036c1719f8922cc": [
     "index.js:8",
     "lib/util.js:12"
   ]
+}
+```
+and, `intl/zz/messages_inverted.json`:
+```
+{
+  "index.js": {
+    "8": [
+      "21610b057179c7177036c1719f8922cc"
+    ]
+  },
+  "lib/util.js": {
+    "12": [
+      "21610b057179c7177036c1719f8922cc"
+    ]
+  }
 }
 ```
 See an additional example in the [`pseudo localization demo`](#pseudo-localization-demo) section.
@@ -199,7 +215,7 @@ In the regular extraction mode, `strong-globalize` scans all JS and Html templat
 
 In runtime, the string resource JSON files under `intl` will be loaded on to memory as needed.
 
-Self contained CLI utility package is code-globalized and distributed with or without translated messages.json.  API library packages are typically code-globalized and distributed without translation.  Such library packages are then downloaded and used as part of enterprise-scale applications.
+**Use Case**: Self contained CLI utility package is typically code-globalized and distributed with or without translated messages.json.  API library packages are typically code-globalized and distributed without translation.  Such library packages are then downloaded and used as part of enterprise-scale applications.
 
 ```
 /Users/user
@@ -245,6 +261,11 @@ As the size of your application grows, the number of dependent packages can grow
 To manage such situations, you can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by `package.json` (production) dependency.
 
 For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under `/Users/user/gmain` works as follows.  `gmain/index.js` is depth 1 thus examined.  `gmain/lib/usa/california/sanfrancisco/util.js` is depth 5, not examined although it's part of your `gmain` package.  `gmain/node_modules/gsub/index.js` is level 3, thus examined.  Likewise, all the files directly under `gmain/node_modules/express` and `gmain/node_modules/request` will also be examined and literal strings are extracted in to `gmain/intl/zz/messages.json`.
+
+
+## `npm v3` dependency resolution
+
+`npm v3` tries to install all dependent packages in the root `node_modules` directory, i.e., `gmain/node_modules` in the above example, which means that most dependent package directories are at depth level 2.  Therefore, `STRONGLOOP_GLOBALIZE_MAX_DEPTH` does not help in `npm v3` installed applications.  `slt-globalize -d [black list]` option can help to reduce the number of packages to scan. 
 
 ```
 /Users/user
@@ -698,7 +719,7 @@ Running `slt-globalize -e` over the above `gmain/index.js` will generate these t
 
 Also note that all the translatable message keys are hashed, but the ones not to be translated show up as readable text and are appended to intl/zz/messages.json.  It can help detect a globalization bug typically in Pseudo Localization Testing.  See the [`Pseudo Localization Support`](#pseudo-localization-support) section for more details.
 
-intl/en/messages.json:
+`intl/en/messages.json`:
 ```
 {
   "6ffc5986cc983ff9c0dc2019e0f57686": "{0} Hello World",
@@ -707,7 +728,7 @@ intl/en/messages.json:
 }
 ```
 
-and, intl/zz/messages.json:
+`intl/zz/messages.json`:
 ```
 {
   "6ffc5986cc983ff9c0dc2019e0f57686": [
@@ -725,6 +746,29 @@ and, intl/zz/messages.json:
   "http://localhost:": [
     "index.js:23"
   ]
+}
+```
+
+and, `intl/zz/messages_inverted.json`
+```
+{
+  "index.js": {
+    "11": [
+      "/"
+    ],
+    "12": [
+      "6ffc5986cc983ff9c0dc2019e0f57686"
+    ],
+    "18": [
+      "9f50ab5d3c2a6a071918321ec156ac04"
+    ],
+    "22": [
+      "fc20d00d156310f57cfd31d283210b22"
+    ],
+    "23": [
+      "http://localhost:"
+    ]
+  }
 }
 ```
 

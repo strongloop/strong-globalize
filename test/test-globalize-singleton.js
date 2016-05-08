@@ -42,14 +42,14 @@ test('formatMessage', function(t) {
   t.comment(message);
   var targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
-  t.assert(message === targetMsg, 'Default message formatting works.');
+  t.equal(message, targetMsg, 'Default message formatting works.');
 
   g.setDefaultLanguage('xx');
   message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
-  t.assert(message === targetMsg,
+  t.equal(message, targetMsg,
     'Invalid language message formatting defaults to English.');
 
   g.setDefaultLanguage('en');
@@ -57,72 +57,72 @@ test('formatMessage', function(t) {
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
-  t.assert(message === targetMsg, 'English message formatting works.');
+  t.equal(message, targetMsg, 'English message formatting works.');
 
   g.setDefaultLanguage('ja');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = '間違い:' + params.url + 'あるいは' +
+  targetMsg = 'Error:' + params.url + 'あるいは' +
     params.port + '無効です。';
-  t.assert(message === targetMsg, 'Japanese message formatting works.');
+  t.equal(message, targetMsg, 'Japanese message formatting works.');
 
   g.setDefaultLanguage('ko');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = '오류: ' + params.url + '이나 ' +
+  targetMsg = 'Error: ' + params.url + '이나 ' +
     params.port + '은 효력이 없다.';
-  t.assert(message === targetMsg, 'Korean message formatting works.');
+  t.equal(message, targetMsg, 'Korean message formatting works.');
 
   g.setDefaultLanguage('zh-Hans');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = '在中的错误：' + params.url + '或者'
+  targetMsg = 'Error：' + params.url + '或者'
     + params.port + '是无效。';
-  t.assert(message === targetMsg,
+  t.equal(message, targetMsg,
     'Simplified Chinese message formatting works.');
 
   g.setDefaultLanguage('zh-Hant');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = '在中的錯誤：' + params.url + '或者'
+  targetMsg = 'Error：' + params.url + '或者'
     + params.port + '是無效。';
-  t.assert(message === targetMsg,
+  t.equal(message, targetMsg,
     'Traditional Chinese message formatting works.');
 
   g.setDefaultLanguage('de');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = 'Fehler: ' + params.url + ' oder ' +
+  targetMsg = 'Error: ' + params.url + ' oder ' +
     params.port + ' sind ungültig.';
-  t.assert(message === targetMsg, 'German message formatting works.');
+  t.equal(message, targetMsg, 'German message formatting works.');
 
   g.setDefaultLanguage('es');
   message = g.t(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' o ' +
     params.port + ' no es válido.';
-  t.assert(message === targetMsg, 'Spanish message formatting works.');
+  t.equal(message, targetMsg, 'Spanish message formatting works.');
 
   g.setDefaultLanguage('fr');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = 'Erreur: ' + params.url + ' ou ' +
+  targetMsg = 'Error: ' + params.url + ' ou ' +
     params.port + ' n\'est pas valide.';
-  t.assert(message === targetMsg, 'French message formatting works.');
+  t.equal(message, targetMsg, 'French message formatting works.');
 
   g.setDefaultLanguage('it');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = 'Errore: ' + params.url + ' o ' +
+  targetMsg = 'Error: ' + params.url + ' o ' +
     params.port + ' non sono validi.';
-  t.assert(message === targetMsg, 'Italian message formatting works.');
+  t.equal(message, targetMsg, 'Italian message formatting works.');
 
   g.setDefaultLanguage('pt');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = 'Erro: ' + params.url + ' ou ' +
+  targetMsg = 'Error: ' + params.url + ' ou ' +
     params.port + ' é inválido.';
-  t.assert(message === targetMsg, 'Portuguese message formatting works.');
+  t.equal(message, targetMsg, 'Portuguese message formatting works.');
   t.end();
 });
 
@@ -391,7 +391,7 @@ test('throw Error', function(t) {
   try {
     throw g.Error(key, params);
   } catch (e) {
-    var targetMsg = 'Error: 間違い:' + params.url + 'あるいは' +
+    var targetMsg = 'Error: Error:' + params.url + 'あるいは' +
       params.port + '無効です。';
     t.comment(e.toString());
     t.assert(e.toString() === targetMsg,

@@ -90,13 +90,13 @@ function main(argv, callback) {
   }
 
   if (cmd === 'e') {
-    extract.extractMessages(blackList, false, function(err, result) {
+    extract.extractMessages(blackList, false, false, function(err, result) {
       return callback(err);
     });
   }
 
   if (cmd === 'd') {
-    extract.extractMessages(blackList, true, function(err, result) {
+    extract.extractMessages(blackList, true, false, function(err, result) {
       return callback(err);
     });
   }

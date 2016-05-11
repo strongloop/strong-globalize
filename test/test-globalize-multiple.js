@@ -56,7 +56,7 @@ test('formatMessage', function(t) {
   g.setLanguage('ja');
   message = g.t(key, params);
   t.comment(message);
-  targetMsg = '間違い:' + params.url + 'あるいは' +
+  targetMsg = 'Error:' + params.url + 'あるいは' +
     params.port + '無効です。';
   t.equal(message, targetMsg, 'setLanguage works.');
 
@@ -169,7 +169,7 @@ test('throw Error', function(t) {
   try {
     throw gJa.Error(key, params);
   } catch (e) {
-    var targetMsg = 'Error: 間違い:' + params.url + 'あるいは' +
+    var targetMsg = 'Error: Error:' + params.url + 'あるいは' +
       params.port + '無効です。';
     t.comment(e.toString());
     t.equal(e.toString(), targetMsg,

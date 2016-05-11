@@ -5,6 +5,7 @@
 
 var async = require('async');
 var f = require('util').format;
+var helper = require('../lib/helper');
 var loadMsgHelper = require('./load-msg-helper');
 var test = require('tap').test;
 
@@ -35,7 +36,8 @@ test('secondary test on forking', function(t) {
   } else if (cluster.isWorker) {
     t.equal(process.argv[2], 'second_invoke', 'worker in the second invoke');
     async.forEachOfSeries(wellKnownLangs, function(lang, ix, callback) {
-      secondaryMgr(lang, t, callback);
+      secondaryMgr(__dirname, lang, t, helper.AML_ALL, true);
+      callback();
     }, function(err) {
       if (err) t.fail('language iteration failed.');
       t.end();

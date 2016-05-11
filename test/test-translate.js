@@ -29,18 +29,13 @@ test('register resource tag', function(t) {
   var lang = helper.ENGLISH;
   var txtFile = 'test-help.txt';
   var currentPath = path.join(rootDir, 'intl', lang, txtFile);
-  var hash = md5(currentPath);
-  var appName = helper.getPackageName(currentPath);
-  var appVersion = helper.getPackageVersion(currentPath);
+  var hash = helper.msgFileIdHash(txtFile, rootDir);
   var tagType = 'test_tag';
-  t.notOk(helper.resTagExists(hash, txtFile, appName, appVersion,
-    lang, tagType),
+  t.notOk(helper.resTagExists(hash, txtFile, lang, tagType),
     'Res tag should not exist.');
-  t.ok(helper.registerResTag(hash, txtFile, appName, appVersion,
-    lang, tagType),
+  t.ok(helper.registerResTag(hash, txtFile, lang, tagType),
     'Res tag should be successfully registered.');
-  t.ok(helper.resTagExists(hash, txtFile, appName, appVersion,
-    lang, tagType),
+  t.ok(helper.resTagExists(hash, txtFile, lang, tagType),
     'Res tag should exist.');
   t.end();
 });

@@ -31,11 +31,27 @@ function StrongGlobalize(options) {
   this._options = options ? xtend(defaults, options) : defaults;
 }
 
-function SetRootDir(rootDir) {
+function SetRootDir(rootDir, options) {
+  var defaults = {
+    autonomousMsgLoading: helper.AML_DEFAULT,
+  };
+  options = options ? xtend(defaults, options) : defaults;
+  options.autonomousMsgLoading =
+    helper.validateAmlValue(options.autonomousMsgLoading);
+  if (!options.autonomousMsgLoading) {
+    console.log(
+      '*** SetRootDire: invalid autonomousMsgLoading: %j -- \'%s\' is used.',
+      options.autonomousMsgLoading, defaults.autonomousMsgLoading);
+    options.autonomousMsgLoading = defaults.autonomousMsgLoading;
+  }
   globalize.setRootDir(rootDir);
-  if (!global.STRONGLOOP_GLB) globalize.setDefaultLanguage();
-  if (global.STRONGLOOP_GLB && path.resolve(rootDir) !==
-    path.resolve(global.STRONGLOOP_GLB.ROOT_DIR)) {
+  if (!global.STRONGLOOP_GLB) {
+    globalize.setDefaultLanguage();
+    global.STRONGLOOP_GLB.AUTO_MSG_LOADING = options.autonomousMsgLoading;
+  }
+  if (path.resolve(rootDir) !==
+      path.resolve(global.STRONGLOOP_GLB.MASTER_ROOT_DIR) &&
+      helper.isLoadMessages(rootDir)) {
     var langs = Object.keys(global.STRONGLOOP_GLB.bundles);
     langs.forEach(function(lang) {
       translate.loadMsgFromFile(lang, rootDir);

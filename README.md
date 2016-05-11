@@ -7,9 +7,10 @@ StrongLoop Globalize CLI and API
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
 * [Runtime Language Switching](#runtime-localization-switching)
+* [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [Pseudo Localization Support](#pseudo-localization-support)
 * [Deep String Resource Extraction](#deep-string-resource-extraction)
-* [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
+* [Autonomous Message Loading](#autonomous-message-loading)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [SG.SetDefaultLanguage](#sgsetdefaultlanguagelang)
@@ -133,7 +134,7 @@ g.setLauguage(getAcceptLanguage()); // once per session
 
 g.log('Welcome!');
 ```
-## Upgrade from v1.x to v2.0
+# Upgrade from v1.x to v2.0
 
 Changes to be made to the client source code are minimal.
 
@@ -252,6 +253,8 @@ Enterprise-scale applications may depend on hundreds of third party packages dir
 
 For example, suppose `gmain` package has one dependent package `gsub` which is installed under `gmain/node_modules` as shown in the directory structure diagram below.  `slt-globalize -d` traverses the `npm v3 style` dependency tree and extracts all the strong-globalized string literals in to `gmain/intl/en/messages.json`.  This way, all the literal strings in your package `gmain` as well as all the dependent modules are extracted and translated consistently at `gmain/intl` level.  Note that the `package.json` dependency traversal is different from simple directory traversal.
 
+In runtime, set `topMsgLoadingOnly` parameter in `SetRootDir` call in the top-level module.  See [topMsgLoadingOnly in runtime](#topmsgloadingonly-in-rutime) for details.
+
 Note that [string resource extraction from Html templates](#globalize-html-templates) is supported in the regular extraction mode only.
 
 ## `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable
@@ -300,6 +303,81 @@ For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under 
               │   └── strong-globalize -> /usr/local/lib/node_modules/strong-globalize
               └── package.json
 ```
+
+# Autonomous Message Loading
+
+Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.  With regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set instead.
+
+```js
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'});
+SG.SetDefaultLanuage();
+var g = SG({language: 'en'});
+
+// use formatters and wrappers API
+
+g.log('Welcome!');
+```
+
+`Autonomous Message Loading` is a core concept of `strong-globalize`.  It is designed for globalizaiton of the modular and highly distributed Nodejs applications.  Two key terminologies are `root directory` and `master root directory`:
+
+`root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
+
+`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  Once set, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources are stored under the `master root directory's intl/en`. 
+
+For example, the following does not work as intended because the package sub calls `SG.SetRootDir` first:
+
+```js
+// main/index.js -- my root package
+// all string resources are deep extracted and translated under intl of this package
+var MY_SUB = require('sub');
+var SG = require('strong-globalize');
+
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanuage();
+var g = SG();
+
+...
+```
+```
+// sub/index.js -- my sub package
+var request = require('request');
+var SG = require('strong-globalize');
+
+SG.SetRootDir(__dirname);
+var g = SG();
+
+...
+
+```
+
+The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of the main module:
+
+```js
+// main/index.js -- my root package
+// all string resources are deep extracted and translated under intl of this package
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+var MY_SUB = require('sub');
+
+SG.SetDefaultLanuage();
+var g = SG();
+
+...
+```
+```
+// sub/index.js -- my sub package
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+var request = require('request');
+
+var g = SG();
+
+...
+
+```
+
+
 
 
 # CLI - extract, lint, and translate
@@ -362,8 +440,12 @@ slt-globalize -t
 
 ### `var SG = require('strong-globalize);`
 
-## `SG.SetRootDir(rootPath)`
+## `SG.SetRootDir(rootPath, options)`
 - `rootPath` : {`string`} App's root directory full path.  Every client must set its root directory where `package.json` and `intl` directory exist.  All resources under this directory including dependent modules are loaded in runtime.  `SetRootDir` must be called once and only once.
+- `options` : {autonomousMsgLoading: ['`none`' | '`all`' | <an array of `strings`]} (optional)
+'`none`' (default) -- load string resources at the master rootDir, but not load from dependency packages
+'`all`' -- load string resources from all packages
+<an array of `strings`> -- load string resources at the master rootDir and the specified packages if the master package depends on them.
 
 ## `SG.SetDefaultLanguage(lang)`
 - `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times.

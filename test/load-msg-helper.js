@@ -6,6 +6,7 @@
 var SG = require('../index');
 var _ = require('lodash');
 var f = require('util').format;
+var helper = require('../lib/helper');
 
 var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
 'ko', 'pt', 'zh-Hans', 'zh-Hant'];
@@ -74,11 +75,14 @@ var msgWanted = {
   ],
 };
 
-function secondaryMgr(lang, t, callback) {
+function secondaryMgr(rootDir, lang, t, aml, positive) {
   var msg = f('running language loading test: %s in process %d',
     lang, process.pid);
   var msgFound = [];
-  SG.SetRootDir(__dirname);
+  rootDir = rootDir || __dirname;
+  global.STRONGLOOP_GLB = undefined;
+  SG.SetRootDir(rootDir, {autonomousMsgLoading: aml});
+  global.STRONGLOOP_GLB.AUTO_MSG_LOADING = aml;
   SG.SetDefaultLanguage(lang);
   var disableConsole = true;
   SG.SetPersistentLogging(function(level, msg) {
@@ -86,10 +90,14 @@ function secondaryMgr(lang, t, callback) {
     if (msgFound.length === (msgWanted[lang].length + 1)) {
       for (var i = 0; i < msgFound.length - 1; i++) {
         console.log('checking', msgWanted[lang][i]);
-        t.equal(msgFound[i + 1], msgWanted[lang][i],
-          lang + ' message ' + i.toString() + ' is correct.');
+        if (positive) {
+          t.equal(msgFound[i + 1], msgWanted[lang][i],
+            lang + ' message ' + i.toString() + ' is correct.');
+        } else {
+          t.equal(msgFound[i + 1], msgWanted[helper.ENGLISH][i],
+            lang + ' message ' + i.toString() + ' is correct.');
+        }
       }
-      callback();
     }
   }, disableConsole);
   t.ok(msgFound[0].indexOf(

@@ -82,7 +82,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         helper.setRootDir(destDir);
         translate.translateResource(function(err) {
           if (err) {
-            t.skip('translateResource failed.');
+            console.error('*** translate is unavailable; skipping.');
             translateMaybeSkip = true;
           }
           cb();

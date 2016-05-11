@@ -1,3 +1,9 @@
+2016-05-11, Version 2.4.0
+=========================
+
+ * Autonomous Message Loading (Setogit)
+
+
 2016-05-07, Version 2.3.3
 =========================
 

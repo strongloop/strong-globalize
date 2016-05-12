@@ -306,7 +306,13 @@ For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under 
 
 # Autonomous Message Loading
 
-Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.  With regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set instead.
+All packages are created equal.  `Autonomous Message Loading` is the core concept of `strong-globalize` designed for globalization of modular and highly distributed Nodejs applications.  Two key terminologies are `root directory` and `master root directory`:
+
+`root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
+
+`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources are stored under the `master root directory's intl/en`. 
+
+Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.  With regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set instead so that all string resources are loaded from all the dependent packages or set specific package names of which the string resources get loaded.
 
 ```js
 var SG = require('strong-globalize');
@@ -318,12 +324,6 @@ var g = SG({language: 'en'});
 
 g.log('Welcome!');
 ```
-
-`Autonomous Message Loading` is a core concept of `strong-globalize`.  It is designed for globalizaiton of the modular and highly distributed Nodejs applications.  Two key terminologies are `root directory` and `master root directory`:
-
-`root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
-
-`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  Once set, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources are stored under the `master root directory's intl/en`. 
 
 For example, the following does not work as intended because the package sub calls `SG.SetRootDir` first:
 

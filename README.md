@@ -89,6 +89,14 @@ With `strong-globalize`, there will be no more 'English product first and worry 
 
 You can customize (add/remove) any languages supported by the Unicode CLDR in your `strong-globalize` installation.
 
+## About Test
+
+The line test coverage with and without core part of translation tests are currently `87%` and `79%` respectively.
+
+With the out-of-box setting, `npm test` runs all tests but the core translation tests because it requires connection to the machine translation service.  To enable the machine translation, please set the environment variables described in [this section](#liblocal-credentialsjson).
+
+With custom setting such as customized language configuration, some tests may fail.  You can edit target messages in the failing test modules to suit your custom setting.  To do so, set DEBUG global variable of test/slt-test-helper.js and run the test, identify the actual error messages, then copy and paste the actual error messages to the failing test modules.
+
 # Language Config Customization
 
 Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR v28.  Among them, there are 40+ variations of French and 100+ variations of English.

@@ -12,6 +12,12 @@
     "url": "git://github.com/strongloop/strong-globalize.git"
   },
   "author": "Tetsuo Seto <tseto@us.ibm.com>",
+  "maintainers": [
+    {
+      "name": "Tetsuo Seto",
+      "email": "setogit@gmail.com"
+    }
+  ],
   "license": "Artistic-2.0",
   "readmeFilename": "README.md",
   "main": "index.js",

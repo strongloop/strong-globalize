@@ -2,7 +2,7 @@
 
 StrongLoop Globalize CLI and API
 
-[![npm version](https://badge.fury.io/js/strong-globalize.svg)](https://badge.fury.io/js/strong-globalize)
+<a href="https://badge.fury.io/js/strong-globalize"><img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18"></a>
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
@@ -84,7 +84,7 @@ As shown in the [Demo section](#demo), the code written with `strong-globalize` 
 With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
 - supported Node.js versions: 0.10, 0.12, 4.0, 5.0
-- supported cldr version: 28.0.3
+- supported cldr version: 29.0.1
 - out-of-box supported languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
 You can customize (add/remove) any languages supported by the Unicode CLDR in your `strong-globalize` installation.
@@ -99,9 +99,9 @@ With custom setting such as customized language configuration, some tests may fa
 
 # Language Config Customization
 
-Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR v28.  Among them, there are 40+ variations of French and 100+ variations of English.
+Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
 
-`strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 134KB.  See README of the utility under util directory.
+`strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.
 
 In runtime, `string-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
 

@@ -11,6 +11,7 @@ var loadMsgHelper = require('./load-msg-helper');
 var mktmpdir = require('mktmpdir');
 var path = require('path');
 var shell = require('shelljs');
+var sltTH = require('./slt-test-helper')
 var test = require('tap').test;
 var translate = require('../lib/translate');
 
@@ -34,8 +35,8 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
     var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
       !!process.env.BLUEMIX_USER && !!process.env.BLUEMIX_PASSWORD &&
       !!process.env.BLUEMIX_INSTANCE)
-                  ? false
-                  : {skip: 'Incomplete Bluemix environment'};
+                ? false
+                : {skip: 'Incomplete Bluemix environment'};
 
     async.series([
       function(cb) {
@@ -82,7 +83,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         helper.setRootDir(destDir);
         translate.translateResource(function(err) {
           if (err) {
-            t.skip('translateResource failed.');
+            console.error('*** translate is unavailable; skipping.');
             translateMaybeSkip = true;
           }
           cb();

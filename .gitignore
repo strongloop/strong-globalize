@@ -29,3 +29,11 @@ lib/local-credentials.json
 .nyc_output
 !test/node_modules
 !test/node_modules/third/node_modules
+!test/fixtures/extract000/node_modules
+!test/fixtures/extract001/node_modules
+!test/fixtures/extract002/node_modules
+!test/fixtures/extract003/node_modules
+!test/fixtures/extract004/node_modules
+!test/fixtures/translate000/node_modules
+!test/fixtures/translate001/node_modules
+!test/fixtures/translate002/node_modules

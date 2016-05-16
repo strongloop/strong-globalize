@@ -1,4 +1,14 @@
-2016-05-11, Version 2.4.0
+2016-05-16, Version 2.4.1
+=========================
+
+ * Add more lint, extract, globalize, and translate tests (Setogit)
+
+ * All packages are created equal (Setogit)
+
+ * Skip translate test if internet access fails (Setogit)
+
+
+2016-05-10, Version 2.4.0
 =========================
 
  * Autonomous Message Loading (Setogit)

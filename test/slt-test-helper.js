@@ -39,6 +39,8 @@ var DEBUG = false;
 //    must call outErrCallback(outMsg, errMsg)
 //
 function testHarness(t, targets, noFixtures, testCallback) {
+  var savedMaxDepth = process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH;
+  process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = null;
   mktmpdir(function(err, destDir, done) {
 
     function stripRootDirInfo(msgs, dir) {
@@ -130,6 +132,7 @@ function testHarness(t, targets, noFixtures, testCallback) {
     if (process.platform !== 'win32') {
       if (err) t.fail('mktmpdir cleanup failed.');
     }
+    process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = savedMaxDepth;
     t.end();
   });
 }

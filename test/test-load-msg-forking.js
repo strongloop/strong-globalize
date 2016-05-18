@@ -36,10 +36,14 @@ test('secondary test on forking', function(t) {
   } else if (cluster.isWorker) {
     t.equal(process.argv[2], 'second_invoke', 'worker in the second invoke');
     async.forEachOfSeries(wellKnownLangs, function(lang, ix, callback) {
-      secondaryMgr(__dirname, lang, t, helper.AML_ALL, true);
-      callback();
+      secondaryMgr(__dirname, lang, t, helper.AML_ALL, true,
+        function() {
+          t.pass('secondaryMgr succeeds for ' + lang);
+          callback();
+        });
     }, function(err) {
       if (err) t.fail('language iteration failed.');
+      else t.pass('language iteration succeeds.');
       t.end();
       process.exit(0);
     });

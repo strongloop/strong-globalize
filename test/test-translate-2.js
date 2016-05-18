@@ -38,6 +38,7 @@ var targets = {
       '--- linting gmain pt\n',
       '--- linted gmain pt\n',
       '--- linting gmain ru\n',
+      '--- linted gmain ru\n',
       '--- linting gmain ja\n',
       '--- linted gmain ja\n',
       '--- linting gmain ko\n',

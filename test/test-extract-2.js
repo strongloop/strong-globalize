@@ -4,6 +4,7 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var extract = require('../lib/extract');
+var helper = require('../lib/helper');
 var sltTH = require('./slt-test-helper')
 var test = require('tap').test;
 

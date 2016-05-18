@@ -42,17 +42,25 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
       function(cb) {
         // before deep extraction: AML_NONE fails.
         async.forEachOfSeries(wellKnownLangs, function(lang, ix, callback) {
-          secondaryMgr(destDir, lang, t, helper.AML_NONE, NEGATIVE_TEST);
-          callback();
+          secondaryMgr(destDir, lang, t, helper.AML_NONE, NEGATIVE_TEST,
+            function() {
+              t.pass('secondaryMgr succeeds for ' + lang);
+              callback();
+            });
         }, function(err) {
           if (err) t.fail('language iteration 1 failed.');
+          else t.pass('language iteration 1 succeeds.');
           cb();
         });
       },
       function(cb) {
         helper.setRootDir(destDir);
+        var savedMaxDepth = process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH;
+        process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = null;
         extract.extractMessages(null, true, true, function(err, result) {
           if (err) t.fail('extractMessages failed.');
+          else t.pass('extractMessages succeeds.');
+          process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = savedMaxDepth;
           cb();
         });
       },
@@ -64,8 +72,15 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
           'efc671b7d450e2536f4ba0eebd4d04e1': 'fifth - primary depth message',
         };
         try {
-          var extractedMsgJson = JSON.parse(fs.readFileSync(
-            path.join(destDir, 'intl', 'en', 'messages.json'), 'utf8'));
+          var enMsges = fs.readFileSync(
+            path.join(destDir, 'intl', 'en', 'messages.json'), 'utf8');
+          t.pass('extracted En msg json exists.')
+        } catch (e) {
+          t.fail('extracted En msg json read failure.');
+        }
+        try {
+          var extractedMsgJson = JSON.parse(enMsges);
+          t.pass('extracted En msg json parsed.')
         } catch (e) {
           t.fail('extracted En msg json parse failure.');
         }
@@ -85,6 +100,8 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
           if (err) {
             console.error('*** translate is unavailable; skipping.');
             translateMaybeSkip = true;
+          } else {
+            t.pass('translate succeeds.');
           }
           cb();
         });
@@ -96,10 +113,14 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
             callback();
             return;
           }
-          secondaryMgr(destDir, lang, t, helper.AML_NONE, POSITIVE_TEST);
-          callback();
+          secondaryMgr(destDir, lang, t, helper.AML_NONE, POSITIVE_TEST,
+            function() {
+              t.pass('secondaryMgr succeeds for ' + lang);
+              callback();
+            });
         }, function(err) {
           if (err) t.fail('language iteration 2 failed.');
+          else t.pass('language iteration 2 succeeds.');
           cb();
         });
       },
@@ -107,8 +128,10 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         // after deep extraction: aml overriding with all non-EN succeed.
         async.forEachOfSeries(wellKnownLangs, function(lang, ix, callback) {
           secondaryMgr(destDir, lang, t,
-            ['secondary', 'third', 'fourth', 'fifth'], POSITIVE_TEST);
-          callback();
+            ['secondary', 'third', 'fourth', 'fifth'], POSITIVE_TEST,
+            function() {
+              callback();
+            });
         }, function(err) {
           if (err) t.fail('language iteration 3 failed.');
           cb();
@@ -117,8 +140,10 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
       function(cb) {
         // after deep extraction: aml_all with all non-EN succeed.
         async.forEachOfSeries(wellKnownLangs, function(lang, ix, callback) {
-          secondaryMgr(destDir, lang, t, helper.AML_ALL, POSITIVE_TEST);
-          callback();
+          secondaryMgr(destDir, lang, t, helper.AML_ALL, POSITIVE_TEST,
+            function() {
+              callback();
+            });
         }, function(err) {
           if (err) t.fail('language iteration 4 failed.');
           cb();

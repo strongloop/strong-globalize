@@ -91,7 +91,7 @@ You can customize (add/remove) any languages supported by the Unicode CLDR in yo
 
 ## About Test
 
-The line test coverage with and without core part of translation tests are currently `87%` and `79%` respectively.
+The line test coverage with and without core part of translation tests are currently `88%` and `80%` respectively.
 
 With the out-of-box setting, `npm test` runs all tests but the core translation tests because it requires connection to the machine translation service.  To enable the machine translation, please set the environment variables described in [this section](#liblocal-credentialsjson).
 

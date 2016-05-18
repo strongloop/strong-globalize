@@ -75,7 +75,7 @@ var msgWanted = {
   ],
 };
 
-function secondaryMgr(rootDir, lang, t, aml, positive) {
+function secondaryMgr(rootDir, lang, t, aml, positive, callback) {
   var msg = f('running language loading test: %s in process %d',
     lang, process.pid);
   var msgFound = [];
@@ -98,6 +98,7 @@ function secondaryMgr(rootDir, lang, t, aml, positive) {
             lang + ' message ' + i.toString() + ' is correct.');
         }
       }
+      if (callback) callback();
     }
   }, disableConsole);
   t.ok(msgFound[0].indexOf(

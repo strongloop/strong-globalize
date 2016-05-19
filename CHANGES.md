@@ -1,3 +1,11 @@
+2016-05-19, Version 2.4.2
+=========================
+
+ * Add more lint tests: (Setogit)
+
+ * Update to CLDR 29.0.1 (Setogit)
+
+
 2016-05-16, Version 2.4.1
 =========================
 

@@ -72,10 +72,15 @@ var targets = {
       '--- linted 1 messages, 6 words, 38 characters\n',
       '--- linted null en\n',
       '--- linting null de\n',
+      '--- linted null de\n',
       '--- linting null es\n',
+      '--- linted null es\n',
       '--- linting null fr\n',
+      '--- linted null fr\n',
       '--- linting null it\n',
+      '--- linted null it\n',
       '--- linting null pt\n',
+      '--- linted null pt\n',
       '--- linting null ru\n',
       '--- linted null ru\n',
       '--- linting null ja\n',
@@ -95,6 +100,10 @@ var targets = {
       '*** null fr:msg004A has an odd placeholder key: Error\n',
       '*** null it incompatible w/En placeholder: port is missing.\n',
       '*** null pt incompatible w/En placeholders: msg004A\n',
+      '*** null ru has no message files.\n',
+      '*** null zh-Hans ****** empty translation: msg004A\n',
+      '*** null zh-Hans incompatible w/En double curly braces: msg004A\n',
+      '*** null zh-Hans incompatible w/En placeholders: msg004A\n',
     ],
   },
   lint005: {
@@ -104,6 +113,25 @@ var targets = {
       '--- linted null en\n',
     ],
     err: [
+    ],
+  },
+  lint006: {
+    out: [
+      '--- linting null en\n',
+      '--- linted 600 messages, 10606 words, 68340 characters\n',
+    ],
+    err: [
+      '*** en null messages006b.json contains more than 500 messages.\n',
+      '*** null en has an duplicate message key:\n',
+      '***   msg006Msg0\n',
+      '*** null en:msg006Msg333333333333333333333333333333333333333333333' +
+        '3333333333333333333333333333333333333333333333333333333333333333' +
+        '3333333333333333333333333333333333333333333333333333333333333333' +
+        '3333333333333333333333333333333333333333333333333333333333333333' +
+        '333333333333333333333333333333333333333333333333333333333333333' +
+        ' name is longer than 256\n',
+      '*** null en:msg006Msg4 message is longer than 8192\n',
+      '*** English file is malformed. Other languages not checked.\n',
     ],
   },
 };

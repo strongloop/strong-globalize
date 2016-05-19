@@ -37,3 +37,4 @@ lib/local-credentials.json
 !test/fixtures/translate000/node_modules
 !test/fixtures/translate001/node_modules
 !test/fixtures/translate002/node_modules
+!cldr/cldr_29.0.1.gz

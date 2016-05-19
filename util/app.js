@@ -32,24 +32,72 @@ var LANGS = [
   'ko', // Korean
   'zh-Hans', // Chinese (Simplified)
   'zh-Hant', // Chinese (traditional)
+  // 'af', // Afrikaans
+  // 'am', // Amharic
   // 'ar', // Araic
+  // 'az', // Azerbaijani
+  // 'be', // Belarusian
+  // 'bg', // Bulgarian
+  // 'bn', // Bengali, Bangla
+  // 'bs', // Bosnian
+  // 'ca', // Catalan
   // 'cs', // Czech
+  // 'cy', // Welsh
   // 'da', // Danish
-  // 'nl', // Dutch
-  // 'fi', // Finnish
   // 'el', // Greek
+  // 'et', // Estonian
+  // 'eu', // Basque
+  // 'fa', // Persian
+  // 'fi', // Finnish
+  // 'fil', // Pilipino
+  // 'fo', // Faroese
+  // 'ga', // Irish
+  // 'gl', // Galician
+  // 'gu', // Gujarati
   // 'he', // Hebrew
   // 'hi', // Hindi
+  // 'hr', // Croatian
+  // 'hu', // Hungarian
+  // 'hy', // Armenian
+  // 'id', // Indonesian
+  // 'is', // Icelandic
+  // 'ka', // Georgian
+  // 'kk', // Kazakh
+  // 'km', // Khmer
+  // 'kn', // Kannada
+  // 'ky', // Kyrgyz
   // 'lo', // Lao
-  // 'it', // Lithuanian
+  // 'lt', // Lithuanian
+  // 'lv', // Latvian
+  // 'mk', // Macedonian
+  // 'ml', // Malayalam
+  // 'mn', // Mongolian
+  // 'mr', // Marathi (Marāṭhī)
   // 'ms', // Malay
+  // 'my', // Burmese
   // 'nb', // Norwegian Bokmål
-  // 'fa', // Persian
+  // 'ne', // Nepali
+  // 'nl', // Dutch
+  // 'pa', // Panjabi, Punjabi
   // 'pl', // Polish
   // 'ro', // Romanian
+  // 'si', // Sinhalese, Sinhala
+  // 'sk', // Slovak
+  // 'sl', // Slovene
+  // 'sq', // Albanian
+  // 'sr', // Serbian
   // 'sv', // Swedish
+  // 'sw', // Swahili
+  // 'ta', // Tamil
+  // 'te', // Telugu
   // 'th', // Thai
+  // 'to', // Tonga (Tonga Islands)
+  // 'tr', // Turkish
+  // 'uk', // Ukrainian
+  // 'ur', // Urdu
+  // 'uz', // Uzbek
   // 'vi', // Vietnamese
+  // 'zu', // Zulu
 ];
 
 var cldrVersion = require(path.resolve(__dirname,

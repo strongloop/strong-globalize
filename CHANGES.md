@@ -1,4 +1,10 @@
-2016-05-19, Version 2.4.2
+2016-05-22, Version 2.4.3
+=========================
+
+ * Add failure-case translate tests stubbing service response (Setogit)
+
+
+2016-05-18, Version 2.4.2
 =========================
 
  * Add more lint tests: (Setogit)

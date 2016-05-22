@@ -78,7 +78,6 @@ function main(argv, callback) {
 
   if (cmd === 't') {
     translate.translateResource(function(err, result) {
-      if (err) console.error(err);
       return callback(err);
     });
   }

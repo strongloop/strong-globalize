@@ -147,5 +147,7 @@ test('test lint misc testing', function(t) {
       else t.assert(!err, name + ' must not error.');
       callback();
     });
+  }, function() {
+    t.end();
   });
 });

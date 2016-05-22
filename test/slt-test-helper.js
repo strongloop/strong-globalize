@@ -38,7 +38,7 @@ var DEBUG = false;
 // testCallback(unhook_intercept, outErrCallback);
 //    must call outErrCallback(outMsg, errMsg)
 //
-function testHarness(t, targets, noFixtures, testCallback) {
+function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
   var savedMaxDepth = process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH;
   process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = null;
   mktmpdir(function(err, destDir, done) {
@@ -48,6 +48,7 @@ function testHarness(t, targets, noFixtures, testCallback) {
       var rootDir = path.join(destDir, dir);
       msgs.forEach(function(msg) {
         if (typeof msg !== 'string') return;
+        if (msg.indexOf(helper.INTERCEPT_GPB) === 0) return;
         msg = msg.replace(rootDir, '');
         if (process.platform === 'win32')
           msg = msg.replace(/\\/g, '/');
@@ -55,6 +56,7 @@ function testHarness(t, targets, noFixtures, testCallback) {
       });
       return ret;
     }
+
     function checkErrMsg(outMsg, errMsg, key, targets, t) {
       outMsg = stripRootDirInfo(outMsg, key);
       errMsg = stripRootDirInfo(errMsg, key);
@@ -96,17 +98,25 @@ function testHarness(t, targets, noFixtures, testCallback) {
 
     var keys = Object.keys(targets);
     if (err) t.fail('mktmpdir failed.');
+    var copyDirs = [];
     keys.forEach(function(key) {
       if (noFixtures) {
         var dir = path.join(destDir, key);
+        console.log('--- making dir: %s', dir);
         shell.mkdir('-p', dir);
+        console.log('----- made dir: %s', dir);
       } else {
         var dir = path.join(__dirname, 'fixtures', key);
-        var copyDirs = [];
         copyDirs.push(dir);
-        shell.cp('-R', copyDirs, destDir);
       }
     });
+    if (!noFixtures) {
+      console.log('--- copying %d: %s to %s',
+        copyDirs.length, JSON.stringify(copyDirs, null, 2), destDir);
+      shell.cp('-r', copyDirs, destDir);
+      console.log('---- copied %d: %s to %s',
+        copyDirs.length, JSON.stringify(copyDirs, null, 2), destDir);
+    }
     var asyncTasks = [];
     keys.forEach(function(key) {
       asyncTasks.push(function(cb) {
@@ -126,13 +136,13 @@ function testHarness(t, targets, noFixtures, testCallback) {
       }.bind(key));
     });
     async.series(asyncTasks, function(err, result) {
-      done();
+      done(); // of mktmpdir
     });
   }, function(err, dir) {
     if (process.platform !== 'win32') {
       if (err) t.fail('mktmpdir cleanup failed.');
     }
     process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = savedMaxDepth;
-    t.end();
+    if (testAllDone) testAllDone();
   });
 }

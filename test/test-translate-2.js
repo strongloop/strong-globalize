@@ -3,7 +3,7 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-var sltTH = require('./slt-test-helper')
+var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
 var translate = require('../lib/translate');
 
@@ -98,5 +98,7 @@ test('test translate misc testing', translateMaybeSkip, function(t) {
       unhook_intercept();
       callback();
     });
+  }, function() {
+    t.end();
   });
 });

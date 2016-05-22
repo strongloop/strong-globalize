@@ -63,5 +63,7 @@ test('test globalize misc testing', function(t) {
     }
     unhook_intercept();
     callback();
+  }, function() {
+    t.end();
   });
 });

@@ -80,35 +80,35 @@ var targets = {
   FAKE_bundle_create : {
     translate000: {
       out: [
-      '--- linting gmain en\n',
-      '--- linted 1 messages, 5 words, 29 characters\n',
-      '--- linted gmain en\n',
-      '--- translating gmain_messages.json\n',
-      '*** translation failed: messages.json\n',
-      '--- translated 0 messages, 0 words, 0 characters.\n',
-      '--- linting gmain en\n',
-      '--- linted 1 messages, 5 words, 29 characters\n',
-      '--- linted gmain en\n',
-      '--- linting gmain de\n',
-      '--- linted gmain de\n',
-      '--- linting gmain es\n',
-      '--- linted gmain es\n',
-      '--- linting gmain fr\n',
-      '--- linted gmain fr\n',
-      '--- linting gmain it\n',
-      '--- linted gmain it\n',
-      '--- linting gmain pt\n',
-      '--- linted gmain pt\n',
-      '--- linting gmain ru\n',
-      '--- linted gmain ru\n',
-      '--- linting gmain ja\n',
-      '--- linted gmain ja\n',
-      '--- linting gmain ko\n',
-      '--- linted gmain ko\n',
-      '--- linting gmain zh-Hans\n',
-      '--- linted gmain zh-Hans\n',
-      '--- linting gmain zh-Hant\n',
-      '--- linted gmain zh-Hant\n',
+        '--- linting gmain en\n',
+        '--- linted 1 messages, 5 words, 29 characters\n',
+        '--- linted gmain en\n',
+        '--- translating gmain_messages.json\n',
+        '*** translation failed: messages.json\n',
+        '--- translated 0 messages, 0 words, 0 characters.\n',
+        '--- linting gmain en\n',
+        '--- linted 1 messages, 5 words, 29 characters\n',
+        '--- linted gmain en\n',
+        '--- linting gmain de\n',
+        '--- linted gmain de\n',
+        '--- linting gmain es\n',
+        '--- linted gmain es\n',
+        '--- linting gmain fr\n',
+        '--- linted gmain fr\n',
+        '--- linting gmain it\n',
+        '--- linted gmain it\n',
+        '--- linting gmain pt\n',
+        '--- linted gmain pt\n',
+        '--- linting gmain ru\n',
+        '--- linted gmain ru\n',
+        '--- linting gmain ja\n',
+        '--- linted gmain ja\n',
+        '--- linting gmain ko\n',
+        '--- linted gmain ko\n',
+        '--- linting gmain zh-Hans\n',
+        '--- linted gmain zh-Hans\n',
+        '--- linting gmain zh-Hant\n',
+        '--- linted gmain zh-Hant\n',
       ],
       err: [
         '*** GPB.create error: {"obj":{"message":"FAKE_bundle_create"}}\n',
@@ -575,26 +575,42 @@ var targets = {
   },
 }
 
-// subTest('FAKE_supportedTranslations');
-// subTest('FAKE_bundle_create');
-// subTest('FAKE_bundle_uploadStrings');
-// subTest('FAKE_bundle_getStrings_1');
-// subTest('FAKE_bundle_getStrings_2');
-// subTest('FAKE_bundle_getEntryInfo_1');
-// subTest('FAKE_bundle_getEntryInfo_2');
+var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
+  !!process.env.BLUEMIX_USER && !!process.env.BLUEMIX_PASSWORD &&
+  !!process.env.BLUEMIX_INSTANCE)
+              ? false
+              : {skip: 'Incomplete Bluemix environment'};
+
+function loginToGpb(callback) {
+  var credentials = {
+    credentials: {
+      url: process.env.BLUEMIX_URL,
+      userId: process.env.BLUEMIX_USER,
+      password: process.env.BLUEMIX_PASSWORD,
+      instanceId: process.env.BLUEMIX_INSTANCE,
+    },
+  };
+  var gpClient = gpb.getClient(credentials);
+  gpClient.ping(null, callback);
+}
 
 function fakeGpbTest(t, testId, callback) {
   if (translateMaybeSkip) return callback();
   if (exports.FAKE_testIds.indexOf(testId) < 0) return callback();
+  loginToGpb(function(err) {
+    if (err) return callback();
+    fakeGpbTestPriv(t, testId, callback);
+  });
+}
+
+function fakeGpbTestPriv(t, testId, callback) {
   var options = {};
   options[testId] = true;
-  // pre-process here
   interceptGpb(options);
   sltTH.testHarness(t, targets[testId], false,
       function(name, unhook_intercept, cb) {
     translate.translateResource(function(err) {
       unhook_intercept();
-      // post-process here.
       cb();
     });
   }, function() {

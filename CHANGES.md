@@ -1,3 +1,9 @@
+2016-05-23, Version 2.4.4
+=========================
+
+ * Skip translate tests when offline (Setogit)
+
+
 2016-05-22, Version 2.4.3
 =========================
 

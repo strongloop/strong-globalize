@@ -4,6 +4,7 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var gpb = require('g11n-pipeline');
+var helper = require('../lib/helper');
 var sltTH = require('./slt-test-helper');
 var translate = require('../lib/translate');
 
@@ -73,7 +74,7 @@ var targets = {
       out: [
       ],
       err: [
-        '*** Login to GPB failed or GPB.supportedTranslations error.\n',
+        helper.MSG_GPB_UNAVAILABLE + '\n',
       ],
     },
   },

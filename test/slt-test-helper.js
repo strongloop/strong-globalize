@@ -57,6 +57,11 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
       return ret;
     }
 
+    function passTemporaryFailure(found, target) {
+      var failureMsg = helper.MSG_GPB_UNAVAILABLE;
+      return (found !== target && found === failureMsg);
+    }
+
     function checkErrMsg(outMsg, errMsg, key, targets, t) {
       outMsg = stripRootDirInfo(outMsg, key);
       errMsg = stripRootDirInfo(errMsg, key);
@@ -70,14 +75,23 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
         '\nEND', key, '>>>\n'
       );
       if (!DEBUG) {
+        var temporaryFailure = false;
         outMsg.forEach(function(out, ix) {
+          temporaryFailure = temporaryFailure ||
+            passTemporaryFailure(out, targets[key].err[ix]);
+          if (temporaryFailure) return;
           t.equal(out, targets[key].out[ix],
             key + ': out msg matches.')
         });
+        if (temporaryFailure) return;
         errMsg.forEach(function(err, ix) {
+          temporaryFailure = temporaryFailure ||
+            passTemporaryFailure(err, targets[key].err[ix]);
+          if (temporaryFailure) return;
           t.equal(err, targets[key].err[ix],
             key + ': err msg matches.')
         });
+        if (temporaryFailure) return;
         t.equal(outMsg.length, targets[key].out.length,
           'out msg count matched: ' + key);
         t.equal(errMsg.length, targets[key].err.length,

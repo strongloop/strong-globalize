@@ -59,6 +59,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
 
     function passTemporaryFailure(found, target) {
       var failureMsg = helper.MSG_GPB_UNAVAILABLE;
+      found = found.trim();
       return (found !== target && found === failureMsg);
     }
 
@@ -78,9 +79,9 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
         var temporaryFailure = false;
         outMsg.forEach(function(out, ix) {
           temporaryFailure = temporaryFailure ||
-            passTemporaryFailure(out, targets[key].err[ix]);
+            passTemporaryFailure(out, targets[key].out[ix]);
           if (temporaryFailure) return;
-          t.equal(out, targets[key].out[ix],
+          t.match(out, targets[key].out[ix],
             key + ': out msg matches.')
         });
         if (temporaryFailure) return;
@@ -88,7 +89,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
           temporaryFailure = temporaryFailure ||
             passTemporaryFailure(err, targets[key].err[ix]);
           if (temporaryFailure) return;
-          t.equal(err, targets[key].err[ix],
+          t.match(err, targets[key].err[ix],
             key + ': err msg matches.')
         });
         if (temporaryFailure) return;

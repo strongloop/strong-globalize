@@ -19,7 +19,7 @@ var targets = {
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
         '--- scanned: 2 js, 0 html \n--- skipped: 0 js, 0 html \n' +
         '--- extracted: 2 msges, 6 words, 26 characters\n',
-      ],
+    ],
     err: [
     ],
   },
@@ -31,16 +31,19 @@ var targets = {
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
         '--- extracted: 1 msges, 4 words, 17 characters\n',
-      ],
+    ],
     err: [
     ],
   },
   extract002: {
     out: [
+      '*** non-literal argument and skipped: g.log\n',
+      '*** non-literal argument and skipped: g.log\n',
+      '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
-        '--- scanned: 1 js, 0 html \n--- skipped: 1 js, 0 html \n' +
-        '--- extracted: 0 msges, 0 words, 0 characters\n',
-      ],
+        '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
+        '--- extracted: 1 msges, 4 words, 17 characters\n',
+    ],
     err: [
     ],
   },
@@ -54,7 +57,7 @@ var targets = {
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
         '--- scanned: 2 js, 0 html \n--- skipped: 0 js, 0 html \n' +
         '--- extracted: 2 msges, 6 words, 26 characters\n',
-      ],
+    ],
     err: [
     ],
   },
@@ -66,12 +69,26 @@ var targets = {
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
         '--- extracted: 1 msges, 4 words, 17 characters\n',
-      ],
+    ],
     err: [
     ],
   },
+  extract005: {
+    out: [
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+        '--- scanned: 1 js, 0 html \n--- skipped: 1 js, 0 html \n' +
+        '--- extracted: 0 msges, 0 words, 0 characters\n',
+    ],
+    err: [
+      new RegExp('^\n[\*]{58}\n' +
+        '[\*]{2} Please fix the JS code or blacklist the directory\.\n' +
+        '[\*]{2} \/index\.js\n' +
+        '[\*]{2} \{\"lineNumber\":8,\"description\":\"Illegal' +
+        ' return statement\",\"index\":19[29]{1}' + '\}\n' +
+        '[\*]{58}\n\n$'),
+    ],
+  },
 };
-
 test('test extract misc testing', function(t) {
   sltTH.testHarness(t, targets, false,
     function(name, unhook_intercept, callback) {

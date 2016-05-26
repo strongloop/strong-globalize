@@ -8,12 +8,6 @@ var helper = require('../lib/helper');
 var sltTH = require('./slt-test-helper');
 var translate = require('../lib/translate');
 
-var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
-  !!process.env.BLUEMIX_USER && !!process.env.BLUEMIX_PASSWORD &&
-  !!process.env.BLUEMIX_INSTANCE)
-              ? false
-              : {skip: 'Incomplete Bluemix environment'};
-
 exports.fakeGpbTest = fakeGpbTest;
 Object.defineProperty(exports, 'FAKE_supportedTranslations', {
   enumerable: false,

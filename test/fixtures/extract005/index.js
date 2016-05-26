@@ -5,3 +5,4 @@ var gsub = require('gsub');
 
 g.log(gsub.getHelpText());
 g.log(g.f('User name is %s.', gsub.getUserName()));
+return;

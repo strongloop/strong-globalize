@@ -34,7 +34,9 @@ lib/local-credentials.json
 !test/fixtures/extract002/node_modules
 !test/fixtures/extract003/node_modules
 !test/fixtures/extract004/node_modules
+!test/fixtures/extract005/node_modules
 !test/fixtures/translate000/node_modules
 !test/fixtures/translate001/node_modules
 !test/fixtures/translate002/node_modules
 !cldr/cldr_29.0.1.gz
+.DS_Store

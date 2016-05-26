@@ -1,4 +1,12 @@
-2016-05-23, Version 2.4.4
+2016-05-26, Version 2.4.5
+=========================
+
+ * Emit JS and HTML syntax errors in regular exraction mode (Setogit)
+
+ * Pass temporary GPB connection failure (Setogit)
+
+
+2016-05-22, Version 2.4.4
 =========================
 
  * Skip translate tests when offline (Setogit)

@@ -614,12 +614,12 @@ function fakeGpbTestPriv(t, testId, callback) {
 }
 
 function interceptGpb(options) {
-  var gpbGetClient = gpb.getClient; // var credentials = getCredentials();
+  var gpbGetClient = gpb.getClient;
   gpb.getClient = function(credentials) {
     var ret = gpbGetClient(credentials);
     var gpbSupportedTranslations = ret.supportedTranslations;
     ret.supportedTranslations = options.FAKE_supportedTranslations ?
-      function(p1, callback) { // callbak(err, supportedLangs);
+      function(p1, callback) {
         return callback('FAKE_supportedTranslations', null);
       } : gpbSupportedTranslations;
     var gpbBundle = ret.bundle;
@@ -627,54 +627,34 @@ function interceptGpb(options) {
       var bundle = gpbBundle.apply(ret, arguments);
       bundle.create = options.FAKE_bundle_create ?
         function(options, callback) {
-          // options.sourceLanguage
-          // options.targetLanguages
-          // callback(err)
           return callback({obj:{message: 'FAKE_bundle_create'}});
         } : bundle.create;
       bundle.uploadStrings = options.FAKE_bundle_uploadStrings ?
         function(options, callback) {
-          // options.languageId
-          // options.strings
-          // callback(err)
           return callback('FAKE_bundle_uploadStrings');
         } : bundle.uploadStrings;
       bundle.getStrings = options.FAKE_bundle_getStrings_1 ?
         function(options, callback) {
-          // options
-          // callback(err, data)
-          // return callback('FAKE_bundle_getStrings');
           return callback({obj:{message: 'Language ABC does not exist.'}});
         } : bundle.getStrings;
       bundle.getStrings = options.FAKE_bundle_getStrings_2 ?
         function(options, callback) {
-          // options
-          // callback(err, data)
-          // return callback('FAKE_bundle_getStrings');
           return callback({obj:{message: 'FAKE_bundle_getStrings'}});
         } : bundle.getStrings;
       if (options.FAKE_bundle_getEntryInfo_1 ||
           options.FAKE_bundle_getEntryInfo_2) {
         bundle.getStrings = function(options, callback) {
-          // options
-          // callback(err, data)
-          // return callback('FAKE_bundle_getStrings');
           return callback(null, {resourceStrings: []});
         };
       }
       bundle.getEntryInfo = options.FAKE_bundle_getEntryInfo_1 ?
         function(options, callback) {
-          // options
-          // callback(err, data)
           return callback('FAKE_bundle_getEntryInfo');
         } : bundle.getEntryInfo;
       bundle.getEntryInfo = options.FAKE_bundle_getEntryInfo_2 ?
         function(options, callback) {
-          // options
-          // callback(err, data)
           return callback(null, {resourceEntry: {translationStatus: 'FAILED'}});
         } : bundle.getEntryInfo;
-      // console.log(helper.INTERCEPT_GPB + '%j', ret);
       return bundle;
     };
     return ret;

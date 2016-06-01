@@ -12,8 +12,8 @@ var targets = {
   extract000: {
     out: [
       '--- cloned /node_modules/gsub/intl/en/gsub.txt\n',
-      '*** non-literal argument and skipped: g.log\n',
-      '*** non-literal argument and skipped: g.log\n',
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
       '    extracted: User name is %s.\n',
       '    extracted: user: %s\n',
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
@@ -25,8 +25,8 @@ var targets = {
   },
   extract001: {
     out: [
-      '*** non-literal argument and skipped: g.log\n',
-      '*** non-literal argument and skipped: g.log\n',
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
       '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
@@ -37,8 +37,8 @@ var targets = {
   },
   extract002: {
     out: [
-      '*** non-literal argument and skipped: g.log\n',
-      '*** non-literal argument and skipped: g.log\n',
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
       '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
@@ -50,8 +50,8 @@ var targets = {
   extract003: {
     out: [
       '--- cloned /node_modules/gsub/intl/en/gsub.txt\n',
-      '*** non-literal argument and skipped: g.log\n',
-      '*** non-literal argument and skipped: g.log\n',
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
       '    extracted: User name is %s.\n',
       '    extracted: user: %s\n',
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
@@ -63,8 +63,8 @@ var targets = {
   },
   extract004: {
     out: [
-      '*** non-literal argument and skipped: g.log\n',
-      '*** non-literal argument and skipped: g.log\n',
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
       '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +

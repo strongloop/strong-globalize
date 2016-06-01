@@ -25,6 +25,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
     if (err) t.fail('mktmpdir failed.');
     shell.cd(__dirname);
     shell.cp('-R', [
+      path.join(__dirname, 'intl/'),
       path.join(__dirname, 'package.json'),
       path.join(__dirname, 'node_modules/')], destDir);
     shell.cd(destDir);

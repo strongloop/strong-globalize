@@ -102,6 +102,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
     function initRootDir(dir) {
       var rootDir = path.join(destDir, dir);
       shell.cd(rootDir);
+      shell.mkdir('-p', path.join(rootDir, 'intl'));
       global.STRONGLOOP_GLB = undefined;
       // In case noFixtures, test goes more like real scenario which
       // requires real setRootDir.  Otherwise, setRootDir skips

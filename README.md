@@ -99,11 +99,11 @@ With custom setting such as customized language configuration, some tests may fa
 
 # Language Config Customization
 
-Out of box, one CLDR `gz` file is inculuded in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
+Out of box, one CLDR `gz` file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
 
 `strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.
 
-In runtime, `string-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
+In runtime, `strong-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
 
 ## Message String Resource
 
@@ -138,7 +138,7 @@ Setting language to `strong-globalize` instance is pretty cheap.  CLDR data set 
 // the common part comes here.
 
 // set language first, then, use formatters and wrappers API
-g.setLauguage(getAcceptLanguage()); // once per session
+g.setLanguage(getAcceptLanguage()); // once per session
 
 g.log('Welcome!');
 ```
@@ -151,7 +151,7 @@ v1.x:
 ```js
 var g = require('strong-globalize');
 g.setRootDir(__dirname);
-g.setDefaultLanuage();
+g.setDefaultLanguage();
 
 // use formatters and wrappers API
 
@@ -162,7 +162,7 @@ v2.0:
 ```js
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanuage();
+SG.SetDefaultLanguage();
 var g = SG({language: 'en'});
 
 // use formatters and wrappers API
@@ -178,7 +178,7 @@ First, Machine Translation with `slt-globalize -t` can be used like the traditio
 
 Second, in runtime, set the environment variable `STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE` and `strong-globalize` adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.
 
-Third, `string-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json`which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
+Third, `strpng-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json` which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
 `intl/en/messages.json`:
 
 ```
@@ -220,7 +220,7 @@ See an additional example in the [`pseudo localization demo`](#pseudo-localizati
 
 Suppose you have a package named `gmain` which has two JS files: `index.js` and `lib/util.js` and the two JS files contain the same `g.log('user: %s', userName)` call in line# 8 and line# 12 respectively.  Running `slt-globalize -e` under the application root directory, `/Users/user/gmain` will generate `intl/en/messages.json` and `intl/zz/messages.json` as shown in the [Pseudo Localization Support](#pseudo-localization-support) section.  Note that `slt-globalize -e` extracts all strong-globalized literal strings as well as non-globalized literal string with positional information in to `intl/zz/messages.json`.  It is useful to pin-point untranslated strings in the source code.
 
-In the regular extraction mode, `strong-globalize` scans all JS and Html templates owned by the `gmain` package no mater how deep the directory structure goes -- for example, `gmain/lib/usa/california/sanfrancisco/util.js` is scanned.  However, it does not examine dependent files under `node_modules` or `test` directory.  All `strong-globalized` literal strings in JS and Html files of the target package will be extracted and stored in `intl/en/messages.json` along with the positional information stored in `intl/zz/messages.json`.  All non-strong-globalized literal strings in the first argument of all JS function calls are extracted and stored in `intl/zz/messages.json` along with the positional information.
+In the regular extraction mode, `strong-globalize` scans all JS and Html templates owned by the `gmain` package no matter how deep the directory structure goes -- for example, `gmain/lib/usa/california/sanfrancisco/util.js` is scanned.  However, it does not examine dependent files under `node_modules` or `test` directory.  All `strong-globalized` literal strings in JS and Html files of the target package will be extracted and stored in `intl/en/messages.json` along with the positional information stored in `intl/zz/messages.json`.  All non-strong-globalized literal strings in the first argument of all JS function calls are extracted and stored in `intl/zz/messages.json` along with the positional information.
 
 In runtime, the string resource JSON files under `intl` will be loaded on to memory as needed.
 
@@ -267,7 +267,7 @@ Note that [string resource extraction from Html templates](#globalize-html-templ
 
 ## `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable
 
-As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on `gmain/intl/zz/messages.json`, `gmain/intl/zz/messages.json` may also grow exponentially and cause `slt-globalize -d` to run out of resource of your computer.
+As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on `gmain/intl/zz/messages.json`, `gmain/intl/zz/messages.json` may also grow exponentially and cause `slt-globalize -d` to run out of resource on your computer.
 
 To manage such situations, you can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by `package.json` (production) dependency.
 
@@ -325,7 +325,7 @@ Once all the string resource files are deep-extracted and translated at the top 
 ```js
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'});
-SG.SetDefaultLanuage();
+SG.SetDefaultLanguage();
 var g = SG({language: 'en'});
 
 // use formatters and wrappers API
@@ -342,7 +342,7 @@ var MY_SUB = require('sub');
 var SG = require('strong-globalize');
 
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanuage();
+SG.SetDefaultLanguage();
 var g = SG();
 
 ...
@@ -368,7 +368,7 @@ var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var MY_SUB = require('sub');
 
-SG.SetDefaultLanuage();
+SG.SetDefaultLanguage();
 var g = SG();
 
 ...
@@ -506,7 +506,7 @@ alias of `formatNumber`
 
 # API - Wrappers
 
-%s place folders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').
+%s place holders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').
 
 ## `g.Error(path, ...)`(capital Error)
 returns Error with a formatted message.
@@ -709,7 +709,7 @@ function getHelpText() {
 ```
 after:
 - `var SG = require('strong-globalize');`
-- `SG.SetRoonDir( ... );`
+- `SG.SetRootDir( ... );`
 - `var g = SG();`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
@@ -764,7 +764,7 @@ console.log(gsub.getHelpText());
 ```
 after:
 - `var SG = require('strong-globalize');`
-- `SG.SetRoonDir( ... );`
+- `SG.SetRootDir( ... );`
 - `SG.SetDefaultLanguage( ... );`
 - `var g = SG();`
 - replace `util` with `g`

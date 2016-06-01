@@ -58,7 +58,7 @@ var msgWanted = {
   pt: [
     'Segunda mensagem primária de profundidade',
     'Terceira mensagem primária de profundidade',
-    'Na quarta segundo a profundidade da mensagem',
+    new RegExp('^(Na quar|Quar)ta segundo a profundidade da mensagem$'),
     'Quinta mensagem primária de profundidade',
   ],
   'zh-Hans': [
@@ -91,10 +91,10 @@ function secondaryMgr(rootDir, lang, t, aml, positive, callback) {
       for (var i = 0; i < msgFound.length - 1; i++) {
         console.log('checking', msgWanted[lang][i]);
         if (positive) {
-          t.equal(msgFound[i + 1], msgWanted[lang][i],
+          t.match(msgFound[i + 1], msgWanted[lang][i],
             lang + ' message ' + i.toString() + ' is correct.');
         } else {
-          t.equal(msgFound[i + 1], msgWanted[helper.ENGLISH][i],
+          t.match(msgFound[i + 1], msgWanted[helper.ENGLISH][i],
             lang + ' message ' + i.toString() + ' is correct.');
         }
       }

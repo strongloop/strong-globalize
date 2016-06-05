@@ -48,7 +48,6 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
       var rootDir = path.join(destDir, dir);
       msgs.forEach(function(msg) {
         if (typeof msg !== 'string') return;
-        if (msg.indexOf(helper.INTERCEPT_GPB) === 0) return;
         msg = msg.replace(rootDir, '');
         if (process.platform === 'win32')
           msg = msg.replace(/\\/g, '/');
@@ -103,6 +102,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
     function initRootDir(dir) {
       var rootDir = path.join(destDir, dir);
       shell.cd(rootDir);
+      shell.mkdir('-p', path.join(rootDir, 'intl'));
       global.STRONGLOOP_GLB = undefined;
       // In case noFixtures, test goes more like real scenario which
       // requires real setRootDir.  Otherwise, setRootDir skips

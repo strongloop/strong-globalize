@@ -1,4 +1,24 @@
-2016-05-26, Version 2.4.5
+2016-06-05, Version 2.4.6
+=========================
+
+ * Use realpath to see if the file has been checked (perf) (Setogit)
+
+ * Convert to array if string in inverting position text (Setogit)
+
+ * Add setRootDir test (Setogit)
+
+ * Fix typo (Candy)
+
+ * Make sure intl directory exists in setRootDir (Setogit)
+
+ * Relax test target to accomodate to GPB change (Setogit)
+
+ * Remove unused code (Setogit)
+
+ * Remove duplicate code (Setogit)
+
+
+2016-05-25, Version 2.4.5
 =========================
 
  * Emit JS and HTML syntax errors in regular exraction mode (Setogit)

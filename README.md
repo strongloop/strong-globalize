@@ -178,7 +178,7 @@ First, Machine Translation with `slt-globalize -t` can be used like the traditio
 
 Second, in runtime, set the environment variable `STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE` and `strong-globalize` adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.
 
-Third, `strpng-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json` which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
+Third, `strong-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json` which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
 `intl/en/messages.json`:
 
 ```

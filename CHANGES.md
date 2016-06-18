@@ -1,4 +1,20 @@
-2016-06-05, Version 2.4.6
+2016-06-18, Version 2.4.7
+=========================
+
+ * Explain sample codes and three strong-globalize coding patterns (Setogit)
+
+ * Enable travis-ci.org build (Setogit)
+
+ * Deprecated Node 0.10; added 4.4.5, 5.11.1, 6.2.1 to the tested versions (Setogit)
+
+ * Format JavaScript code piece as JS in README (Setogit)
+
+ * Add examples (Setogit)
+
+ * Update readme and add callee information to zz/messages*.json (Setogit)
+
+
+2016-06-04, Version 2.4.6
 =========================
 
  * Use realpath to see if the file has been checked (perf) (Setogit)

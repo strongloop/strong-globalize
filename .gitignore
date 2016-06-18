@@ -40,3 +40,4 @@ lib/local-credentials.json
 !test/fixtures/translate002/node_modules
 !cldr/cldr_29.0.1.gz
 .DS_Store
+!.travis.yml

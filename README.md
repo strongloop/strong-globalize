@@ -3,6 +3,7 @@
 StrongLoop Globalize CLI and API
 
 <a href="https://badge.fury.io/js/strong-globalize"><img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18"></a>
+[![Build Status](https://travis-ci.org/strongloop/strong-globalize.svg?branch=master)](https://travis-ci.org/strongloop/strong-globalize)
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)

@@ -65,7 +65,7 @@ StrongGlobalize.prototype.setLanguage = function(lang) {
   this._options.language = lang;
 };
 
-StrongGlobalize.prototype.getLanguage = function(lang) {
+StrongGlobalize.prototype.getLanguage = function() {
   return this._options.language;
 };
 

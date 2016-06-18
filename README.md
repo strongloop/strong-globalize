@@ -3,6 +3,7 @@
 StrongLoop Globalize CLI and API
 
 <a href="https://badge.fury.io/js/strong-globalize"><img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18"></a>
+[![Build Status](https://travis-ci.org/strongloop/strong-globalize.svg?branch=master)](https://travis-ci.org/strongloop/strong-globalize)
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
@@ -17,6 +18,8 @@ StrongLoop Globalize CLI and API
 	* [SG.SetRootDir](#sgsetrootdirrootpath)
 	* [SG.SetHtmlRegex](#sgsethtmlregexregex-regexhead-regextail)
 	* [SG.SetPersistentLogging](#sgsetpersistentlogginglogcallback-disableconsole)
+  * [g.setLanguage](#gsetlanguagelang)
+  * [g.getLanguage](#ggetlanguage)
 * [API - Formatters](#api---formatters)
 	* [g.formatMessage](#gformatmessagepath-variables)
 	* [g.t](#gtpath-variables)
@@ -64,7 +67,7 @@ StrongLoop Globalize CLI and API
 	* [help txt files and msg keys](#help-txt-files-and-msg-keys)
 	* [manually add message strings](#manually-add-message-strings)
 * [Demo](#demo)
-* [Demo - Pseudo Localization](#pseudo-localization-demo)
+* [Sample Code](#sample-code)
 * [Globalize HTML Templates](#globalize-html-templates)
 * [Persistent Logging](#persistent-logging)
 
@@ -83,9 +86,9 @@ As shown in the [Demo section](#demo), the code written with `strong-globalize` 
 
 With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
-- supported Node.js versions: 0.10, 0.12, 4.0, 5.0
-- supported cldr version: 29.0.1
-- out-of-box supported languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
+- Node.js versions - tested on: 0.12.14, 4.4.5, 5.11.1, 6.2.1
+- cldr version: 29.0.1
+- out-of-box languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
 You can customize (add/remove) any languages supported by the Unicode CLDR in your `strong-globalize` installation.
 
@@ -178,20 +181,34 @@ First, Machine Translation with `slt-globalize -t` can be used like the traditio
 
 Second, in runtime, set the environment variable `STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE` and `strong-globalize` adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.
 
-Third, `strpng-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json` which show the location of each message extracted from JS files.  If the message is used in multiple locations in the JS source, `slt-globalize -e` generates:
+Third, `strong-globalize` reserves the language code `zz` as pseudo-language.  `slt-globalize -e` generates `intl/zz/messages.json` and `intl/zz/messages_inverted.json` which show the location of each message extracted from JS files.
+
+Note that `strong-globalize` does not use `intl/zz/*.json` in runtime.  They are reference only.  They are useful to detect globalization bugs usually called `hard-coded` strings.  For example, intl/en/messages.json shows "Shipping cost is {0}." string is properly globalized and extracted to intl/en/messages.json with the auto-generated message key as "77decb50aa6360f0dc9c8ded9086b94e".  intl/zz/messages.json shows the string is located at line#31 of `index.js` as the argument of function call `g.log`.  intl/zz/messages_inverted.json shows that at the line#20 of `index.js` there is a string "%s Hello %s" as the first argument of `util.format` which looks like a globalization bug.
+
+Also note that `slt-globalize -e` extracts the first argument of every function call if it's a literal string or concatenation of literal strings.  Literal strings in other arguments of function calls are NOT extracted.
+
 `intl/en/messages.json`:
 
 ```
 {
-  "21610b057179c7177036c1719f8922cc": "user: {0}"
+  "77decb50aa6360f0dc9c8ded9086b94e": "Shipping cost is {0}.",
+  "b5d4af08bf61e58d375923977290d67b": "Listening on {0} by {1}."
 }
 ```
 `intl/zz/messages.json`:
 ```
 {
-  "21610b057179c7177036c1719f8922cc": [
-    "index.js:8",
-    "lib/util.js:12"
+  "77decb50aa6360f0dc9c8ded9086b94e": [
+    "g.log:index.js:31"
+  ],
+  "b5d4af08bf61e58d375923977290d67b": [
+    "g.log:index.js:29"
+  ],
+  "%s Hello %s": [
+    "util.format:index.js:20"
+  ],
+  "http://localhost:": [
+    "request:index.js:35"
   ]
 }
 ```
@@ -199,18 +216,21 @@ and, `intl/zz/messages_inverted.json`:
 ```
 {
   "index.js": {
-    "8": [
-      "21610b057179c7177036c1719f8922cc"
-    ]
-  },
-  "lib/util.js": {
-    "12": [
-      "21610b057179c7177036c1719f8922cc"
+    "20": [
+      "util.format('%s Hello %s', ... )"
+    ],
+    "29": [
+      "g.log('b5d4af08bf61e58d375923977290d67b')"
+    ],
+    "31": [
+      "g.log('77decb50aa6360f0dc9c8ded9086b94e')"
+    ],
+    "35": [
+      "request('http://localhost:')"
     ]
   }
 }
 ```
-See an additional example in the [`pseudo localization demo`](#pseudo-localization-demo) section.
 
 # Deep String Resource Extraction
 
@@ -260,8 +280,6 @@ In runtime, the string resource JSON files under `intl` will be loaded on to mem
 Enterprise-scale applications may depend on hundreds of third party packages directly or indirectly.  Such applications typically download dependent packages using `npm install` and can globalize them using the `Deep Extraction` mode.
 
 For example, suppose `gmain` package has one dependent package `gsub` which is installed under `gmain/node_modules` as shown in the directory structure diagram below.  `slt-globalize -d` traverses the `npm v3 style` dependency tree and extracts all the strong-globalized string literals in to `gmain/intl/en/messages.json`.  This way, all the literal strings in your package `gmain` as well as all the dependent modules are extracted and translated consistently at `gmain/intl` level.  Note that the `package.json` dependency traversal is different from simple directory traversal.
-
-In runtime, set `topMsgLoadingOnly` parameter in `SetRootDir` call in the top-level module.  See [topMsgLoadingOnly in runtime](#topmsgloadingonly-in-rutime) for details.
 
 Note that [string resource extraction from Html templates](#globalize-html-templates) is supported in the regular extraction mode only.
 
@@ -342,12 +360,11 @@ var MY_SUB = require('sub');
 var SG = require('strong-globalize');
 
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
 var g = SG();
 
 ...
 ```
-```
+```js
 // sub/index.js -- my sub package
 var request = require('request');
 var SG = require('strong-globalize');
@@ -359,7 +376,7 @@ var g = SG();
 
 ```
 
-The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of the main module:
+The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of the main module in each package:
 
 ```js
 // main/index.js -- my root package
@@ -368,12 +385,11 @@ var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var MY_SUB = require('sub');
 
-SG.SetDefaultLanguage();
 var g = SG();
 
 ...
 ```
-```
+```js
 // sub/index.js -- my sub package
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
@@ -416,9 +432,9 @@ Options:
 
 To access Globalization Pipeline on Bluemix service for machine translation, credentials should be provided in one of the two ways:
 
-(1) By lib/local-credentials.json
+(1) By strong-globalize/lib/local-credentials.json
 
-Copy from the service dashboard and paste something like the following into lib/local-credentials.json.
+Copy and paste your credentials look like the following from the dashboard of Globalization Pipeline on Bluemix service into `strong-globalize/lib/local-credentials.json`.
 
 ```js
 {
@@ -449,7 +465,7 @@ slt-globalize -t
 ### `var SG = require('strong-globalize);`
 
 ## `SG.SetRootDir(rootPath, options)`
-- `rootPath` : {`string`} App's root directory full path.  Every client must set its root directory where `package.json` and `intl` directory exist.  All resources under this directory including dependent modules are loaded in runtime.  `SetRootDir` must be called once and only once.
+- `rootPath` : {`string`} App's root directory full path.  Every client must set its root directory where `package.json` and `intl` directory exist.  All resources under this directory including dependent modules are loaded in runtime.  `SetRootDir` must be called once and only once usually in the main js module.
 - `options` : {autonomousMsgLoading: ['`none`' | '`all`' | <an array of `strings`]} (optional)
 '`none`' (default) -- load string resources at the master rootDir, but not load from dependency packages
 '`all`' -- load string resources from all packages
@@ -466,6 +482,12 @@ slt-globalize -t
 - `regexTail` : {`RegExp`} to trim the tail portion from the extracted string
 
 Most clients do not need to setHtmlRegex.  See [the Globalize HTML Templates section](#globalize-html-templates) for details.
+
+## `g.setLanguage(lang)`
+- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times.
+
+## `g.getLanguage()`
+- returns {`string`} Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
 
 # API - Formatters
@@ -640,6 +662,8 @@ g.f('Deploy {what} to {url} failed: {err}', {what: what, url: url, err: err});
 ```
 When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like `{userName}`.  Ordered placeholder is `{0}`, `{1}`, `{2}`, etc. which should be zero-base.
 
+Curly brace characters are reserved by `strong-globalize`.  In case curly brace characters are used in literal strings, escape them.  For example, `{User}` is a placeholder and '\x7bUser\x7d' is an escaped literal string rendered as '{User}'
+
 ## double curly braces not to translate
 Use double curly braces {{ }} as "don't translate" indicator.
 
@@ -803,64 +827,72 @@ setInterval(function(){
 console.log(gsub.getHelpText());
 ```
 
-## pseudo localization demo
+# Sample Code
 
-Running `slt-globalize -e` over the above `gmain/index.js` will generate these two messages.json.  Please note that every literal string appears as the first argument of a function call is extracted with its positional information into intl/zz/messages.json.  In the example here, '/' and 'http://localhost' are included in intl/zz/messages.json, but not in intl/en/messages.json because `strong-globalize` text formatter function is not used with the two literals since they should not be translated.
+Sample code is included under `examples` directory.  Let's browse the code and quickly study the standard coding pattern of `strong-globalize`.
 
-Also note that all the translatable message keys are hashed, but the ones not to be translated show up as readable text and are appended to intl/zz/messages.json.  It can help detect a globalization bug typically in Pseudo Localization Testing.  See the [`Pseudo Localization Support`](#pseudo-localization-support) section for more details.
 
-`intl/en/messages.json`:
 ```
-{
-  "6ffc5986cc983ff9c0dc2019e0f57686": "{0} Hello World",
-  "9f50ab5d3c2a6a071918321ec156ac04": "Listening on {0} by {1}.",
-  "fc20d00d156310f57cfd31d283210b22": "Sending request to {0} ..."
-}
-```
-
-`intl/zz/messages.json`:
-```
-{
-  "6ffc5986cc983ff9c0dc2019e0f57686": [
-    "index.js:12"
-  ],
-  "9f50ab5d3c2a6a071918321ec156ac04": [
-    "index.js:18"
-  ],
-  "fc20d00d156310f57cfd31d283210b22": [
-    "index.js:22"
-  ],
-  "/": [
-    "index.js:11"
-  ],
-  "http://localhost:": [
-    "index.js:23"
-  ]
-}
+examples
+├── gmain
+│   ├── index.js
+│   ├── intl
+│   │   ├── en
+│   │   │   └── messages.json
+│   │   └── zz
+│   │       ├── messages.json
+│   │       └── messages_inverted.json
+│   └── package.json
+└── gsub
+    ├── index.js
+    ├── intl
+    │   ├── en
+    │   │   ├── help.txt
+    │   │   └── messages.json
+    │   └── zz
+    │       ├── messages.json
+    │       └── messages_inverted.json
+    ├── lib
+    │   └── util.js
+    └── package.json
 ```
 
-and, `intl/zz/messages_inverted.json`
+
+## First argument 
+
+`strong-globalize` extracts literal strings passed as the first argument of the `strong-globalize` functions.  In globalizing existing modules, most code changes you are going to make will be to make sure all literal strings are in that form.  Usually, you do not need to globalize debug text.
+
+## Three types of Module
+
+From `strong-globalize` point of view, the role of every JS file is one of the three types:
+
+a. `master main` -- `SetRootDir(__dirname)` is declared right after `require('strong-globalize')` which is placed at the very first line of the main JS module of the root package in the application.  See `examples/gmain/index.js`.  `SG.SetDefaultLanguage();` is optional if the `lang` parameter is omitted or 'en' (English) is used as the default language.
+
+b. `main` -- The main JS module of all the other packages in the application must call `SetRootDir(__dirname)` in the first line of the main JS module of all the other (non-root) packages.  See examples/gsub/index.js.
+
+c. `sub` -- All the other JS modules that call the `strong-globalize` function require `strong-globalize` as `var g = require('strong-globalize')();`  See examples/gsub/lib/util.js`  In case you need multiple `strong-globalize` instances, do the following:
+
+```js
+var SG = require('strong-globalize');
+var gFrench = SG('fr');
+var gSpanish = SG('es');
+// parallel use
+gFrench.log('text in French');
+gSpanish.log('text in Spanish');
+gFrench.log('second text in French');
+``` 
+
+You can also re-use one instance multiple times as follows:
+```js
+var g = require('strong-globalize')();
+g.setLanguage('fr');
+g.log('text in French');
+g.setLanguage('es');
+g.log('text in Spanish');
+g.setLanguage('fr');
+g.log('second text in French');
 ```
-{
-  "index.js": {
-    "11": [
-      "/"
-    ],
-    "12": [
-      "6ffc5986cc983ff9c0dc2019e0f57686"
-    ],
-    "18": [
-      "9f50ab5d3c2a6a071918321ec156ac04"
-    ],
-    "22": [
-      "fc20d00d156310f57cfd31d283210b22"
-    ],
-    "23": [
-      "http://localhost:"
-    ]
-  }
-}
-```
+
 
 # Globalize HTML Templates
 

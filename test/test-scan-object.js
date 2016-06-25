@@ -7,6 +7,84 @@ var helper = require('../lib/helper');
 var path = require('path');
 var test = require('tap').test;
 
+test('normalize keys', function(t) {
+  var data = [
+    {
+      i: null,
+      o: [],
+    },
+    {
+      i: '',
+      o: [],
+    },
+    {
+      i: [],
+      o: [],
+    },
+    {
+      i: [''],
+      o: [],
+    },
+    {
+      i: 'key-text',
+      o: [
+        ['key-text'],
+      ],
+    },
+    {
+      i: 1,
+      o: [
+        ['1'],
+      ],
+    },
+    {
+      i: [2],
+      o: [
+        ['2'],
+      ],
+    },
+    {
+      i: [
+        3,
+        'a',
+        [4],
+      ],
+      o: [
+        ['3'],
+        ['a'],
+        ['4'],
+      ],
+    },
+    {
+      i: [
+        [5, 'b'],
+        ['c'],
+        null,
+      ],
+      o: [
+        ['5', 'b'],
+        ['c'],
+      ],
+    },
+  ];
+
+  var x = {a:[{b:'yes'}]};
+  t.match(x.a[0].b, 'yes', 'JS notation remark 1');
+  t.match(x.a['0'].b, 'yes', 'JS notation remark 2');
+
+  for (var ix = 0; ix < data.length; ix++) {
+    var i = data[ix].i;
+    var o = data[ix].o;
+    // console.log(helper.normalizeKeyArrays(i), o);
+    t.match(helper.normalizeKeyArrays(i), o,
+      'normalize keys with data number: ' + ix.toString());
+  }
+  t.throws(function() {
+    helper.normalizeKeyArrays([[[]]])
+  }, 'key must be string or number');
+  t.end();
+});
+
 var data = {
   a: {
     a1: 'text a1',
@@ -29,7 +107,6 @@ var data = {
   f: 'text f',
 };
 
-
 var keys = [
   ['a', 'a2'],
   ['b', 0],
@@ -44,16 +121,16 @@ var keys = [
 
 var longExpected = [
   'text a2',
-  '*** not a string value ["b",0]',
+  '*** not a string value ["b","0"]',
   'b one',
   '*** TypeError: Cannot read property \'b4\' of undefined' +
-    ' ["b",4,"b4"]',
+    ' ["b","4","b4"]',
   '*** TypeError: Cannot read property \'d\' of undefined' +
     ' ["h","d"]',
   '*** not a string value ["h"]',
   'text e',
   '*** unexpected string value ["f","g"]',
-  '*** unexpected string value ["f",0]',
+  '*** unexpected string value ["f","0"]',
 ];
 
 var shortExpected = [

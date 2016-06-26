@@ -47,39 +47,45 @@ var targets = {
   },
 };
 
-var allKeys = [
-  'title',
-  ['types', 0],
-  ['types', 1],
-  ['types', 2],
-  ['types', 3],
-  ['threeWrites', 'e'],
-  ['threeWrites', 'o'],
-  ['threeWrites', 'w'],
-];
+var allKeys = '[' +
+  '"title",' +
+  '["types", 0],' +
+  '["types", 1],' +
+  '["types", 2],' +
+  '["types", 3],' +
+  '["threeWrites", "e"],' +
+  '["threeWrites", "o"],' +
+  '["threeWrites", "w"]' +
+']';
 
 test('test formatJson', function(t) {
   sltTH.testHarness(t, targets, false,
       function(name, unhook_intercept, callback) {
     var rootDir = helper.getRootDir();
     global.STRONGLOOP_GLB = null;
+    SG.SetRootDir(rootDir);
     var g = SG();
     switch (name) {
       case 'formatjson001':
-        t.throws(
+        t.doesNotThrow(
           function() {
             g.formatMessage('data.json', allKeys);
           },
-          {
-            name: 'AssertionError',
-            message: '*** full path is required to format json file: data.json',
-          },
-          'full path required to format a json file.');
-        var dataJsonPath = path.join(rootDir, 'data.json');
+          'json file must exist under the root directory.');
         var langs = helper.getSupportedLanguages();
         langs.forEach(function(lang) {
           g.setLanguage(lang);
-          var dataJson = g.formatMessage(dataJsonPath, allKeys, lang);
+          var dataJson = g.formatMessage('data.json',
+            '[' +
+            '"title",' +
+            '["types", 0],' +
+            '["types", 1],' +
+            '["types", 2],' +
+            '["types", 3],' +
+            '["threeWrites", "e"],' +
+            '["threeWrites", "o"],' +
+            '["threeWrites", "w"]' +
+            ']', lang);
           console.log(JSON.stringify(dataJson));
         });
         break;

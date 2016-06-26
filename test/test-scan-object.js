@@ -201,27 +201,3 @@ function testReplace() {
 }
 
 testReplace();
-
-function testFormatObj() {
-  var SG = require('../index');
-  var g = SG();
-  test('g.t with partial path', function(t) {
-    t.throws(function() {
-      g.t('scanObjTest.json', newKeys);
-    }, 'full path is required.');
-    t.end();
-  });
-  test('g.t with full path and no replacement', function(t) {
-    var ret = null;
-    t.doesNotThrow(function() {
-      ret = g.t(path.resolve(__dirname, 'fixtures', 'formatjson001',
-        'scanObjTest.json'),
-       newKeys);
-    }, 'full path is required.');
-    t.match(JSON.stringify(ret), JSON.stringify(replacedData),
-      'round trip object works');
-    t.end();
-  });
-}
-
-testFormatObj();

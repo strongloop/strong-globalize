@@ -1,4 +1,22 @@
-2016-06-18, Version 2.4.7
+2016-06-26, Version 2.5.0
+=========================
+
+ * Add 'JSON File Globalization' section to README (Setogit)
+
+ * Support extract from json file (Setogit)
+
+ * Add format json test for multiple languages (Setogit)
+
+ * Add normalizeKeyArrays validation (Setogit)
+
+ * Remove an extra semicolon (Setogit)
+
+ * Add scanJson, replaceJson and unit test (Tetsuo Seto)
+
+ * Catch error if invalid path is passed to realpathSync (Setogit)
+
+
+2016-06-17, Version 2.4.7
 =========================
 
  * Explain sample codes and three strong-globalize coding patterns (Setogit)

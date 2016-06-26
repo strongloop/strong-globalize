@@ -1,0 +1,15 @@
+{
+  "04d00d2496bdcf2d3641fcbac2788aba": "{zero}와 {one}의 포맷",
+  "1ea4c3ab05ee0c6d4de30740443769cb": "경고를 해라",
+  "31001bc2acb0122a877248e11d4ab857": "formatMessage",
+  "3ba58e5f95dd0f0aabc20a8559fcef3b": "{0}와 {1}의 포맷",
+  "53b9a0a12408f96ac1a898dd18d469e2": "%s와 %s의 포맷",
+  "79fd1d0354104e38041286ef4bc85bd3": "t의 왼쪽 절반과 t의 옳은 절반",
+  "9cb637d03543c9638b58fd1a675ce060": "ewrite",
+  "9e785aa70c7e0ede58fbce69115b4f4c": "이것은 오류이다.",
+  "caf9b6b99962bf5c2264824231d7a40c": "정보",
+  "cb5e100e5a9a3e7f6d1fd97512215282": "오류",
+  "dc1d71bbb5c4d2a5e936db79ef10c19f": "통나무",
+  "ecf8a82e85fbcbe07306270f9c1b08d1": "owrite",
+  "efb2a684e4afb7d55e6147fbe5a332ee": "기록"
+}

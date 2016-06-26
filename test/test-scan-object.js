@@ -214,7 +214,8 @@ function testFormatObj() {
   test('g.t with full path and no replacement', function(t) {
     var ret = null;
     t.doesNotThrow(function() {
-      ret = g.t(path.resolve(__dirname, 'fixtures', 'scanObjTest.json'),
+      ret = g.t(path.resolve(__dirname, 'fixtures', 'formatjson001',
+        'scanObjTest.json'),
        newKeys);
     }, 'full path is required.');
     t.match(JSON.stringify(ret), JSON.stringify(replacedData),

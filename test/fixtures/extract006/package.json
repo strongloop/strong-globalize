@@ -1,8 +1,8 @@
 {
-  "name": "gmain",
+  "name": "jsonGlobalize",
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "gsub": "^1.0.0"
+    "strong-globalize": "^2.5.0"
   }
 }

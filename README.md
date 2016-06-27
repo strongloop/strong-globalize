@@ -417,7 +417,7 @@ var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var g = SG();
 
-var json = g.t('data.json',
+var json = g.t('data/data.json',
   '[' +
   '  "title",' +
   '  ["types", 0],' +
@@ -431,7 +431,7 @@ var json = g.t('data.json',
 console.log(JSON.stringify(json, null, 2));
 ```
 
-`test/fixtures/extract006/data.json`
+`test/fixtures/extract006/data/data.json`
 ```js
 {
     "title": "This is an error.",
@@ -446,7 +446,8 @@ console.log(JSON.stringify(json, null, 2));
 ```
 ```
  test/fixtures/extract006
-                        ├── data.json
+                        ├── data
+                        │   └── data.json
                         ├── index.js
                         ├── intl
                         │   ├── de
@@ -465,6 +466,7 @@ console.log(JSON.stringify(json, null, 2));
                         │   │   └── messages.json
                         │   ├── pt
                         │   │   └── messages.json
+                        │   ├── ru
                         │   ├── zh-Hans
                         │   │   └── messages.json
                         │   ├── zh-Hant

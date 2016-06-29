@@ -2,7 +2,7 @@ var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var g = SG();
 
-var json = g.t('data/data.json',
+var json = g.t('data/data.yml',
   '[' +
   '  "title",' +
   '  ["types", 0],' +

@@ -11,7 +11,6 @@ var test = require('tap').test;
 var targets = {
   extract006: {
     out: [
-      '\n',
       '    extracted: warn\n',
       '    extracted: ewrite\n',
       '    extracted: This is an error.\n',
@@ -28,6 +27,12 @@ var targets = {
     ],
   },
 };
+
+// extract006 ---> JSON
+// extract007 ---> YAML
+// results should be exactly the same
+targets.extract007 = targets.extract006;
+
 test('test extract msges from json file', function(t) {
   sltTH.testHarness(t, targets, false,
     function(name, unhook_intercept, callback) {

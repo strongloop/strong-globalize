@@ -47,6 +47,9 @@ var targets = {
   },
 };
 
+// results should be exactly the same
+targets.formatyaml001 = targets.formatjson001;
+
 var allKeys = '[' +
   '"title",' +
   '["types", 0],' +
@@ -58,24 +61,28 @@ var allKeys = '[' +
   '["threeWrites", "w"]' +
 ']';
 
-test('test formatJson', function(t) {
+test('test formatJson and formatYaml', function(t) {
   sltTH.testHarness(t, targets, false,
       function(name, unhook_intercept, callback) {
     var rootDir = helper.getRootDir();
     global.STRONGLOOP_GLB = null;
     SG.SetRootDir(rootDir);
     var g = SG();
+    var fileName = null;
+    if (name === 'formatjson001') fileName = 'data.json';
+    if (name === 'formatyaml001') fileName = 'data.yml';
     switch (name) {
       case 'formatjson001':
+      case 'formatyaml001':
         t.doesNotThrow(
           function() {
-            g.formatMessage('data.json', allKeys);
+            g.formatMessage(fileName, allKeys);
           },
-          'json file must exist under the root directory.');
+          fileName + ' must exist under the root directory.');
         var langs = helper.getSupportedLanguages();
         langs.forEach(function(lang) {
           g.setLanguage(lang);
-          var dataJson = g.formatMessage('data.json',
+          var dataJson = g.formatMessage(fileName,
             '[' +
             '"title",' +
             '["types", 0],' +

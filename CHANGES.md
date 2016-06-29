@@ -1,3 +1,11 @@
+2016-06-29, Version 2.5.1
+=========================
+
+ * Support YAML File Globalization (Setogit)
+
+ * Improve JSON file globalization sample code (Tetsuo Seto)
+
+
 2016-06-26, Version 2.5.0
 =========================
 

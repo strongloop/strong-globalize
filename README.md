@@ -12,7 +12,7 @@ StrongLoop Globalize CLI and API
 * [Pseudo Localization Support](#pseudo-localization-support)
 * [Deep String Resource Extraction](#deep-string-resource-extraction)
 * [Autonomous Message Loading](#autonomous-message-loading)
-* [JSON File Globalization](#json-file-globalization)
+* [JSON YAML File Globalization](#json-yaml-file-globalization)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [SG.SetDefaultLanguage](#sgsetdefaultlanguagelang)
@@ -402,14 +402,15 @@ var g = SG();
 
 ```
 
-# JSON File Globalization
+# JSON YAML File Globalization
 
-You can directly pass the file name of JSON file and a list of fields in the JSON file to `g.t` or `g.formatMessage`.  The file name is a path relative to the root directory of the package.  The list of the fields is a string notation of two dimensional array being a list of the JSON values to globalize.  In the sample code below, `data.json` is the JSON file and `index.js` shows how to globalize all fields of `data.json`.  `g.t` loads the globalized object into memory which is usually done by `require(<file name>)` or `fs.readFile` followed by `JSON.parse`.  Note that the file name and the list must be provided as string literals directly in `g.t` call.
+You can directly pass the file name of JSON or YAML file and a list of fields to `g.t` or `g.formatMessage`.  The file name is a path relative to the root directory of the package.  The list of the fields is a string notation of two dimensional array being a list of the values to globalize.  In the sample code below, `data.json` is the JSON file and `index.js` shows how to globalize all fields of `data.json`.  `g.t` loads the globalized object into memory which is usually done by `require(<file name>)` or `fs.readFile` followed by `JSON.parse`.  Note that the file name and the list must be provided as string literals directly in `g.t` call.   YAML file globalization works in exactly the same way.
 
 Note that `strong-globalize` supports [traditional message key approach](#help-txt-files-and-msg-keys) as well.  To take the message key approach in JSON file globalization, manually define a message key like `msgKey`, store the key and content value pair in `intl/en/messages.json`, then in run-time, load the JSON file as usual (`require` or `readFile & parse`) first and overwrite the value with g.t('msgKey').
 
 [Plain text file globalization](#help-txt-files) works in the same way except that 1. the text file name is a path relative to `intl/en` of the package, and 2. since the entire text file is a message, there are no parameters equivalent to the field list.
 
+`test/fixtures/extract007' is the YAML equivalent.  Likewise, `test/fixtures/formatyaml001` is the parallel of `test/fixtures/formatjson001`.
 
 ```js
 // test/fixtures/extract006/index.js

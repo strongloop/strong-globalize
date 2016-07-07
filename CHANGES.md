@@ -1,4 +1,10 @@
-2016-06-29, Version 2.5.1
+2016-07-07, Version 2.5.2
+=========================
+
+ * Support yaml extension; skip if non-GLB_FN arguments (Setogit)
+
+
+2016-06-28, Version 2.5.1
 =========================
 
  * Support YAML File Globalization (Setogit)

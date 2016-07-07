@@ -1,0 +1,9 @@
+{
+    "title": "This is an error.",
+    "types": ["error", "log", "info", "warn"],
+    "threeWrites" : {
+      "e": "ewrite",
+      "o": "owrite",
+      "w": "write"
+    }
+}

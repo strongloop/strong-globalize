@@ -48,7 +48,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
       var rootDir = path.join(destDir, dir);
       msgs.forEach(function(msg) {
         if (typeof msg !== 'string') return;
-        msg = msg.replace(rootDir, '');
+        msg = msg.replace(new RegExp(rootDir, 'g'), '');
         if (process.platform === 'win32')
           msg = msg.replace(/\\/g, '/');
         ret.push(msg);

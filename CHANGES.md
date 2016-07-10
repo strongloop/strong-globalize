@@ -1,3 +1,9 @@
+2016-07-10, Version 2.5.4
+=========================
+
+ * Add minimal browser support (Setogit)
+
+
 2016-07-10, Version 2.5.3
 =========================
 

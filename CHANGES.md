@@ -1,3 +1,11 @@
+2016-07-10, Version 2.5.3
+=========================
+
+ * Avoid redundant zlib require in Node v0.10 (Setogit)
+
+ * Fix a windows json/yaml extract test failure (Setogit)
+
+
 2016-07-07, Version 2.5.2
 =========================
 

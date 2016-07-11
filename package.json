@@ -21,6 +21,7 @@
   "license": "Artistic-2.0",
   "readmeFilename": "README.md",
   "main": "index.js",
+  "browser": "browser.js",
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore . && jscs ./",
     "test": "tap --bail --coverage --coverage-report=cobertura --timeout=200 test/test-*.*",

@@ -39,7 +39,7 @@
     "esprima": "^2.7.1",
     "estraverse": "^4.1.1",
     "fs-sync": "^1.0.2",
-    "g11n-pipeline": "^1.1.4",
+    "g11n-pipeline": "^1.2.0",
     "globalize": "^1.1.0",
     "htmlparser2": "^3.9.0",
     "lodash": "^4.3.0",

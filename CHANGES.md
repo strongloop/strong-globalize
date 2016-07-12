@@ -1,3 +1,13 @@
+2016-07-12, Version 2.5.5
+=========================
+
+ * Update g11n-pipeline to 1.2.0 (Setogit)
+
+ * Use coveralls to monitor test coverage (Setogit)
+
+ * Add browser.js (Setogit)
+
+
 2016-07-10, Version 2.5.4
 =========================
 

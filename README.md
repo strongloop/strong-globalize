@@ -2,8 +2,13 @@
 
 StrongLoop Globalize CLI and API
 
-<a href="https://badge.fury.io/js/strong-globalize"><img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18"></a>
+<a href="https://badge.fury.io/js/strong-globalize">
+<img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18">
+</a>
 [![Build Status](https://travis-ci.org/strongloop/strong-globalize.svg?branch=master)](https://travis-ci.org/strongloop/strong-globalize)
+<a href='https://coveralls.io/github/strongloop/strong-globalize?branch=master'>
+<img src='https://coveralls.io/repos/github/strongloop/strong-globalize/badge.svg?branch=master' alt='Test Coverage'/>
+</a>
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
@@ -87,7 +92,7 @@ As shown in the [Demo section](#demo), the code written with `strong-globalize` 
 
 With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
-- Node.js versions - tested on: 0.12.14, 4.4.5, 5.11.1, 6.2.1
+- node.js versions: 0.12, 4, 5, 6
 - cldr version: 29.0.1
 - out-of-box languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
 
@@ -95,7 +100,7 @@ You can customize (add/remove) any languages supported by the Unicode CLDR in yo
 
 ## About Test
 
-The line test coverage with and without core part of translation tests are currently `90%` and `80%` respectively.
+The line test coverage with and without core part of translation tests are currently `90%` and <a href='https://coveralls.io/github/strongloop/strong-globalize?branch=master'>`80%`</a> respectively.
 
 With the out-of-box setting, `npm test` runs all tests but the core translation tests because it requires connection to the machine translation service.  To enable the machine translation, please set the environment variables described in [this section](#liblocal-credentialsjson).
 

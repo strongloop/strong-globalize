@@ -14,7 +14,7 @@ StrongLoop Globalize CLI and API
 
 * [Architecture](#architecture)
 * [Language Config Customization](#language-config-customization)
-* [Runtime Language Switching](#runtime-localization-switching)
+* [Runtime Language Switching](#runtime-language-switching)
 * [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [Pseudo Localization Support](#pseudo-localization-support)
 * [Deep String Resource Extraction](#deep-string-resource-extraction)

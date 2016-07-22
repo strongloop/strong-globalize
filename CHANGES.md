@@ -1,4 +1,14 @@
-2016-07-12, Version 2.5.5
+2016-07-22, Version 2.5.6
+=========================
+
+ * Bump the version to get swagger-client bug fix (Setogit)
+
+ * Fix a link in README (Setogit)
+
+ * Use html build badge link for npmjs.com (Setogit)
+
+
+2016-07-11, Version 2.5.5
 =========================
 
  * Update g11n-pipeline to 1.2.0 (Setogit)

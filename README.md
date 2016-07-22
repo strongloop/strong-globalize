@@ -81,7 +81,7 @@ StrongLoop Globalize CLI and API
 
 # Architecture
 
-`strong-globalize` is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
+`strong-globalize` is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module.
 
 `strong-globalize` is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package.  `strong-globalize` provides these features:
 - [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
@@ -110,9 +110,9 @@ With custom setting such as customized language configuration, some tests may fa
 
 # Language Config Customization
 
-Out of box, one CLDR `gz` file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
+Out of box, one CLDR `json` file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `json` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `json` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
 
-`strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.
+`strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box `json` file for the 11 languages is 820KB.  See README of the utility under util directory.
 
 In runtime, `strong-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
 
@@ -302,7 +302,7 @@ For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under 
 
 ## `npm v3` dependency resolution
 
-`npm v3` tries to install all dependent packages in the root `node_modules` directory, i.e., `gmain/node_modules` in the above example, which means that most dependent package directories are at depth level 2.  Therefore, `STRONGLOOP_GLOBALIZE_MAX_DEPTH` does not help in `npm v3` installed applications.  `slt-globalize -d [black list]` option can help to reduce the number of packages to scan. 
+`npm v3` tries to install all dependent packages in the root `node_modules` directory, i.e., `gmain/node_modules` in the above example, which means that most dependent package directories are at depth level 2.  Therefore, `STRONGLOOP_GLOBALIZE_MAX_DEPTH` does not help in `npm v3` installed applications.  `slt-globalize -d [black list]` option can help to reduce the number of packages to scan.
 
 ```
 /Users/user
@@ -344,7 +344,7 @@ All packages are created equal.  `Autonomous Message Loading` is the core concep
 
 `root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
 
-`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources are stored under the `master root directory's intl/en`. 
+`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources are stored under the `master root directory's intl/en`.
 
 Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.  With regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set instead so that all string resources are loaded from all the dependent packages or set specific package names of which the string resources get loaded.
 
@@ -501,10 +501,6 @@ You can safely ignore these warnings because `strong-globalize` statically bundl
 npm WARN EPEERINVALID globalize@1.1.1 requires a peer of cldr-data@>=25 but none was installed.
 npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none was installed.
 ```
-You can safely ignore this warning on Node.js >= 0.12.
-```js
-npm WARN engine node-zlib-backport@0.11.15: wanted: {"node":">=0.10 <0.11"} ...
-```
 
 ### usage: `slt-globalize [options]`
 
@@ -594,7 +590,7 @@ alias of `formatMessage`
 
 ## `g.formatCurrency(value, currencySymbol, options)`
 - `value {number}` integer or float
-- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
+- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars
 - `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
 
 ## `g.c(value, currencySymbol, options)`
@@ -946,7 +942,7 @@ examples
 ```
 
 
-## First argument 
+## First argument
 
 `strong-globalize` extracts literal strings passed as the first argument of the `strong-globalize` functions.  In globalizing existing modules, most code changes you are going to make will be to make sure all literal strings are in that form.  Usually, you do not need to globalize debug text.
 
@@ -968,7 +964,7 @@ var gSpanish = SG('es');
 gFrench.log('text in French');
 gSpanish.log('text in Spanish');
 gFrench.log('second text in French');
-``` 
+```
 
 You can also re-use one instance multiple times as follows:
 ```js
@@ -1011,7 +1007,7 @@ The string extraction works for CDATA as well.  `Text in cdata` is extracted in 
 
 # Persistent Logging
 
-`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
+`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.
 
 ## `SG.SetPersistentLogging(logCallback, disableConsole)`
 `logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
@@ -1058,7 +1054,7 @@ function initWinston(w) {
 var express = require('express');
 var request = require('request');
 var app = express();
-var SG = require('strong-globalize'); 
+var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
 var gsub = require('gsub');

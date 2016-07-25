@@ -1,4 +1,10 @@
-2016-07-25, Version 2.5.7
+2016-07-25, Version 2.5.8
+=========================
+
+ * Support windows for cldr data postinstall (Setogit)
+
+
+2016-07-24, Version 2.5.7
 =========================
 
  * Use unzipped JSON and remove zlib-backport (Setogit)

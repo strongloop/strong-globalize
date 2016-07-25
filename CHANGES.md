@@ -1,4 +1,12 @@
-2016-07-22, Version 2.5.6
+2016-07-25, Version 2.5.7
+=========================
+
+ * Use unzipped JSON and remove zlib-backport (Setogit)
+
+ * Adjust test cases for GPB GA (Setogit)
+
+
+2016-07-21, Version 2.5.6
 =========================
 
  * Bump the version to get swagger-client bug fix (Setogit)

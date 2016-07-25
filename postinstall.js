@@ -6,13 +6,12 @@
 
 'use strict';
 
-var fs = require('fs');
-var helper = require('../lib/helper');
+var helper = require('./lib/helper');
 var path = require('path');
 
 var nodeVersion = process.version.replace(
   /(^v[0-9]+\.[0-9]+)\.[0-9]+$/, '$1');
-var fileTypesToRemove = (nodeVersion === 'v0.10') ? 'gz' : 'json';
-var cldrPath = path.join(__dirname, '..', 'cldr');
+var fileTypeToRemove = (nodeVersion === 'v0.10') ? 'gz' : 'json';
+var cldrPath = path.join(__dirname, 'cldr');
 
-helper.removeRedundantCldrFiles(cldrPath, fileTypesToRemove);
+helper.removeRedundantCldrFiles(cldrPath, fileTypeToRemove);

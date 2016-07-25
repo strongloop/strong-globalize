@@ -26,16 +26,24 @@ var msgWanted = {
     'fifth - primary depth message',
   ],
   es: [
-    'Segundo mensaje principal profundidad',
-    'Tercer mensaje principal profundidad',
-    'Cuarto segundo mensaje profundidad',
-    'Quinto mensaje principal profundidad',
+    new RegExp('^Segundo (mensaje principal profundidad' +
+      '|- mensaje de profundidad primario)$'),
+    new RegExp('^Tercer( mensaje principal profundidad' +
+      '|o - mensaje de profundidad primario)$'),
+    new RegExp('^(Mensaje de profundidad de cuatro segundos' +
+      '|Cuarto segundo mensaje profundidad)$'),
+    new RegExp('^Quinto (mensaje principal profundidad' +
+      '|- mensaje de profundidad primario)$'),
   ],
   fr: [
-    'Deuxième message-profondeur primaire',
-    'Message tiers-profondeur primaire',
-    'Quatrième message-deuxième profondeur',
-    'Message de cinquième primaire profondeur',
+    new RegExp('^(Deuxième message-profondeur primaire' +
+      '|Seconde - message principal de la profondeur)$'),
+    new RegExp('^(Message tiers-profondeur primaire' +
+      '|Troisième - message principal de la profondeur)$'),
+    new RegExp('^(Quatrième message-deuxième profondeur' +
+      '|Quatrième - second message de la profondeur)$'),
+    new RegExp('^(Message de cinquième primaire profondeur' +
+      '|Cinquième - message principal de la profondeur)$'),
   ],
   it: [
     'Secondo - messaggio di profondità principale',
@@ -56,10 +64,14 @@ var msgWanted = {
     '5 번째-주요한 깊이 메시지',
   ],
   pt: [
-    'Segunda mensagem primária de profundidade',
-    'Terceira mensagem primária de profundidade',
-    new RegExp('^(Na quar|Quar)ta segundo a profundidade da mensagem$'),
-    'Quinta mensagem primária de profundidade',
+    new RegExp('^(Segunda mensagem primária de profundidade' +
+      '|Segundo - mensagem de profundidade primária)$'),
+    new RegExp('^(Terceira mensagem primária de profundidade' +
+      '|Terceiro - mensagem de profundidade primária)$'),
+    new RegExp('^((Na quar|Quar)ta segundo a profundidade da mensagem' +
+      '|Quarto - mensagem de profundidade segunda)$'),
+    new RegExp('^(Quinta mensagem primária de profundidade' +
+      '|Quinto - mensagem de profundidade primária)$'),
   ],
   'zh-Hans': [
     '秒-最重要深度信息',

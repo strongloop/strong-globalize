@@ -41,3 +41,9 @@ lib/local-credentials.json
 !cldr/cldr_29.0.1.gz
 .DS_Store
 !.travis.yml
+!test/fixtures/cldrv010/cldr/fake_cldr.gz
+!test/fixtures/cldrv010/cldr/fake_cldr2.gz
+!test/fixtures/cldrv4/cldr/fake_cldr.gz
+!test/fixtures/cldrv4/cldr/fake_cldr2.gz
+!test/fixtures/cldrv6/cldr/fake_cldr.gz
+!test/fixtures/cldrv6/cldr/fake_cldr2.gz

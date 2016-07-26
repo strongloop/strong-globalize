@@ -501,10 +501,6 @@ You can safely ignore these warnings because `strong-globalize` statically bundl
 npm WARN EPEERINVALID globalize@1.1.1 requires a peer of cldr-data@>=25 but none was installed.
 npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none was installed.
 ```
-You can safely ignore this warning on Node.js >= 0.12.
-```js
-npm WARN engine node-zlib-backport@0.11.15: wanted: {"node":">=0.10 <0.11"} ...
-```
 
 ### usage: `slt-globalize [options]`
 

@@ -101,7 +101,7 @@ function secondaryMgr(rootDir, lang, t, aml, positive, callback) {
     msgFound.push(msg.message);
     if (msgFound.length === (msgWanted[lang].length + 1)) {
       for (var i = 0; i < msgFound.length - 1; i++) {
-        console.log('checking', msgWanted[lang][i]);
+        t.comment('checking', msgWanted[lang][i]);
         if (positive) {
           t.match(msgFound[i + 1], msgWanted[lang][i],
             lang + ' message ' + i.toString() + ' is correct.');

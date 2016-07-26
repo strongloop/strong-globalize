@@ -21,8 +21,5 @@
   "dependencies": {
     "cldr-data": "^29.0.1",
     "lodash": "^4.3.0"
-  },
-  "optionalDependencies": {
-    "node-zlib-backport": "^0.11.15"
   }
 }

@@ -25,8 +25,7 @@
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore . && jscs ./",
     "test": "tap --bail --coverage --coverage-report=cobertura --timeout=200 test/test-*.*",
-    "posttest": "nyc report --reporter=lcov && nyc report",
-    "postinstall": "node postinstall.js"
+    "posttest": "nyc report --reporter=lcov && nyc report"
   },
   "bugs": {
     "url": "https://github.com/strongloop/strong-globalize/issues"

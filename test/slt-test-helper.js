@@ -67,7 +67,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
     function checkErrMsg(outMsg, errMsg, key, targets, t) {
       outMsg = stripRootDirInfo(outMsg, key);
       errMsg = stripRootDirInfo(errMsg, key);
-      if (DEBUG) console.log(
+      if (DEBUG) t.comment(
         '\n<<< BEGIN', key,
         '\nout ________________\n',
         outMsg,
@@ -119,19 +119,19 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
     keys.forEach(function(key) {
       if (noFixtures) {
         var dir = path.join(destDir, key);
-        console.log('--- making dir: %s', dir);
+        t.comment('--- making dir: %s', dir);
         shell.mkdir('-p', dir);
-        console.log('----- made dir: %s', dir);
+        t.comment('----- made dir: %s', dir);
       } else {
         var dir = path.join(__dirname, 'fixtures', key);
         copyDirs.push(dir);
       }
     });
     if (!noFixtures) {
-      console.log('--- copying %d: %s to %s',
+      t.comment('--- copying %d: %s to %s',
         copyDirs.length, JSON.stringify(copyDirs, null, 2), destDir);
       shell.cp('-r', copyDirs, destDir);
-      console.log('---- copied %d: %s to %s',
+      t.comment('---- copied %d: %s to %s',
         copyDirs.length, JSON.stringify(copyDirs, null, 2), destDir);
     }
     var asyncTasks = [];

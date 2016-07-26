@@ -8,17 +8,6 @@ var debug = require('debug')('strong-globalize');
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
-var zlib = require('zlib');
-try {
-  var nodeVersion = process.version.replace(
-    /(^v[0-9]+\.[0-9]+)\.[0-9]+$/, '$1');
-  if (nodeVersion === 'v0.10') {
-    zlib = require('node-zlib-backport');
-    debug('Zlib backported on %s', process.version);
-  }
-} catch (e) {
-  debug('Zlib backport failed on %s', process.version);
-}
 
 var LANGS = [
   'en', // English
@@ -109,12 +98,7 @@ LANGS.forEach(function(lang) {
 });
 
 var CLDR_FILE = path.join(__dirname, 'cldr_' + cldrVersion);
-var CLDR_FILE_GZ = CLDR_FILE + '.gz';
-
 fs.writeFileSync(CLDR_FILE, JSON.stringify(CLDR, null, 2));
-var zipped = zlib.gzipSync(
-  JSON.stringify(CLDR), {data_type: zlib.Z_TEXT});
-fs.writeFileSync(CLDR_FILE_GZ, zipped);
 
 function loadCldr(lang) {
   var mainPath = path.join(__dirname, 'node_modules',

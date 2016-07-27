@@ -6,6 +6,7 @@
 var SG = require('../index');
 var formatJson = require('../lib/globalize').formatJson;
 var helper = require('../lib/helper');
+var loadMsgHelper = require('./load-msg-helper');
 var loadGlobalize = require('../lib/globalize').loadGlobalize;
 var path = require('path');
 var sltTH = require('./slt-test-helper')
@@ -30,8 +31,8 @@ var targets = {
         '"o":"owrite","w":"Scrittura"}}\n',
       '{"title":"Este é um erro.","types":["Erro","REGISTRO","Informação",' +
         '"Avisar"],"threeWrites":{"e":"Ewrite","o":"Owrite","w":"Gravação"}}\n',
-      '{"title":"This is an error.","types":["error","log","info","warn"],' +
-        '"threeWrites":{"e":"ewrite","o":"owrite","w":"write"}}\n',
+      // '{"title":"This is an error.","types":["error","log","info","warn"],' +
+      //   '"threeWrites":{"e":"ewrite","o":"owrite","w":"write"}}\n',
       '{"title":"これは間違いです。","types":["間違い","丸太","情報",' +
         '"警告をして下さい"],"threeWrites":{"e":"ewrite","o":"owrite",' +
         '"w":"書いて下さい"}}\n',
@@ -79,7 +80,7 @@ test('test formatJson and formatYaml', function(t) {
             g.formatMessage(fileName, allKeys);
           },
           fileName + ' must exist under the root directory.');
-        var langs = helper.getSupportedLanguages();
+        var langs = loadMsgHelper.wellKnownLangs;
         langs.forEach(function(lang) {
           g.setLanguage(lang);
           var dataJson = g.formatMessage(fileName,

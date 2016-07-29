@@ -1,3 +1,21 @@
+2016-07-29, Version 2.6.0
+=========================
+
+ * Remove {{ }} if falls back to original literal (Setogit)
+
+ * Clean up README (Setogit)
+
+ * Expand the out-of-box CLDR to 31 languages (Setogit)
+
+ * Rename to avoid GPB confict; Del gz in .gitignore (Setogit)
+
+ * test: fix empty subtest in TAP output (Ryan Graham)
+
+ * test: don't polute TAP output with test debug (Ryan Graham)
+
+ * remove references to gzip'd CLDR data (Ryan Graham)
+
+
 2016-07-25, Version 2.5.8
 =========================
 

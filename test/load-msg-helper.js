@@ -8,8 +8,8 @@ var _ = require('lodash');
 var f = require('util').format;
 var helper = require('../lib/helper');
 
-var wellKnownLangs = ['de', 'en', 'es', 'fr', 'it', 'ja',
-'ko', 'pt', 'zh-Hans', 'zh-Hant'];
+var wellKnownLangs = ['en', 'de', 'es', 'fr', 'it', 'pt', 'ja',
+'ko', 'zh-Hans', 'zh-Hant'];
 exports.wellKnownLangs = wellKnownLangs;
 
 var msgWanted = {

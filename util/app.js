@@ -21,34 +21,47 @@ var LANGS = [
   'ko', // Korean
   'zh-Hans', // Chinese (Simplified)
   'zh-Hant', // Chinese (traditional)
+  'ar', // Arabic
+  'bn', // Bengali, Bangla
+  'cs', // Czech
+  'el', // Greek
+  'fi', // Finnish
+  'hi', // Hindi
+  'id', // Indonesian
+  'lt', // Lithuanian
+  'nb', // Norwegian Bokmål
+  'nl', // Dutch
+  'pl', // Polish
+  'ro', // Romanian
+  'sl', // Slovene
+  'sv', // Swedish
+  'ta', // Tamil
+  'te', // Telugu
+  'th', // Thai
+  'tr', // Turkish
+  'uk', // Ukrainian
+  'vi', // Vietnamese
   // 'af', // Afrikaans
   // 'am', // Amharic
-  // 'ar', // Araic
   // 'az', // Azerbaijani
   // 'be', // Belarusian
   // 'bg', // Bulgarian
-  // 'bn', // Bengali, Bangla
   // 'bs', // Bosnian
   // 'ca', // Catalan
-  // 'cs', // Czech
   // 'cy', // Welsh
   // 'da', // Danish
-  // 'el', // Greek
   // 'et', // Estonian
   // 'eu', // Basque
   // 'fa', // Persian
-  // 'fi', // Finnish
-  // 'fil', // Pilipino
+  // 'fil', // Philippino
   // 'fo', // Faroese
   // 'ga', // Irish
   // 'gl', // Galician
   // 'gu', // Gujarati
   // 'he', // Hebrew
-  // 'hi', // Hindi
   // 'hr', // Croatian
   // 'hu', // Hungarian
   // 'hy', // Armenian
-  // 'id', // Indonesian
   // 'is', // Icelandic
   // 'ka', // Georgian
   // 'kk', // Kazakh
@@ -56,7 +69,6 @@ var LANGS = [
   // 'kn', // Kannada
   // 'ky', // Kyrgyz
   // 'lo', // Lao
-  // 'lt', // Lithuanian
   // 'lv', // Latvian
   // 'mk', // Macedonian
   // 'ml', // Malayalam
@@ -64,28 +76,16 @@ var LANGS = [
   // 'mr', // Marathi (Marāṭhī)
   // 'ms', // Malay
   // 'my', // Burmese
-  // 'nb', // Norwegian Bokmål
   // 'ne', // Nepali
-  // 'nl', // Dutch
   // 'pa', // Panjabi, Punjabi
-  // 'pl', // Polish
-  // 'ro', // Romanian
   // 'si', // Sinhalese, Sinhala
   // 'sk', // Slovak
-  // 'sl', // Slovene
   // 'sq', // Albanian
   // 'sr', // Serbian
-  // 'sv', // Swedish
   // 'sw', // Swahili
-  // 'ta', // Tamil
-  // 'te', // Telugu
-  // 'th', // Thai
   // 'to', // Tonga (Tonga Islands)
-  // 'tr', // Turkish
-  // 'uk', // Ukrainian
   // 'ur', // Urdu
   // 'uz', // Uzbek
-  // 'vi', // Vietnamese
   // 'zu', // Zulu
 ];
 
@@ -97,8 +97,8 @@ LANGS.forEach(function(lang) {
   loadCldr(lang);
 });
 
-var CLDR_FILE = path.join(__dirname, 'cldr_' + cldrVersion);
-fs.writeFileSync(CLDR_FILE, JSON.stringify(CLDR, null, 2));
+var CLDR_FILE = path.join(__dirname, 'cldr_' + cldrVersion + '.json');
+fs.writeFileSync(CLDR_FILE, JSON.stringify(CLDR));
 
 function loadCldr(lang) {
   var mainPath = path.join(__dirname, 'node_modules',

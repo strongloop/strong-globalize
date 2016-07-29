@@ -1,7 +1,7 @@
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var g = SG();
-var gsub = require('gsub');
+var gpbtestsub = require('gpbtestsub');
 
-g.log(gsub.getHelpText());
-g.log(g.f('User name is %s.', gsub.getUserName()));
+g.log(gpbtestsub.getHelpText());
+g.log(g.f('User name is %s.', gpbtestsub.getUserName()));

@@ -94,9 +94,12 @@ As shown in the [Demo section](#demo), the code written with `strong-globalize` 
 
 With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
-- node.js versions: 0.12, 4, 5, 6
+- node.js versions: 0.10, 0.12, 4, 5, 6
 - cldr version: 29.0.1
-- out-of-box languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.
+- out-of-box languages - 31: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, zh-Hant',
+ ar', 'bn', 'cs', 'el', 'fi', 'hi', 'id', 'lt', 'nb', 'nl', 'pl', 'ro', 'sl', 'sv',
+ 'ta', 'te', 'th', 'tr', 'uk', 'vi'
+
 
 You can customize (add/remove) any languages supported by the Unicode CLDR in your `strong-globalize` installation.
 
@@ -110,29 +113,28 @@ With custom setting such as customized language configuration, some tests may fa
 
 # Language Config Customization
 
-Out of box, one CLDR `gz` file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  The `gz` file contains CLDR data for the languages: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  In the installation of `strong-globalize` in your package for your production deployment, you can replace the out-of-box `gz` file entirely, or add extra CLDR data to the `cldr` directory.  There are approximtely 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
+Out of box, one CLDR file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  In the installation of `strong-globalize` for your production deployment, you can replace the out-of-box CLDR file entirely, or add extra CLDR data to the `cldr` directory.  There are approximately 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
 
 `strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.
 
-In runtime, `strong-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more `gz` files, duplicate objects will be overwritten in the examination order.
+In runtime, `strong-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more CLDR files, duplicate objects will be overwritten in the examination order.
 
 ## Message String Resource
 
 English string resource files must exist under `intl/en` directory.  Translated string resource files are stored on each language sub-directory under `intl`  If a message is not found in the translated resource files, the corresponding English message is displayed.
 
-CLDR data has no dependencies on string resources.  For example, you can load 100 language CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for language xx under `intl/xx` the CLDR data for `xx` must be loaded.
+CLDR data has no dependencies on string resources.  For example, you can load 100 language CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for language xx under `intl/xx` the CLDR data for `xx` must be loaded.  `xx` is one of the languages defined in the CLDR file(s).
 
 # Runtime Language Switching
 
 There are two primary types of Node.js packages `strong-globalize` is targeting:
 - Command line interface utility (short life; static language setting) such as [`slt-globalize` itself](#cli---extract-lint-and-translate),
-- Web applications such as LoopBack apps (long life; dynamic language switching to respect browser language set in HTTP `Accept-Language` header)
+- Web applications such as LoopBack apps (long life; dynamic language switching to respect browser language set in HTTP `Accept-Language` header.  See `negotiator' on npmjs.com).
 
 ## Common part
 ```js
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage(); // uses the OS language, or falls back to English
 var g = SG(); // use the default
 ```
 ## Static language setting in CLI utility
@@ -162,7 +164,6 @@ v1.x:
 ```js
 var g = require('strong-globalize');
 g.setRootDir(__dirname);
-g.setDefaultLanguage();
 
 // use formatters and wrappers API
 
@@ -173,7 +174,6 @@ v2.0:
 ```js
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
 var g = SG({language: 'en'});
 
 // use formatters and wrappers API
@@ -252,7 +252,7 @@ In the regular extraction mode, `strong-globalize` scans all JS and Html templat
 
 In runtime, the string resource JSON files under `intl` will be loaded on to memory as needed.
 
-**Use Case**: Self contained CLI utility package is typically code-globalized and distributed with or without translated messages.json.  API library packages are typically code-globalized and distributed without translation.  Such library packages are then downloaded and used as part of enterprise-scale applications.
+**Use Case**: Self-contained CLI utility package is typically code-globalized and distributed with or without translated messages.json.  API library packages are typically code-globalized and distributed without translation.  Such library packages are then downloaded and used as part of enterprise-scale applications.
 
 ```
 /Users/user
@@ -285,9 +285,9 @@ In runtime, the string resource JSON files under `intl` will be loaded on to mem
 
 ## Deep Extraction
 
-Enterprise-scale applications may depend on hundreds of third party packages directly or indirectly.  Such applications typically download dependent packages using `npm install` and can globalize them using the `Deep Extraction` mode.
+Enterprise-scale applications may depend on dozens of third party packages directly or indirectly.  Such applications typically download dependent packages using `npm install` and can globalize them using the `Deep Extraction` mode.
 
-For example, suppose `gmain` package has one dependent package `gsub` which is installed under `gmain/node_modules` as shown in the directory structure diagram below.  `slt-globalize -d` traverses the `npm v3 style` dependency tree and extracts all the strong-globalized string literals in to `gmain/intl/en/messages.json`.  This way, all the literal strings in your package `gmain` as well as all the dependent modules are extracted and translated consistently at `gmain/intl` level.  Note that the `package.json` dependency traversal is different from simple directory traversal.
+For example, suppose `gmain` package has one dependent package `gsub` which is installed under `gmain/node_modules` as shown in the directory structure diagram below.  `slt-globalize -d` traverses the `npm v3 style` dependency tree and extracts all the strong-globalized string literals into `gmain/intl/en/messages.json`.  This way, all the literal strings in your package `gmain` as well as all the dependent modules are extracted and can be translated consistently at `gmain/intl` level.  Note that the `package.json` dependency traversal is different from simple directory traversal.
 
 Note that [string resource extraction from Html templates](#globalize-html-templates) is supported in the regular extraction mode only.
 
@@ -295,9 +295,9 @@ Note that [string resource extraction from Html templates](#globalize-html-templ
 
 As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on `gmain/intl/zz/messages.json`, `gmain/intl/zz/messages.json` may also grow exponentially and cause `slt-globalize -d` to run out of resource on your computer.
 
-To manage such situations, you can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by `package.json` (production) dependency.
+To manage such situations, you can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by dependencies defined in `package.json`.
 
-For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under `/Users/user/gmain` works as follows.  `gmain/index.js` is depth 1 thus examined.  `gmain/lib/usa/california/sanfrancisco/util.js` is depth 5, not examined although it's part of your `gmain` package.  `gmain/node_modules/gsub/index.js` is level 3, thus examined.  Likewise, all the files directly under `gmain/node_modules/express` and `gmain/node_modules/request` will also be examined and literal strings are extracted in to `gmain/intl/zz/messages.json`.
+For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under `/Users/user/gmain` works as follows.  `gmain/index.js` is depth 1; thus examined.  `gmain/lib/usa/california/sanfrancisco/util.js` is depth 5, not examined although it's part of your `gmain` package.  `gmain/node_modules/gsub/index.js` is level 3, thus examined.  Likewise, all the files directly under `gmain/node_modules/express` and `gmain/node_modules/request` will also be examined and literal strings are extracted to `gmain/intl/zz/messages.json`.
 
 
 ## `npm v3` dependency resolution
@@ -344,15 +344,18 @@ All packages are created equal.  `Autonomous Message Loading` is the core concep
 
 `root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
 
-`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources are stored under the `master root directory's intl/en`. 
+`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources in the application are extracted and stored under the `master root directory's intl/en`. 
 
-Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.  With regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set instead so that all string resources are loaded from all the dependent packages or set specific package names of which the string resources get loaded.
+Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.
+
+In development phase, with regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set so that string resource included in each dependent package will be used.
+
+Third option is to set specific package names of which the string resources get loaded.  One use case of the third option is that you have several dependent packages which you know are properly translated and the translation can be used as-is.  For all the other packages, message strings will be deep-extracted and translated.
 
 ```js
 var SG = require('strong-globalize');
-SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'});
-SG.SetDefaultLanguage();
-var g = SG({language: 'en'});
+SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'}); // same as SG.SetRootDir(__dirname);
+var g = SG({language: 'en'}); // same as SG();
 
 // use formatters and wrappers API
 
@@ -366,7 +369,6 @@ For example, the following does not work as intended because the package sub cal
 // all string resources are deep extracted and translated under intl of this package
 var MY_SUB = require('sub');
 var SG = require('strong-globalize');
-
 SG.SetRootDir(__dirname);
 var g = SG();
 
@@ -375,10 +377,7 @@ var g = SG();
 ```js
 // sub/index.js -- my sub package
 var request = require('request');
-var SG = require('strong-globalize');
-
-SG.SetRootDir(__dirname);
-var g = SG();
+var g = require('strong-globalize')();
 
 ...
 
@@ -392,18 +391,14 @@ The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of 
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var MY_SUB = require('sub');
-
 var g = SG();
 
 ...
 ```
 ```js
 // sub/index.js -- my sub package
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
+var g = require('strong-globalize')();
 var request = require('request');
-
-var g = SG();
 
 ...
 
@@ -416,6 +411,8 @@ You can directly pass the file name of JSON or YAML file and a list of fields to
 Note that `strong-globalize` supports [traditional message key approach](#help-txt-files-and-msg-keys) as well.  To take the message key approach in JSON file globalization, manually define a message key like `msgKey`, store the key and content value pair in `intl/en/messages.json`, then in run-time, load the JSON file as usual (`require` or `readFile & parse`) first and overwrite the value with g.t('msgKey').
 
 [Plain text file globalization](#help-txt-files) works in the same way except that 1. the text file name is a path relative to `intl/en` of the package, and 2. since the entire text file is a message, there are no parameters equivalent to the field list.
+
+In the above paragraphs, `g.f` can be used instead of `g.t` if you'd like.
 
 `test/fixtures/extract007' is the YAML equivalent.  Likewise, `test/fixtures/formatyaml001` is the parallel of `test/fixtures/formatjson001`.
 
@@ -553,10 +550,10 @@ slt-globalize -t
 - `options` : {autonomousMsgLoading: ['`none`' | '`all`' | <an array of `strings`]} (optional)
 '`none`' (default) -- load string resources at the master rootDir, but not load from dependency packages
 '`all`' -- load string resources from all packages
-<an array of `strings`> -- load string resources at the master rootDir and the specified packages if the master package depends on them.
+<an array of package name `strings`> -- load string resources at the master rootDir and the specified packages if the master package depends on them.
 
 ## `SG.SetDefaultLanguage(lang)`
-- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times.
+- `lang` : {`string`} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, `strong-globalize` tries to use the OS language, then falls back to 'en'  It must be called at least once.  By default, it's called in SetRootDir, so it can be omitted completely.  Can be called multiple times.
 
 `strong-globalize` uses the language code in a form of a combination of ISO 639-1 language code and ISO 15924 script code such as `zh-Hans` for Chinese - Han (Simplified variant).
 
@@ -591,28 +588,28 @@ alias of `formatMessage`
 ## `g.formatCurrency(value, currencySymbol, options)`
 - `value {number}` integer or float
 - `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
-- `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
+- `options {object}` (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.
 
 ## `g.c(value, currencySymbol, options)`
 alias of `formatCurrency`
 
 ## `g.formatDate(value, options)`
 - `value {Date object}` Date
-- `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
+- `options {object}` (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.
 
 ## `g.d(value, options)`
 alias of `formatDate`
 
 ## `g.formatNumber(value, options)`
 - `value {number}` integer or float
-- `options {object}` (optional) Strongly recommended to set NO options and let `strong-globalize` use the StrongLoop default for consistency across StrongLoop products.
+- `options {object}` (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.
 
 ## `g.n(value, options)`
 alias of `formatNumber`
 
 # API - Wrappers
 
-%s place holders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').
+%s place holders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').  'path' is the literal string.  'path' cannot be a variable.  If a variable is used as `path` the off-line extraction won't be able to extract because string data assigned to a variable is known only in runtime.
 
 ## `g.Error(path, ...)`(capital Error)
 returns Error with a formatted message.
@@ -692,7 +689,7 @@ passes the result message from `formatMessage` to `console.log`, and log to file
 # Usage Examples
 
 Rule of thumb for auto-extraction with `slt-globalize -e`:
-- String literal defined as the first argument (`path`) of the APIs is extracted.
+- String literals defined as the first argument (`path`) of the APIs is extracted.
 - String literals concatenated with '+' in the first argument are extracted as a single message.
 
 ## use g.f for util.format
@@ -712,16 +709,16 @@ g.Error('Directory %s does not exist', workingDir);
 
 ## use g.write for process.stdout.write
 
-before:
+before globalization:
 ```js
 // don't concatenate string. word order varies from language to language.
 process.stdout.write('Directory ' + workingDir + ' does not exist...');
 ```
-wrong: (don't concatenate words;  word order varies from language to language)
+wrong globalization: (don't concatenate words;  word order varies from language to language)
 ```js
 process.stdout.write(g.t('Directory ') + workingDir + g.t(' does not exist...'));
 ```
-correct:
+right globalization:
 ```js
 g.write('Directory %s does not exist...', workingDir);
 ```
@@ -729,11 +726,11 @@ g.write('Directory %s does not exist...', workingDir);
 ## place holders
 You can use place holders and parameters in one of these four ways if you'd like:
 
-before:
+before globalization:
 ```js
 util.format('Deploy %s to %s failed: %s', what, url, err);
 ```
-after
+right globalization (4 ways)
 ```js
 // 1 (recommended; simply replace `util` with `g`)
 g.f('Deploy %s to %s failed: %s', what, url, err);
@@ -751,24 +748,24 @@ Curly brace characters are reserved by `strong-globalize`.  In case curly brace 
 ## double curly braces not to translate
 Use double curly braces {{ }} as "don't translate" indicator.
 
-before:
+before globalization:
 ```js
 console.error('Invalid usage (near option \'%s\'), try `%s --help`.', option, cmd);
 ```
-after:
+right globalization:
 ```js
 g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd);
 ```
 
 ## help txt files
 
-before:
+before globalization:
 ```js
 var help = fs.readFileSync(require.resolve('./help.txt'), 'utf-8');
 ````
-after:
+right globalization:
 ```js
-var help = g.t('help.txt');
+var help = g.t('help.txt'); // or g.f('help.txt');
 ```
 and store help.txt file under intl/en.
 
@@ -816,17 +813,13 @@ function getHelpText() {
 }
 ```
 after:
-- `var SG = require('strong-globalize');`
-- `SG.SetRootDir( ... );`
-- `var g = SG();`
+- `var g = require('strong-globalize')();`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-var g = SG();
+var g = require('strong-globalize')();
 
 exports.getHelpText = getHelpText;
 exports.getUserName = getUserName;
@@ -873,7 +866,6 @@ console.log(gsub.getHelpText());
 after:
 - `var SG = require('strong-globalize');`
 - `SG.SetRootDir( ... );`
-- `SG.SetDefaultLanguage( ... );`
 - `var g = SG();`
 - replace `util` with `g`
 - replace `console` with `g`
@@ -882,12 +874,12 @@ after:
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+
 var express = require('express');
 var request = require('request');
 var app = express();
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
 var gsub = require('gsub');
 
 var g = SG();
@@ -995,7 +987,7 @@ In the following example, the two strings `{{StrongLoop}} History Board` and `Hi
 </div>
 ```
 
-`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of  box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
+`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
 
 The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
 
@@ -1056,7 +1048,6 @@ var request = require('request');
 var app = express();
 var SG = require('strong-globalize'); 
 SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
 var gsub = require('gsub');
 var w = require('winston'); // winston handle
 

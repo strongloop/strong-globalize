@@ -13,13 +13,17 @@ StrongLoop Globalize CLI and API
 </a>
 
 * [Architecture](#architecture)
+* [Autonomous Message Loading](#autonomous-message-loading)
 * [Language Config Customization](#language-config-customization)
 * [Runtime Language Switching](#runtime-language-switching)
-* [Upgrade from v1.x to v2.0](#upgrade-from-v1x-to-v20)
 * [Pseudo Localization Support](#pseudo-localization-support)
 * [Deep String Resource Extraction](#deep-string-resource-extraction)
-* [Autonomous Message Loading](#autonomous-message-loading)
+* [HTML Template Globalization](#html-template-globalization)
 * [JSON YAML File Globalization](#json-yaml-file-globalization)
+* [Persistent Logging](#persistent-logging)
+* [Demo](#demo)
+* [Sample Code](#sample-code)
+* [Other Resources](#other-resources)
 * [CLI - extract, lint, and translate](#cli---extract-lint-and-translate)
 * [API - Set system defaults](#api---set-system-defaults)
 	* [SG.SetDefaultLanguage](#sgsetdefaultlanguagelang)
@@ -74,10 +78,6 @@ StrongLoop Globalize CLI and API
 	* [help txt files](#help-txt-files)
 	* [help txt files and msg keys](#help-txt-files-and-msg-keys)
 	* [manually add message strings](#manually-add-message-strings)
-* [Demo](#demo)
-* [Sample Code](#sample-code)
-* [Globalize HTML Templates](#globalize-html-templates)
-* [Persistent Logging](#persistent-logging)
 
 # Architecture
 
@@ -110,6 +110,82 @@ The line test coverage with and without core part of translation tests are curre
 With the out-of-box setting, `npm test` runs all tests but the core translation tests because it requires connection to the machine translation service.  To enable the machine translation, please set the environment variables described in [this section](#liblocal-credentialsjson).
 
 With custom setting such as customized language configuration, some tests may fail.  You can edit target messages in the failing test modules to suit your custom setting.  To do so, set DEBUG global variable of test/slt-test-helper.js and run the test, identify the actual error messages, then copy and paste the actual error messages to the failing test modules.
+
+# Autonomous Message Loading
+
+All packages are created equal.  `Autonomous Message Loading` is the core concept of `strong-globalize` designed for globalization of modular and highly distributed Nodejs applications.  Two key terminologies are `root directory` and `master root directory`:
+
+`root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
+
+`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources in the application are extracted and stored under the `master root directory's intl/en`. 
+
+Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.
+
+In development phase, with regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set so that string resource included in each dependent package will be used.
+
+Third option is to set specific package names of which the string resources get loaded.  One use case of the third option is that you have several dependent packages which you know are properly translated and the translation can be used as-is.  For all the other packages, message strings will be deep-extracted and translated.
+
+```js
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'}); // same as SG.SetRootDir(__dirname);
+var g = SG({language: 'en'}); // same as SG();
+
+// use formatters and wrappers API
+
+g.log('Welcome!');
+```
+
+For example, the following does not work as intended because the package sub calls `SG.SetRootDir` first:
+
+```js
+// main/index.js -- my root package
+// all string resources are deep extracted and translated under intl of this package
+var SG = require('strong-globalize');
+var request = require('request');
+var sub = require('sub');
+
+SG.SetRootDir(__dirname);
+var g = SG();
+
+...
+```
+```js
+// sub/index.js -- my sub package
+var SG = require('strong-globalize');
+var request = require('request');
+
+SG.SetRootDir(__dirname);
+var g = SG();
+
+...
+
+```
+
+The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of the main module in each package:
+
+```js
+// main/index.js -- my root package
+// all string resources are deep extracted and translated under intl of this package
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+var request = require('request');
+var sub = require('sub');
+
+var g = SG();
+
+...
+```
+```js
+// sub/index.js -- my sub package
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+var request = require('request');
+
+var g = SG();
+
+...
+
+```
 
 # Language Config Customization
 
@@ -151,32 +227,8 @@ Setting language to `strong-globalize` instance is pretty cheap.  CLDR data set 
 // the common part comes here.
 
 // set language first, then, use formatters and wrappers API
+// See 'negotiator' on Npmjs.com for 'getAcceptLanguage()'
 g.setLanguage(getAcceptLanguage()); // once per session
-
-g.log('Welcome!');
-```
-# Upgrade from v1.x to v2.0
-
-Changes to be made to the client source code are minimal.
-
-v1.x:
-
-```js
-var g = require('strong-globalize');
-g.setRootDir(__dirname);
-
-// use formatters and wrappers API
-
-g.log('Welcome!');
-```
-v2.0:
-
-```js
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-var g = SG({language: 'en'});
-
-// use formatters and wrappers API
 
 g.log('Welcome!');
 ```
@@ -338,70 +390,31 @@ For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under 
               └── package.json
 ```
 
-# Autonomous Message Loading
+# HTML Template Globalization
 
-All packages are created equal.  `Autonomous Message Loading` is the core concept of `strong-globalize` designed for globalization of modular and highly distributed Nodejs applications.  Two key terminologies are `root directory` and `master root directory`:
+Many UI strings are included in HTML templates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
 
-`root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
+In the following example, the two strings `{{StrongLoop}} History Board` and `History board shows the access history to the e-commerce web site.` are extracted to JSON.
 
-`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources in the application are extracted and stored under the `master root directory's intl/en`. 
-
-Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.
-
-In development phase, with regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set so that string resource included in each dependent package will be used.
-
-Third option is to set specific package names of which the string resources get loaded.  One use case of the third option is that you have several dependent packages which you know are properly translated and the translation can be used as-is.  For all the other packages, message strings will be deep-extracted and translated.
-
-```js
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'}); // same as SG.SetRootDir(__dirname);
-var g = SG({language: 'en'}); // same as SG();
-
-// use formatters and wrappers API
-
-g.log('Welcome!');
+```html
+<div class="board-header section-header">
+  <h2>{{{{StrongLoop}} History Board | globalize}}</h2>
+</div>
+<div role="help-note">
+  <p>
+    {{ History board shows the access history to the e-commerce web site. | globalize }}
+  </p>
+</div>
 ```
 
-For example, the following does not work as intended because the package sub calls `SG.SetRootDir` first:
+`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
 
-```js
-// main/index.js -- my root package
-// all string resources are deep extracted and translated under intl of this package
-var MY_SUB = require('sub');
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-var g = SG();
+The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
 
-...
-```
-```js
-// sub/index.js -- my sub package
-var request = require('request');
-var g = require('strong-globalize')();
-
-...
-
-```
-
-The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of the main module in each package:
-
-```js
-// main/index.js -- my root package
-// all string resources are deep extracted and translated under intl of this package
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-var MY_SUB = require('sub');
-var g = SG();
-
-...
-```
-```js
-// sub/index.js -- my sub package
-var g = require('strong-globalize')();
-var request = require('request');
-
-...
-
+```html
+<![CDATA[
+  {{Text in cdata | globalize }}
+]]>
 ```
 
 # JSON YAML File Globalization
@@ -486,6 +499,98 @@ console.log(JSON.stringify(json, null, 2));
                         │
                         └── package.json
 ```
+
+# Persistent Logging
+
+`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
+
+## `SG.SetPersistentLogging(logCallback, disableConsole)`
+`logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
+
+```js
+{
+  language: 'ja',
+  message: 'ホスト:localhostのポート:8123へ送っています。',
+  orig: 'Sending to host: %s, port: %d ...',
+  vars: ['localhost', 8123],
+}
+```
+
+`disableConsole` (default: `false`) is a boolean to specify whether to send the messsage to `stdout` or `stderr`.  `disableConsole` should be set to `true` in case the client controls the user communication.  For example, if the client uses `winston` file transport for logging, the client code would look like this:
+
+Client:
+```js
+var SG = require('strong-globalize');
+SG.SetRootDir(__dirname);
+SG.SetDefaultLanguage();
+var g = SG(); // strong-globalize handle
+var w = require('winston'); // winston handle
+initWinston(w);
+// let strong-globalize to show it to the user
+var disableConsole = false;
+SG.SetPersistentLogging(w.log, disableConsole);
+
+function initWinston(w) {
+  var options = {
+    filename: __dirname + '/system.log',
+    maxsize: 1000000,
+    maxFiles: 10,
+    zippedArchive: true,
+  };
+  w.add(w.transports.File, options);
+  // let strong-globalize to show it to the user
+  w.remove(w.transports.Console);
+}
+```
+
+## Persistent Logging Demo `gmain/index.js`
+
+```js
+var express = require('express');
+var request = require('request');
+var app = express();
+var SG = require('strong-globalize'); 
+SG.SetRootDir(__dirname);
+var gsub = require('gsub');
+var w = require('winston'); // winston handle
+
+var g = SG(); // strong-globalize handle
+initWinston(w); // see the Client initialization
+var disableConsole = false;
+SG.SetPersistentLogging(w.log, disableConsole);
+
+app.get('/', function(req, res) {
+  var helloMessage = g.f('%s Hello World', g.d(new Date()));
+  w.info(helloMessage); // write only to the log file with 'info' level
+  res.end(helloMessage);
+});
+
+var port = process.env.PORT || 8123;
+app.listen(port, function() {
+  g.log('Listening on %s by %s.', port, gsub.getUserName());
+});
+
+setInterval(function(){
+  g.owrite('Sending request to %s ...', port);
+  request('http://localhost:' + port,
+    function(error, response, body) {console.log(body);});
+},1000);
+
+g.info(gsub.getHelpText()); // write to both console and the log file with 'info' level
+```
+
+Note:
+`w.info(helloMessage)` directly calls the winston API `info` and write `helpMessage` to the log file.
+`g.info(gsub.getHelpText())` writes the localized help text to both console and the log file with `info` level.  The other `strong-globalize` API calls, i.e., `g.log` and `g.owrite` also write the localized message to both console and the log file with `info` level.
+# Other Resources
+
+[1]  https://github.com/Setogit/sg-example-001-date-currency
+
+A complete strong-globalized application with machine-translated messages.  In addition to message formatting, date and currency formatting examples are included.  You can install and quickly see how the strong-globalized (or SG'ed in short) app works.  Just install and `node index.js`
+
+[2]  https://github.com/Setogit/sg-example-002-glob-pipeline
+
+Detailed 15-step instruction with 15 screen-shots to set up IBM Globalization Pipeline on Bluemix
 
 
 
@@ -968,114 +1073,3 @@ g.log('text in Spanish');
 g.setLanguage('fr');
 g.log('second text in French');
 ```
-
-
-# Globalize HTML Templates
-
-Many UI strings are included in HTML templates.  `slt-globalize -e` supports string extraction from the HTML templates as well as JS files.  Once extracted, `slt-globalize -t` can be used to translate the resource JSON.
-
-In the following example, the two strings `{{StrongLoop}} History Board` and `History board shows the access history to the e-commerce web site.` are extracted to JSON.
-
-```html
-<div class="board-header section-header">
-	<h2>{{{{StrongLoop}} History Board | globalize}}</h2>
-</div>
-<div role="help-note">
-	<p>
-		{{ History board shows the access history to the e-commerce web site. | globalize }}
-	</p>
-</div>
-```
-
-`strong-globalize` supports `{{ <string to be localized> | globalize }}` out of box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by `setHtmlRegex` API.
-
-The string extraction works for CDATA as well.  `Text in cdata` is extracted in the following example:
-
-```html
-<![CDATA[
-	{{Text in cdata | globalize }}
-]]>
-```
-
-# Persistent Logging
-
-`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
-
-## `SG.SetPersistentLogging(logCallback, disableConsole)`
-`logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
-
-```js
-{
-	language: 'ja',
-	message: 'ホスト:localhostのポート:8123へ送っています。',
-	orig: 'Sending to host: %s, port: %d ...',
-	vars: ['localhost', 8123],
-}
-```
-
-`disableConsole` (default: `false`) is a boolean to specify whether to send the messsage to `stdout` or `stderr`.  `disableConsole` should be set to `true` in case the client controls the user communication.  For example, if the client uses `winston` file transport for logging, the client code would look like this:
-
-Client:
-```js
-var SG = require('strong-globalize');
-SG.SetRootDir(__dirname);
-SG.SetDefaultLanguage();
-var g = SG(); // strong-globalize handle
-var w = require('winston'); // winston handle
-initWinston(w);
-// let strong-globalize to show it to the user
-var disableConsole = false;
-SG.SetPersistentLogging(w.log, disableConsole);
-
-function initWinston(w) {
-  var options = {
-    filename: __dirname + '/system.log',
-    maxsize: 1000000,
-    maxFiles: 10,
-    zippedArchive: true,
-  };
-  w.add(w.transports.File, options);
-  // let strong-globalize to show it to the user
-  w.remove(w.transports.Console);
-}
-```
-
-## Persistent Logging Demo `gmain/index.js`
-
-```js
-var express = require('express');
-var request = require('request');
-var app = express();
-var SG = require('strong-globalize'); 
-SG.SetRootDir(__dirname);
-var gsub = require('gsub');
-var w = require('winston'); // winston handle
-
-var g = SG(); // strong-globalize handle
-initWinston(w); // see the Client initialization
-var disableConsole = false;
-SG.SetPersistentLogging(w.log, disableConsole);
-
-app.get('/', function(req, res) {
-  var helloMessage = g.f('%s Hello World', g.d(new Date()));
-  w.info(helloMessage); // write only to the log file with 'info' level
-  res.end(helloMessage);
-});
-
-var port = process.env.PORT || 8123;
-app.listen(port, function() {
-  g.log('Listening on %s by %s.', port, gsub.getUserName());
-});
-
-setInterval(function(){
-	g.owrite('Sending request to %s ...', port);
-	request('http://localhost:' + port,
-		function(error, response, body) {console.log(body);});
-},1000);
-
-g.info(gsub.getHelpText()); // write to both console and the log file with 'info' level
-```
-
-Note:
-`w.info(helloMessage)` directly calls the winston API `info` and write `helpMessage` to the log file.
-`g.info(gsub.getHelpText())` writes the localized help text to both console and the log file with `info` level.  The other `strong-globalize` API calls, i.e., `g.log` and `g.owrite` also write the localized message to both console and the log file with `info` level.

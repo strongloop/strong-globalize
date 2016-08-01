@@ -1,4 +1,12 @@
-2016-07-29, Version 2.6.0
+2016-08-01, Version 2.6.1
+=========================
+
+ * Keep 'undefined' and 'null' values in mapping args (Setogit)
+
+ * Improve README (Setogit)
+
+
+2016-07-28, Version 2.6.0
 =========================
 
  * Remove {{ }} if falls back to original literal (Setogit)

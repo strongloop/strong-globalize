@@ -119,7 +119,7 @@ All packages are created equal.  `Autonomous Message Loading` is the core concep
 
 `master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources in the application are extracted and stored under the `master root directory's intl/en`. 
 
-Once all the string resource files are deep-extracted and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.
+Once all the string resource files are [deep-extracted](#deep-string-resource-extraction) and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the string resources in the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.
 
 In development phase, with regular extraction mode, `{autonomousMsgLoading: 'all'}` must be set so that string resource included in each dependent package will be used.
 
@@ -191,7 +191,7 @@ var g = SG();
 
 Out of box, one CLDR file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  In the installation of `strong-globalize` for your production deployment, you can replace the out-of-box CLDR file entirely, or add extra CLDR data to the `cldr` directory.  There are approximately 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.
 
-`strong-globalize` provides a utility tool under util directory.  The tool assembles and compresses only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.
+`strong-globalize` provides a utility tool under util directory.  The tool assembles only the languages you need to support in your `strong-globalize` installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.
 
 In runtime, `strong-globalize` dynamically loads to memory just the CLDR data required for the specific language by `setLanguage()`.  First, it examines all the `gz` files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more CLDR files, duplicate objects will be overwritten in the examination order.
 
@@ -644,7 +644,7 @@ BLUEMIX_PASSWORD=vLbqlkjPhJiwJlkjwou8woO82hk2huku
 BLUEMIX_INSTANCE=6888888888888e6d2f458b1b4b5fd010
 slt-globalize -t
 ```
-
+Please see [Other Resources](#other-resources) for step-by-step instructions to set up the service.
 
 # API - Set system defaults
 

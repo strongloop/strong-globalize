@@ -1,3 +1,17 @@
+2016-08-06, Version 2.6.3
+=========================
+
+ * Improve lint logic and update README (Setogit)
+
+
+2016-08-03, Version 2.6.2
+=========================
+
+ * Keep empty string in mapping args (Setogit)
+
+ * Fix left & right orphan detecton logic (Setogit)
+
+
 2016-08-01, Version 2.6.1
 =========================
 

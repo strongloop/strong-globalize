@@ -36,9 +36,6 @@ var targets = {
     err: [
       '*** null en:msg001MalformedDoubleCurlyRight has malformed' +
         ' double curly braces.\n',
-      '*** null en:msg001MalformedDoubleCurlyRight seems to' +
-        ' have an left orphan placeholder:\n',
-      '***   {Error:\n',
       '*** English file is malformed. Other languages not checked.\n',
     ],
   },

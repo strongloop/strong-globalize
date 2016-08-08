@@ -178,7 +178,6 @@ var targets = {
       '--- linted 600 messages, 10606 words, 68340 characters\n',
     ],
     err: [
-      '*** en null messages006b.json contains more than 500 messages.\n',
       '*** null en has an duplicate message key:\n',
       '***   msg006Msg0\n',
       '*** null en:msg006Msg333333333333333333333333333333333333333333333' +

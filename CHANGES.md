@@ -1,4 +1,12 @@
-2016-08-07, Version 2.6.4
+2016-08-08, Version 2.6.5
+=========================
+
+ * Split messages.json to mitigate GPB restriction (Setogit)
+
+ * Improve require resolution performance (Tetsuo Seto)
+
+
+2016-08-06, Version 2.6.4
 =========================
 
  * Use non-greedy {{ }} matching (Setogit)

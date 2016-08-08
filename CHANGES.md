@@ -1,4 +1,10 @@
-2016-08-08, Version 2.6.5
+2016-08-08, Version 2.6.6
+=========================
+
+ * Move mktmpdir to dependencies (Miroslav Bajtoš)
+
+
+2016-08-07, Version 2.6.5
 =========================
 
  * Split messages.json to mitigate GPB restriction (Setogit)

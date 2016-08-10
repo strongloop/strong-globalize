@@ -37,6 +37,8 @@ var targets = {
 test('test globalize misc testing', function(t) {
   sltTH.testHarness(t, targets, true,
       function(name, unhook_intercept, callback) {
+        unhook_intercept();
+        callback();
         var g = SG();
         var target;
         var found;
@@ -44,27 +46,25 @@ test('test globalize misc testing', function(t) {
           case 'formatMessage':
             target = 'invalidMessage abc xyz';
             found = g.formatMessage('invalidMessage', ['abc', 'xyz']);
-            t.equal(found, target, target);
+            t.match(found, target, target);
             break;
           case 'formatNumber':
             target = 'wrongNumber';
             found = g.formatNumber(target);
-            t.equal(found, target, target);
+            t.match(found, target, target);
             break;
           case 'formatDate':
             target = 'wrongDate';
             found = g.formatDate(target);
-            t.equal(found, target, target);
+            t.match(found, target, target);
             break;
           case 'formatCurrency':
             target = 'invalidCurrencySymbol100';
             found = g.formatCurrency(100, 'invalidCurrencySymbol');
-            t.equal(found, target, target);
+            t.match(found, target, target);
             break;
           default:
         }
-        unhook_intercept();
-        callback();
       }, function() {
         t.end();
       });

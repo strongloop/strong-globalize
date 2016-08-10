@@ -8,6 +8,8 @@ var helper = require('../lib/helper');
 var stdout = require('intercept-stdout');
 var test = require('tap').test;
 
+var VERBOSE = process.env.SG_VERBOSE;
+
 helper.setRootDir(__dirname);
 g.setDefaultLanguage();
 
@@ -32,7 +34,7 @@ var aliases = [
 
 aliases.forEach(function(alias) {
   var title = alias.level +
-    ' (this msg is shown in the console)';
+    ' (this msg is shown in the console - singleton)';
   test(title, function(t) {
     var called = false;
     function myLogCb(level, msg) {
@@ -50,13 +52,20 @@ aliases.forEach(function(alias) {
 function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
   var myStdoutMsg = null;
   var myStderrMsg = null;
-  function stdoutCb(txt) { myStdoutMsg = txt; }
-  function stderrCb(txt) { myStderrMsg = txt; }
+  function stdoutCb(txt) {
+    myStdoutMsg = txt;
+    return VERBOSE ? null : '';
+  }
+  function stderrCb(txt) {
+    myStderrMsg = txt;
+    return VERBOSE ? null : '';
+  }
   var unhook_intercept = stdout(stdoutCb, stderrCb);
   setTimeout(function() {
     var myStdMsg = alias.err ? myStderrMsg : myStdoutMsg;
     t.comment('myLogCbMsg: %j', myLogCbMsg);
     t.comment('myStdMsg: %s', myStdMsg);
+    unhook_intercept();
     if (myLogCbMsg && myStdMsg) {
       t.equal(myLogCbMsg.level, alias.level,
         'Persistent logging callback returns the level:' + alias.level);
@@ -68,13 +77,12 @@ function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
     } else {
       t.fail('Both persistent logging callback and stdout should return.');
     }
-    unhook_intercept();
     t.end();
   }, 50);
 }
 
 aliases.forEach(function(alias) {
-  var title = alias.level + ' (console disabled)';
+  var title = alias.level + ' (console disabled in singleton logging)';
   test(title, function(t) {
     var called = false;
     function myLogCb(level, msg) {
@@ -99,6 +107,7 @@ function logTestWithConsoleDisabled(myLogCbMsg, t, alias, expectedMsg) {
     var myStdMsg = alias.err ? myStderrMsg : myStdoutMsg;
     t.comment('myLogCbMsg: %j', myLogCbMsg);
     t.comment('myStdMsg: %s', myStdMsg);
+    unhook_intercept();
     if (myLogCbMsg && !myStdMsg) {
       t.equal(myLogCbMsg.level, alias.level,
         'Persistent logging callback returns the level:' + alias.level);
@@ -109,7 +118,6 @@ function logTestWithConsoleDisabled(myLogCbMsg, t, alias, expectedMsg) {
     } else {
       t.fail('Only persistent logging callback should return.');
     }
-    unhook_intercept();
     t.end();
   }, 50);
 }

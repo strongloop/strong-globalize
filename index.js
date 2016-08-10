@@ -39,9 +39,6 @@ function SetRootDir(rootDir, options) {
   options.autonomousMsgLoading =
     helper.validateAmlValue(options.autonomousMsgLoading);
   if (!options.autonomousMsgLoading) {
-    console.log(
-      '*** SetRootDire: invalid autonomousMsgLoading: %j -- \'%s\' is used.',
-      options.autonomousMsgLoading, defaults.autonomousMsgLoading);
     options.autonomousMsgLoading = defaults.autonomousMsgLoading;
   }
   globalize.setRootDir(rootDir);

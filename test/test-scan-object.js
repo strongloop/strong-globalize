@@ -6,6 +6,11 @@
 var helper = require('../lib/helper');
 var test = require('tap').test;
 
+var savedConsoleLog = console.log;
+var savedConsoleError = console.error;
+console.log = function() {};
+console.error = function() {};
+
 test('normalize keys', function(t) {
   var data = [
     {
@@ -200,3 +205,6 @@ function testReplace() {
 }
 
 testReplace();
+
+console.log = savedConsoleLog;
+console.error = savedConsoleError;

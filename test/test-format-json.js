@@ -72,25 +72,21 @@ test('test formatJson and formatYaml', function(t) {
         switch (name) {
           case 'formatjson001':
           case 'formatyaml001':
-            t.doesNotThrow(
-          function() {
             g.formatMessage(fileName, allKeys);
-          },
-          fileName + ' must exist under the root directory.');
             var langs = loadMsgHelper.wellKnownLangs;
             langs.forEach(function(lang) {
               g.setLanguage(lang);
               var dataJson = g.formatMessage(fileName,
-            '[' +
-            '"title",' +
-            '["types", 0],' +
-            '["types", 1],' +
-            '["types", 2],' +
-            '["types", 3],' +
-            '["threeWrites", "e"],' +
-            '["threeWrites", "o"],' +
-            '["threeWrites", "w"]' +
-            ']', lang);
+                '[' +
+                '"title",' +
+                '["types", 0],' +
+                '["types", 1],' +
+                '["types", 2],' +
+                '["types", 3],' +
+                '["threeWrites", "e"],' +
+                '["threeWrites", "o"],' +
+                '["threeWrites", "w"]' +
+                ']', lang);
               console.log(JSON.stringify(dataJson));
             });
             break;
@@ -102,4 +98,3 @@ test('test formatJson and formatYaml', function(t) {
         t.end();
       });
 });
-

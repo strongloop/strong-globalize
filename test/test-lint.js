@@ -3,19 +3,9 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-var SG = require('../index');
 var lint = require('../lib/lint');
 var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
-
-SG.SetRootDir(__dirname);
-
-test('lint message', function(t) {
-  lint.lintMessageFiles(false, function(err) {
-    t.assert(!err, 'No lint errors.');
-  });
-  t.end();
-});
 
 var targets = {
   lint000: {

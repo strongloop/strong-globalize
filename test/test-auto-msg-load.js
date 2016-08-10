@@ -11,8 +11,18 @@ var loadMsgHelper = require('./load-msg-helper');
 var mktmpdir = require('mktmpdir');
 var path = require('path');
 var shell = require('shelljs');
+var stdout = require('intercept-stdout');
 var test = require('tap').test;
 var translate = require('../lib/translate');
+
+var VERBOSE = process.env.SG_VERBOSE;
+
+function stdoutCb(txt) {
+  return VERBOSE ? null : '';
+}
+function stderrCb(txt) {
+  return VERBOSE ? null : '';
+}
 
 var wellKnownLangs = loadMsgHelper.wellKnownLangs;
 var secondaryMgr = loadMsgHelper.secondaryMgr;
@@ -57,7 +67,9 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         helper.setRootDir(destDir);
         var savedMaxDepth = process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH;
         process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = null;
+        var unhook_intercept = stdout(stdoutCb, stderrCb);
         extract.extractMessages(null, true, true, function(err, result) {
+          unhook_intercept();
           if (err) t.fail('extractMessages failed.');
           else t.pass('extractMessages succeeds.');
           process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = savedMaxDepth;
@@ -96,9 +108,11 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         }
         global.STRONGLOOP_GLB = undefined;
         helper.setRootDir(destDir);
+        var unhook_intercept = stdout(stdoutCb, stderrCb);
         translate.translateResource(function(err) {
+          unhook_intercept();
           if (err) {
-            console.error('*** translate is unavailable; skipping.');
+            t.comment('*** translate is unavailable; skipping.');
             translateMaybeSkip = true;
           } else {
             t.pass('translate succeeds.');

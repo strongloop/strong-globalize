@@ -8,8 +8,7 @@ var test = require('tap').test;
 
 test('test translate error ' + gpbHelper.FAKE_bundle_uploadStrings,
   function(t) {
-    gpbHelper.fakeGpbTest(t, gpbHelper.FAKE_bundle_uploadStrings, function() {
-      t.end();
-    });
+    gpbHelper.fakeGpbTest(t, gpbHelper.FAKE_bundle_uploadStrings,
+      function() { t.pass(); t.end(); });
   }
 );

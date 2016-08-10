@@ -4,7 +4,6 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var async = require('async');
-var f = require('util').format;
 var helper = require('../lib/helper');
 var loadMsgHelper = require('./load-msg-helper');
 
@@ -14,8 +13,6 @@ var secondaryMgr = loadMsgHelper.secondaryMgr;
 var cluster = require('cluster');
 
 if (cluster.isMaster && !process.argv[2]) {
-  var msg = f('Master is %s', process.pid);
-  console.log(msg);
   cluster.setupMaster({
     exec: __filename,
     args: ['second_invoke'],
@@ -23,17 +20,16 @@ if (cluster.isMaster && !process.argv[2]) {
   });
   cluster.fork();
   cluster.on('online', function(worker) {
-    msg = f('Worker %s has started', worker.process.pid);
-    console.log(msg);
+    // worker has started.
   });
   cluster.on('exit', function(worker) {
-    msg = f('Worker %s has completed', worker.process.pid);
-    console.log(msg);
+    // worker has completed.
   });
 } else if (cluster.isWorker) {
   var test = require('tap').test;
   test('secondary test on forking', function(t) {
-    t.equal(process.argv[2], 'second_invoke', 'worker in the second invoke');
+    t.match(process.argv[2], 'second_invoke',
+      'worker in the second invoke');
     async.forEachOfSeries(wellKnownLangs, function(lang, ix, callback) {
       secondaryMgr(__dirname, lang, t, helper.AML_ALL, true,
         function() {

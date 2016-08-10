@@ -13,6 +13,7 @@ var stdout = require('intercept-stdout');
 exports.testHarness = testHarness;
 
 var DEBUG = false;
+var VERBOSE = process.env.SG_VERBOSE;
 
 // testHarness(t, targets, testCallback)
 //     targets = {
@@ -60,13 +61,14 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
     function passTemporaryFailure(found, target) {
       var failureMsg = helper.MSG_GPB_UNAVAILABLE;
       found = found.trim();
-      return (found !== target && found === failureMsg);
+      var isTempFailure = (found !== target) && (found === failureMsg);
+      return isTempFailure;
     }
 
     function checkErrMsg(outMsg, errMsg, key, targets, t) {
       outMsg = stripRootDirInfo(outMsg, key);
       errMsg = stripRootDirInfo(errMsg, key);
-      if (DEBUG) t.comment(
+      if (DEBUG) console.log(
         '\n<<< BEGIN', key,
         '\nout ________________\n',
         outMsg,
@@ -139,8 +141,14 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
       asyncTasks.push(function(cb) {
         var myStdoutMsg = [];
         var myStderrMsg = [];
-        function stdoutCb(txt) { myStdoutMsg.push(txt); }
-        function stderrCb(txt) { myStderrMsg.push(txt); }
+        function stdoutCb(txt) {
+          myStdoutMsg.push(txt);
+          return VERBOSE ? null : '';
+        }
+        function stderrCb(txt) {
+          myStderrMsg.push(txt);
+          return VERBOSE ? null : '';
+        }
         var unhook_intercept = stdout(stdoutCb, stderrCb);
         var name = this.toString();
         initRootDir(name);

@@ -5,19 +5,22 @@ var test = require('tap').test;
 // The data was gathered by running (some) unit-tests of LoopBack
 var data = require('./fixtures/loopback-sample-messages.json');
 
-test('"g.f()" is at most 5x slower than "util.format()"', function(t) {
+test('"g.f()" is at most 120x slower than "util.format()"', function(t) {
   var size = data.length;
   var baseline = measure(function format(args) { f.apply(this, args); });
-  t.comment(f('%s calls of "util.format()" took %s milliseconds', size, baseline));
+  t.comment(f(
+    '%s calls of "util.format()" took %s milliseconds', size, baseline));
 
   var duration = measure(function localize(args) { g.f.apply(g, args); });
-  t.comment(f('%s calls of "g.f()" took %s milliseconds', size, duration));
+  t.comment(f(
+    '%s calls of "g.f()" took %s milliseconds', size, duration));
 
+  var expected = 120 * baseline;
   var msg = f(
     'Expected %s calls of "g.f()" to finish under %sms, ' +
       'they took %sms instead.',
-    size, 5*baseline, duration);
-  t.ok(duration < 5*baseline, msg);
+    size, expected, duration);
+  t.ok(duration <= expected, msg);
   t.end();
 });
 
@@ -27,5 +30,5 @@ function measure(fn) {
     fn(args);
   });
   var delta = process.hrtime(start);
-  return delta[0]*1e3 + delta[1]/1e6;
+  return delta[0] * 1e3 + delta[1] / 1e6;
 }

@@ -50,7 +50,6 @@
     "estraverse": "^4.1.1",
     "fs-sync": "^1.0.2",
     "g11n-pipeline": "^1.2.2",
-    "globalize": "^1.1.0",
     "htmlparser2": "^3.9.0",
     "lodash": "^4.15.0",
     "md5": "^2.0.0",

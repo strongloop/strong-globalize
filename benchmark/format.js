@@ -1,18 +1,33 @@
 var f = require('util').format;
 var g = require('../lib/globalize');
+var helper = require('../lib/helper');
+var md5 = require('md5');
 
 // The data was gathered by running (some) unit-tests of LoopBack
 var data = require('./data/loopback-sample-messages.json');
-
 var size = data.length;
-var baseline = measure(function format(args) { f.apply(this, args); });
-console.log('%s calls of "util.format()" took %s milliseconds', size, baseline);
 
-var duration = measure(function localize(args) { g.f.apply(g, args); });
-console.log('%s calls of "g.f()" took %s milliseconds', size, duration);
+console.log('BASELINE');
+var baseline = measure(function format(args) { f.apply(this, args); });
+console.log('  %s calls of "util.format()" took %sms', size, baseline);
+
+console.log('CASE 1 - no messages are loaded');
+var duration = measure(localize);
+console.log('  %s calls of "g.f()" took %sms', size, duration);
 
 var ratio = Math.ceil(duration / baseline);
-console.log('g.f() is %sx slower than util.format', ratio);
+console.log('  g.f() is %sx slower than util.format', ratio);
+
+console.log('CASE 2 - all messages are loaded');
+g.setDefaultLanguage();
+loadMessagesFromData();
+duration = measure(localize);
+console.log('  %s calls of "g.f()" took %sms', size, duration);
+
+ratio = Math.ceil(duration / baseline);
+console.log('  g.f() is %sx slower than util.format', ratio);
+
+// --- HELPERS --- //
 
 function measure(fn) {
   var start = process.hrtime();
@@ -23,4 +38,21 @@ function measure(fn) {
   }
   var delta = process.hrtime(start);
   return delta[0] * 1e3 + delta[1] / 1e6;
+}
+
+function localize(args) {
+  g.f.apply(g, args);
+}
+
+function loadMessagesFromData() {
+  var messages = {};
+  data.forEach(function(value) {
+    var msg = value[0];
+    var key = md5(msg);
+    if (messages[key]) return;
+    if (helper.percent(msg))
+      msg = helper.mapPercent(msg);
+    messages[key] = msg;
+  });
+  global.STRONGLOOP_GLB.loadMessages({en: messages});
 }

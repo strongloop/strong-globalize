@@ -1,3 +1,13 @@
+2016-08-15, Version 2.6.7
+=========================
+
+ * Avoid JSON.stringify when debug is disabled (Miroslav Bajtoš)
+
+ * Speed up formatMsg for lang=EN and path not found (Miroslav Bajtoš)
+
+ * Add benchmark for g.f() (Miroslav Bajtoš)
+
+
 2016-08-08, Version 2.6.6
 =========================
 

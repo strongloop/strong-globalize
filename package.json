@@ -23,7 +23,7 @@
   "main": "index.js",
   "browser": "browser.js",
   "scripts": {
-    "pretest": "eslint --ignore-path .gitignore . && jscs ./",
+    "pretest": "eslint ./ && jscs ./",
     "test": "tap --bail --coverage --coverage-report=cobertura --timeout=200 test/test-*.*",
     "posttest": "nyc report --reporter=lcov && nyc report"
   },

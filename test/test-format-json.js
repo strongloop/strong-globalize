@@ -4,17 +4,14 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var SG = require('../index');
-var formatJson = require('../lib/globalize').formatJson;
 var helper = require('../lib/helper');
 var loadMsgHelper = require('./load-msg-helper');
-var loadGlobalize = require('../lib/globalize').loadGlobalize;
-var path = require('path');
-var sltTH = require('./slt-test-helper')
+var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
 
 var targets = {
   formatjson001: {
-    out:  [
+    out: [
       '{"title":"This is an error.","types":["error","log","info","warn"],' +
         '"threeWrites":{"e":"ewrite","o":"owrite","w":"write"}}\n',
       '{"title":"Dies ist ein Fehler.","types":["Fehler","Protokoll",' +
@@ -65,25 +62,25 @@ var allKeys = '[' +
 test('test formatJson and formatYaml', function(t) {
   sltTH.testHarness(t, targets, false,
       function(name, unhook_intercept, callback) {
-    var rootDir = helper.getRootDir();
-    global.STRONGLOOP_GLB = null;
-    SG.SetRootDir(rootDir);
-    var g = SG();
-    var fileName = null;
-    if (name === 'formatjson001') fileName = 'data.json';
-    if (name === 'formatyaml001') fileName = 'data.yml';
-    switch (name) {
-      case 'formatjson001':
-      case 'formatyaml001':
-        t.doesNotThrow(
+        var rootDir = helper.getRootDir();
+        global.STRONGLOOP_GLB = null;
+        SG.SetRootDir(rootDir);
+        var g = SG();
+        var fileName = null;
+        if (name === 'formatjson001') fileName = 'data.json';
+        if (name === 'formatyaml001') fileName = 'data.yml';
+        switch (name) {
+          case 'formatjson001':
+          case 'formatyaml001':
+            t.doesNotThrow(
           function() {
             g.formatMessage(fileName, allKeys);
           },
           fileName + ' must exist under the root directory.');
-        var langs = loadMsgHelper.wellKnownLangs;
-        langs.forEach(function(lang) {
-          g.setLanguage(lang);
-          var dataJson = g.formatMessage(fileName,
+            var langs = loadMsgHelper.wellKnownLangs;
+            langs.forEach(function(lang) {
+              g.setLanguage(lang);
+              var dataJson = g.formatMessage(fileName,
             '[' +
             '"title",' +
             '["types", 0],' +
@@ -94,15 +91,15 @@ test('test formatJson and formatYaml', function(t) {
             '["threeWrites", "o"],' +
             '["threeWrites", "w"]' +
             ']', lang);
-          console.log(JSON.stringify(dataJson));
-        });
-        break;
-      default:
-    }
-    unhook_intercept();
-    callback();
-  }, function() {
-    t.end();
-  });
+              console.log(JSON.stringify(dataJson));
+            });
+            break;
+          default:
+        }
+        unhook_intercept();
+        callback();
+      }, function() {
+        t.end();
+      });
 });
 

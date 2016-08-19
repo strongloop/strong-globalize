@@ -307,9 +307,9 @@ test('pseudo loc extraction', function(t) {
     helper.PSEUDO_TAG + 'cs_arg',
   ];
   var targetLocs = [
-  'test-extract.js:1',
-  'test-extract.js:1',
-  'test-extract.js:2',
+    'test-extract.js:1',
+    'test-extract.js:1',
+    'test-extract.js:2',
   ];
   extract.scanAst(content, testFileName).forEach(function(m) {
     extractedMsgs.push(m.msg);

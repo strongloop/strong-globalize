@@ -5,7 +5,7 @@
 
 var SG = require('../index');
 var lint = require('../lib/lint');
-var sltTH = require('./slt-test-helper')
+var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
 
 SG.SetRootDir(__dirname);
@@ -24,9 +24,9 @@ var targets = {
       '--- linted 1 messages, 6 words, 36 characters\n',
     ],
     err: [
-    '*** null en:msg000MalformedDoubleCurly has malformed double' +
+      '*** null en:msg000MalformedDoubleCurly has malformed double' +
       ' curly braces.\n',
-    '*** English file is malformed. Other languages not checked.\n',
+      '*** English file is malformed. Other languages not checked.\n',
     ]},
   lint001: {
     out: [
@@ -195,15 +195,15 @@ var targets = {
 test('test lint misc testing', function(t) {
   sltTH.testHarness(t, targets, false,
       function(name, unhook_intercept, callback) {
-    var checkAllLangs = (name === 'lint004');
-    var mustErr = (name !== 'lint004' && name !== 'lint005')
-    lint.lintMessageFiles(!checkAllLangs, function(err) {
-      unhook_intercept();
-      if (mustErr) t.assert(err, name + ' must error.');
-      else t.assert(!err, name + ' must not error.');
-      callback();
-    });
-  }, function() {
-    t.end();
-  });
+        var checkAllLangs = (name === 'lint004');
+        var mustErr = (name !== 'lint004' && name !== 'lint005');
+        lint.lintMessageFiles(!checkAllLangs, function(err) {
+          unhook_intercept();
+          if (mustErr) t.assert(err, name + ' must error.');
+          else t.assert(!err, name + ' must not error.');
+          callback();
+        });
+      }, function() {
+        t.end();
+      });
 });

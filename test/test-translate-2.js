@@ -269,36 +269,36 @@ var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
 test('test translate misc testing', translateMaybeSkip, function(t) {
   sltTH.testHarness(t, targets, false,
       function(name, unhook_intercept, callback) {
-    if (name == 'translate003') {
-      translate.setTranslationUnit(1);
-    }
-    translate.translateResource(function(err) {
-      var targetIfLogonFailed = '*** Login to GPB failed or' +
+        if (name === 'translate003') {
+          translate.setTranslationUnit(1);
+        }
+        translate.translateResource(function(err) {
+          var targetIfLogonFailed = '*** Login to GPB failed or' +
         ' GPB.supportedTranslations error.';
-      var target = null;
-      var found = err ? err.toString() : '';
-      if (found === targetIfLogonFailed) {
-        unhook_intercept();
-        callback(true);
-        return;
-      }
-      if (name == 'translate001') {
-        target = 'Package.json not found.'
-        t.assert(err, name + ' must err.');
-        t.equal(found, target, target);
-      }
-      if (name == 'translate002') {
-        target = 'English resource does not exist.'
-        t.assert(err, name + ' must err.');
-        t.equal(found, target, target);
-      }
-      if (name == 'translate003') {
-        translate.setTranslationUnit(-1);
-      }
-      unhook_intercept();
-      callback();
-    });
-  }, function() {
-    t.end();
-  });
+          var target = null;
+          var found = err ? err.toString() : '';
+          if (found === targetIfLogonFailed) {
+            unhook_intercept();
+            callback(true);
+            return;
+          }
+          if (name === 'translate001') {
+            target = 'Package.json not found.';
+            t.assert(err, name + ' must err.');
+            t.equal(found, target, target);
+          }
+          if (name === 'translate002') {
+            target = 'English resource does not exist.';
+            t.assert(err, name + ' must err.');
+            t.equal(found, target, target);
+          }
+          if (name === 'translate003') {
+            translate.setTranslationUnit(-1);
+          }
+          unhook_intercept();
+          callback();
+        });
+      }, function() {
+        t.end();
+      });
 });

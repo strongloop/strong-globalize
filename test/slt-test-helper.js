@@ -3,7 +3,6 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-var SG = require('../index');
 var async = require('async');
 var helper = require('../lib/helper');
 var mktmpdir = require('mktmpdir');
@@ -83,7 +82,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
             passTemporaryFailure(out, targets[key].out[ix]);
           if (temporaryFailure) return;
           t.match(out, targets[key].out[ix],
-            key + ': out msg matches.')
+            key + ': out msg matches.');
         });
         if (temporaryFailure) return;
         errMsg.forEach(function(err, ix) {
@@ -91,7 +90,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
             passTemporaryFailure(err, targets[key].err[ix]);
           if (temporaryFailure) return;
           t.match(err, targets[key].err[ix],
-            key + ': err msg matches.')
+            key + ': err msg matches.');
         });
         if (temporaryFailure) return;
         t.equal(outMsg.length, targets[key].out.length,
@@ -117,13 +116,14 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
     if (err) t.fail('mktmpdir failed.');
     var copyDirs = [];
     keys.forEach(function(key) {
+      var dir;
       if (noFixtures) {
-        var dir = path.join(destDir, key);
+        dir = path.join(destDir, key);
         t.comment('--- making dir: %s', dir);
         shell.mkdir('-p', dir);
         t.comment('----- made dir: %s', dir);
       } else {
-        var dir = path.join(__dirname, 'fixtures', key);
+        dir = path.join(__dirname, 'fixtures', key);
         copyDirs.push(dir);
       }
     });
@@ -153,7 +153,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
       }.bind(key));
     });
     async.series(asyncTasks, function(err, result) {
-      done(); // of mktmpdir
+      done(err); // of mktmpdir
     });
   }, function(err, dir) {
     if (process.platform !== 'win32') {

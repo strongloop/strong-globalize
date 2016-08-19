@@ -4,8 +4,6 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var SG = require('../index');
-var _ = require('lodash');
-var f = require('util').format;
 var helper = require('../lib/helper');
 
 var wellKnownLangs = ['en', 'de', 'es', 'fr', 'it', 'pt', 'ja',
@@ -13,19 +11,19 @@ var wellKnownLangs = ['en', 'de', 'es', 'fr', 'it', 'pt', 'ja',
 exports.wellKnownLangs = wellKnownLangs;
 
 var msgWanted = {
-  de: [
+  'de': [
     'Sekunde - Haupttiefennachricht',
     'Drittel - Haupttiefennachricht',
     'Viertel - zweite Tiefennachricht',
     'Fünftel - Haupttiefennachricht',
   ],
-  en: [
+  'en': [
     'second - primary depth message',
     'third - primary depth message',
     'fourth - second depth message',
     'fifth - primary depth message',
   ],
-  es: [
+  'es': [
     new RegExp('^Segundo (mensaje principal profundidad' +
       '|- mensaje de profundidad primario)$'),
     new RegExp('^Tercer( mensaje principal profundidad' +
@@ -35,7 +33,7 @@ var msgWanted = {
     new RegExp('^Quinto (mensaje principal profundidad' +
       '|- mensaje de profundidad primario)$'),
   ],
-  fr: [
+  'fr': [
     new RegExp('^(Deuxième message-profondeur primaire' +
       '|Seconde - message principal de la profondeur)$'),
     new RegExp('^(Message tiers-profondeur primaire' +
@@ -45,25 +43,25 @@ var msgWanted = {
     new RegExp('^(Message de cinquième primaire profondeur' +
       '|Cinquième - message principal de la profondeur)$'),
   ],
-  it: [
+  'it': [
     'Secondo - messaggio di profondità principale',
     'Terzo - messaggio di profondità principale',
     'Quarto - secondo messaggio di profondità',
     'Quinto - messaggio di profondità principale',
   ],
-  ja: [
+  'ja': [
     '秒- 主要な深さメッセージ',
     '3番目- 主要な深さメッセージ',
     '4番目- 第2の深さメッセージ',
     '5番目- 主要な深さメッセージ',
   ],
-  ko: [
+  'ko': [
     '두 번째-주요한 깊이 메시지',
     '3 번째-주요한 깊이 메시지',
     '4 번째-두 번째 깊이 메시지',
     '5 번째-주요한 깊이 메시지',
   ],
-  pt: [
+  'pt': [
     new RegExp('^(Segunda mensagem primária de profundidade' +
       '|Segundo - mensagem de profundidade primária)$'),
     new RegExp('^(Terceira mensagem primária de profundidade' +
@@ -88,8 +86,6 @@ var msgWanted = {
 };
 
 function secondaryMgr(rootDir, lang, t, aml, positive, callback) {
-  var msg = f('running language loading test: %s in process %d',
-    lang, process.pid);
   var msgFound = [];
   rootDir = rootDir || __dirname;
   global.STRONGLOOP_GLB = undefined;

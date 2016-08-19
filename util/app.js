@@ -4,7 +4,6 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var _ = require('lodash');
-var debug = require('debug')('strong-globalize');
 var fs = require('fs');
 var path = require('path');
 var util = require('util');

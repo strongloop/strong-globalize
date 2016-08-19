@@ -4,7 +4,6 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var helper = require('../lib/helper');
-var path = require('path');
 var test = require('tap').test;
 
 test('normalize keys', function(t) {
@@ -68,7 +67,7 @@ test('normalize keys', function(t) {
     },
   ];
 
-  var x = {a:[{b:'yes'}]};
+  var x = {a: [{b: 'yes'}]};
   t.match(x.a[0].b, 'yes', 'JS notation remark 1');
   t.match(x.a['0'].b, 'yes', 'JS notation remark 2');
 
@@ -80,7 +79,7 @@ test('normalize keys', function(t) {
       'normalize keys with data number: ' + ix.toString());
   }
   t.throws(function() {
-    helper.normalizeKeyArrays([[[]]])
+    helper.normalizeKeyArrays([[[]]]);
   }, 'key must be string or number');
   t.end();
 });
@@ -102,7 +101,7 @@ var data = {
   c: {
     d: {
       e: 'text e',
-    }
+    },
   },
   f: 'text f',
 };
@@ -144,14 +143,14 @@ function testScan(returnErrors) {
   var exptd = returnErrors ? longExpected : shortExpected;
   test('object scan object with' + (returnErrors ? '' : 'out') + ' errors',
     function(t) {
-    t.match(ret.length, exptd.length,
+      t.match(ret.length, exptd.length,
       'return length matched.');
-    exptd.forEach(function(exp, ix) {
-      t.match(ret[ix], exp,
+      exptd.forEach(function(exp, ix) {
+        t.match(ret[ix], exp,
         'right text is returned ' + ix.toString());
-    })
-    t.end();
-  });
+      });
+      t.end();
+    });
 }
 
 testScan(false);
@@ -186,7 +185,7 @@ var replacedData = {
   c: {
     d: {
       e: 'new text e',
-    }
+    },
   },
   f: 'text f',
 };

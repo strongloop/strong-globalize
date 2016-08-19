@@ -11,7 +11,6 @@ var g = SG();
 var express = require('express');
 var gsub = require('gsub');
 var request = require('request');
-var path = require('path');
 var util = require('util');
 
 var app = express();
@@ -33,5 +32,5 @@ app.listen(port, function() {
 
 setInterval(function() {
   request('http://localhost:' + port,
-		function(error, response, body) {console.log(body);});
-},1000);
+		function(_error, response, body) { console.log(body); });
+}, 1000);

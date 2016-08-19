@@ -5,7 +5,6 @@
 
 var SG = require('../index');
 var helper = require('../lib/helper');
-var md5 = require('md5');
 var path = require('path');
 var test = require('tap').test;
 var translate = require('../lib/translate');
@@ -28,7 +27,6 @@ test('register resource tag', function(t) {
   var rootDir = path.resolve(__dirname);
   var lang = helper.ENGLISH;
   var txtFile = 'test-help.txt';
-  var currentPath = path.join(rootDir, 'intl', lang, txtFile);
   var hash = helper.msgFileIdHash(txtFile, rootDir);
   var tagType = 'test_tag';
   t.notOk(helper.resTagExists(hash, txtFile, lang, tagType),

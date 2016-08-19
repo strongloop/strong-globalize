@@ -63,7 +63,7 @@ Object.defineProperty(exports, 'FAKE_testIds', {
 });
 
 var targets = {
-  FAKE_supportedTranslations : {
+  FAKE_supportedTranslations: {
     translate000: {
       out: [
       ],
@@ -72,7 +72,7 @@ var targets = {
       ],
     },
   },
-  FAKE_bundle_create : {
+  FAKE_bundle_create: {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
@@ -144,7 +144,7 @@ var targets = {
         '--- linted gpbtestmain uk\n',
         '--- linting gpbtestmain vi\n',
         '--- linted gpbtestmain vi\n',
-        ],
+      ],
       err: [
         '*** GPB.create error: {"obj":{"message":"FAKE_bundle_create"}}\n',
         '*** gpbtestmain de has no message files.\n',
@@ -180,7 +180,7 @@ var targets = {
       ],
     },
   },
-  FAKE_bundle_uploadStrings : {
+  FAKE_bundle_uploadStrings: {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
@@ -252,7 +252,7 @@ var targets = {
         '--- linted gpbtestmain uk\n',
         '--- linting gpbtestmain vi\n',
         '--- linted gpbtestmain vi\n',
-        ],
+      ],
       err: [
         '*** GPB.uploadStrings error: "FAKE_bundle_uploadStrings"\n',
         '*** gpbtestmain de has no message files.\n',
@@ -288,7 +288,7 @@ var targets = {
       ],
     },
   },
-  FAKE_bundle_getStrings_1 : {
+  FAKE_bundle_getStrings_1: {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
@@ -403,7 +403,7 @@ var targets = {
       ],
     },
   },
-  FAKE_bundle_getStrings_2 : {
+  FAKE_bundle_getStrings_2: {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
@@ -599,7 +599,7 @@ var targets = {
       ],
     },
   },
-  FAKE_bundle_getEntryInfo_1 : {
+  FAKE_bundle_getEntryInfo_1: {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
@@ -795,7 +795,7 @@ var targets = {
       ],
     },
   },
-  FAKE_bundle_getEntryInfo_2 : {
+  FAKE_bundle_getEntryInfo_2: {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
@@ -928,7 +928,7 @@ var targets = {
       ],
     },
   },
-}
+};
 
 var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
   !!process.env.BLUEMIX_USER && !!process.env.BLUEMIX_PASSWORD &&
@@ -964,13 +964,13 @@ function fakeGpbTestPriv(t, testId, callback) {
   interceptGpb(options);
   sltTH.testHarness(t, targets[testId], false,
       function(name, unhook_intercept, cb) {
-    translate.translateResource(function(err) {
-      unhook_intercept();
-      cb();
-    });
-  }, function() {
-    return callback();
-  });
+        translate.translateResource(function(_err) {
+          unhook_intercept();
+          cb();
+        });
+      }, function() {
+        return callback();
+      });
 }
 
 function interceptGpb(options) {
@@ -987,7 +987,7 @@ function interceptGpb(options) {
       var bundle = gpbBundle.apply(ret, arguments);
       bundle.create = options.FAKE_bundle_create ?
         function(options, callback) {
-          return callback({obj:{message: 'FAKE_bundle_create'}});
+          return callback({obj: {message: 'FAKE_bundle_create'}});
         } : bundle.create;
       bundle.uploadStrings = options.FAKE_bundle_uploadStrings ?
         function(options, callback) {
@@ -995,11 +995,11 @@ function interceptGpb(options) {
         } : bundle.uploadStrings;
       bundle.getStrings = options.FAKE_bundle_getStrings_1 ?
         function(options, callback) {
-          return callback({obj:{message: 'Language ABC does not exist.'}});
+          return callback({obj: {message: 'Language ABC does not exist.'}});
         } : bundle.getStrings;
       bundle.getStrings = options.FAKE_bundle_getStrings_2 ?
         function(options, callback) {
-          return callback({obj:{message: 'FAKE_bundle_getStrings'}});
+          return callback({obj: {message: 'FAKE_bundle_getStrings'}});
         } : bundle.getStrings;
       if (options.FAKE_bundle_getEntryInfo_1 ||
           options.FAKE_bundle_getEntryInfo_2) {

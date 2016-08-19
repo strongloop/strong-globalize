@@ -4,8 +4,7 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var extract = require('../lib/extract');
-var helper = require('../lib/helper');
-var sltTH = require('./slt-test-helper')
+var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
 
 var targets = {
@@ -96,7 +95,7 @@ test('test extract misc testing', function(t) {
       var deep = (name === 'extract000' || name === 'extract003');
       var suppressOutput = false;
       extract.extractMessages(blackList, deep, suppressOutput,
-        function(err) {
+        function(_err) {
           unhook_intercept();
           callback();
         });

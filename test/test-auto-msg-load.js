@@ -11,7 +11,6 @@ var loadMsgHelper = require('./load-msg-helper');
 var mktmpdir = require('mktmpdir');
 var path = require('path');
 var shell = require('shelljs');
-var sltTH = require('./slt-test-helper')
 var test = require('tap').test;
 var translate = require('../lib/translate');
 
@@ -75,13 +74,13 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         try {
           var enMsges = fs.readFileSync(
             path.join(destDir, 'intl', 'en', 'messages.json'), 'utf8');
-          t.pass('extracted En msg json exists.')
+          t.pass('extracted En msg json exists.');
         } catch (e) {
           t.fail('extracted En msg json read failure.');
         }
         try {
           var extractedMsgJson = JSON.parse(enMsges);
-          t.pass('extracted En msg json parsed.')
+          t.pass('extracted En msg json parsed.');
         } catch (e) {
           t.fail('extracted En msg json parse failure.');
         }
@@ -149,9 +148,8 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
           if (err) t.fail('language iteration 4 failed.');
           cb();
         });
-      }], function(err, result) {
-      done();
-    })
+      },
+    ], done);
   }, function(err, dir) {
     if (process.platform !== 'win32') {
       if (err) t.fail('mktmpdir cleanup failed.');

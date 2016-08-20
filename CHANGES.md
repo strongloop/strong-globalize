@@ -1,3 +1,11 @@
+2016-08-20, Version 2.6.8
+=========================
+
+ * Silent API Calls and Tests (Setogit)
+
+ * fix eslint config and all the linting errors (Ryan Graham)
+
+
 2016-08-15, Version 2.6.7
 =========================
 

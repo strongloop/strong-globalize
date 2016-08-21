@@ -38,14 +38,14 @@ test('formatMessage', function(t) {
   };
   g.setDefaultLanguage();
   var key = 'Error: {url} or {port} is invalid.';
-  var message = g.t(key, params);
+  var message = g.formatMessage(key, params);
   t.comment(message);
   var targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
   t.equal(message, targetMsg, 'Default message formatting works.');
 
   g.setDefaultLanguage('xx');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
@@ -53,28 +53,28 @@ test('formatMessage', function(t) {
     'Invalid language message formatting defaults to English.');
 
   g.setDefaultLanguage('en');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' or ' +
     params.port + ' is invalid.';
   t.equal(message, targetMsg, 'English message formatting works.');
 
   g.setDefaultLanguage('ja');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error:' + params.url + 'あるいは' +
     params.port + '無効です。';
   t.equal(message, targetMsg, 'Japanese message formatting works.');
 
   g.setDefaultLanguage('ko');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + '이나 ' +
     params.port + '은 효력이 없다.';
   t.equal(message, targetMsg, 'Korean message formatting works.');
 
   g.setDefaultLanguage('zh-Hans');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error：' + params.url + '或者'
     + params.port + '是无效。';
@@ -82,7 +82,7 @@ test('formatMessage', function(t) {
     'Simplified Chinese message formatting works.');
 
   g.setDefaultLanguage('zh-Hant');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error：' + params.url + '或者'
     + params.port + '是無效。';
@@ -90,35 +90,35 @@ test('formatMessage', function(t) {
     'Traditional Chinese message formatting works.');
 
   g.setDefaultLanguage('de');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' oder ' +
     params.port + ' sind ungültig.';
   t.equal(message, targetMsg, 'German message formatting works.');
 
   g.setDefaultLanguage('es');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' o ' +
     params.port + ' no es válido.';
   t.equal(message, targetMsg, 'Spanish message formatting works.');
 
   g.setDefaultLanguage('fr');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' ou ' +
     params.port + ' n\'est pas valide.';
   t.equal(message, targetMsg, 'French message formatting works.');
 
   g.setDefaultLanguage('it');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' o ' +
     params.port + ' non sono validi.';
   t.equal(message, targetMsg, 'Italian message formatting works.');
 
   g.setDefaultLanguage('pt');
-  message = g.t(key, params);
+  message = g.formatMessage(key, params);
   t.comment(message);
   targetMsg = 'Error: ' + params.url + ' ou ' +
     params.port + ' é inválido.';
@@ -394,7 +394,7 @@ test('throw Error', function(t) {
     var targetMsg = 'Error: Error:' + params.url + 'あるいは' +
       params.port + '無効です。';
     t.comment(e.toString());
-    t.assert(e.toString() === targetMsg,
+    t.match(e.toString(), targetMsg,
       'Error is correctly thrown and caught.');
   };
   t.end();

@@ -27,9 +27,10 @@ var aliases = [
   {level: 'log', err: false, fn: g.log},
   {level: 'help', err: false, fn: g.help},
   {level: 'data', err: false, fn: g.data},
+  {level: 'prompt', err: false, fn: g.prompt},
   {level: 'verbose', err: false, fn: g.verbose},
   {level: 'input', err: false, fn: g.input},
-  {level: 'prompt', err: false, fn: g.prompt},
+  {level: 'silly', err: false, fn: g.silly},
 ];
 
 aliases.forEach(function(alias) {
@@ -68,7 +69,7 @@ function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
     unhook_intercept();
     if (myLogCbMsg && myStdMsg) {
       t.equal(myLogCbMsg.level, alias.level,
-        'Persistent logging callback returns the level:' + alias.level);
+        'Persistent logging callback returns the level:' + myLogCbMsg.level);
       t.equal(myLogCbMsg.msg.message, expectedMsg,
         'Persistent logging callback returns the correct message.');
       t.assert(myStdMsg.indexOf(expectedMsg) >= 0,

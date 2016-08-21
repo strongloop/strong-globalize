@@ -9,6 +9,22 @@ var path = require('path');
 var test = require('tap').test;
 var translate = require('../lib/translate');
 
+
+test('setTranslationUnit', function(t) {
+  var LB = 1;
+  var UB = translate.GPB_MAX_NUMBER_OF_KEYS;
+  t.match(translate.setTranslationUnit(null), UB, 'null');
+  t.match(translate.setTranslationUnit(undefined), UB, 'undefined');
+  t.match(translate.setTranslationUnit('string'), UB, 'string');
+  t.match(translate.setTranslationUnit(-1), LB, '-1');
+  t.match(translate.setTranslationUnit(0), LB, '0');
+  t.match(translate.setTranslationUnit(LB - 1), LB, 'lower bound - 1');
+  t.match(translate.setTranslationUnit(UB + 1), UB, 'upper bound + 1');
+  t.match(translate.setTranslationUnit(1.234), 1, '1.234');
+  t.match(translate.setTranslationUnit(1.567), 2, '1.567');
+  t.end();
+});
+
 test('language mapping for GPB', function(t) {
   helper.enumerateLanguageSync(function(lang) {
     t.equal(

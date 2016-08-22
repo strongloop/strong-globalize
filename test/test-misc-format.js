@@ -36,17 +36,25 @@ var targets = {
       'ewrite',
     ],
   },
+  miscpseudoloc: {
+    out: [
+      'PSEUDO_LOC_original message\n',
+    ],
+    err: [
+    ],
+  },
 };
 test('misc format test', function(t) {
   sltTH.testHarness(t, targets, false,
     function(name, unhook_intercept, callback) {
+      var rootDir = helper.getRootDir();
+      global.STRONGLOOP_GLB = null;
+      var g = null;
       switch (name) {
-        case 'miscformat': {
+        case 'miscformat':
           try {
-            var rootDir = helper.getRootDir();
-            global.STRONGLOOP_GLB = null;
             SG.SetRootDir(rootDir, {autonomousMsgLoading: 'invalidAML'});
-            var g = SG();
+            g = SG();
             g.emergency('emergency');
             g.alert('alert');
             g.critical('critical');
@@ -71,16 +79,22 @@ test('misc format test', function(t) {
           } catch (e) {
             console.error(e.message);
           }
-          unhook_intercept();
-          callback();
           break;
-        }
-        default: {
-          unhook_intercept();
-          callback();
+        case 'miscpseudoloc':
+          try {
+            process.env.STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE = 'PSEUDO_LOC_';
+            SG.SetRootDir(rootDir);
+            g = SG();
+            console.log(g.f('msgPseudoLoc'));
+          } catch (e) {
+            console.error(e.message);
+          }
           break;
-        }
+        default:
+          break;
       }
+      unhook_intercept();
+      callback();
     }, function() {
       t.end();
     });

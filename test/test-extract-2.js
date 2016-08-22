@@ -104,7 +104,7 @@ var targets = {
 test('test extract misc testing', function(t) {
   sltTH.testHarness(t, targets, false,
     function(name, unhook_intercept, callback) {
-      var blackList = null;
+      var blackList = (name === 'extract000') ? 'foo.js' : null;
       var deep = (name === 'extract000' || name === 'extract003');
       var suppressOutput = false;
       extract.extractMessages(blackList, deep, suppressOutput,

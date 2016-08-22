@@ -87,6 +87,19 @@ var targets = {
         '[\*]{58}\n\n$'),
     ],
   },
+  extract012: {
+    out: [
+      '*** Skipped non-literal argument of "g.log" at /index.js:9\n',
+      '    extracted: part2\n',
+      '    extracted: part1\n',
+      '    extracted: paragraph content of class strong-globalize\n',
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+      '--- scanned: 1 js, 1 html \n--- skipped: 0 js, 0 html \n' +
+      '--- extracted: 3 msges, 8 words, 53 characters\n',
+    ],
+    err: [
+    ],
+  },
 };
 test('test extract misc testing', function(t) {
   sltTH.testHarness(t, targets, false,

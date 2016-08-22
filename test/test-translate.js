@@ -22,6 +22,8 @@ test('setTranslationUnit', function(t) {
   t.match(translate.setTranslationUnit(UB + 1), UB, 'upper bound + 1');
   t.match(translate.setTranslationUnit(1.234), 1, '1.234');
   t.match(translate.setTranslationUnit(1.567), 2, '1.567');
+  t.match(translate.setTranslationUnit('1.234'), UB, '1.234 in string');
+  t.match(translate.setTranslationUnit('1.567'), UB, '1.567 in string');
   t.end();
 });
 

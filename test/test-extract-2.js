@@ -100,6 +100,16 @@ var targets = {
     err: [
     ],
   },
+  extract013: {
+    out: [
+      '    extracted: additional message\n',
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+      '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
+      '--- extracted: 1 msges, 2 words, 18 characters\n',
+    ],
+    err: [
+    ],
+  },
 };
 test('test extract misc testing', function(t) {
   sltTH.testHarness(t, targets, false,

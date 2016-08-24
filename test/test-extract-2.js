@@ -100,27 +100,19 @@ var targets = {
     err: [
     ],
   },
-  extract013: {
-    out: [
-      '    extracted: additional message\n',
-      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
-      '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
-      '--- extracted: 1 msges, 2 words, 18 characters\n',
-    ],
-    err: [
-    ],
-  },
 };
+
 test('test extract misc testing', function(t) {
   sltTH.testHarness(t, targets, false,
-    function(name, unhook_intercept, callback) {
+    function(name, unhook_intercept, checkResults) {
       var blackList = (name === 'extract000') ? 'foo.js' : null;
       var deep = (name === 'extract000' || name === 'extract003');
       var suppressOutput = false;
       extract.extractMessages(blackList, deep, suppressOutput,
         function(_err) {
           unhook_intercept();
-          callback();
+          t.notOk(_err, 'extractMessages succeeds.');
+          checkResults();
         });
     }, function() {
       t.end();

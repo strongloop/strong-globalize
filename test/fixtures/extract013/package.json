@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "strong-globalize": "^2.5.0"
+    "strong-globalize": "^2.x",
+    "mydependency": "^1.x"
   }
 }

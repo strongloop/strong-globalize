@@ -12,9 +12,11 @@ var targets = {
     out: [
       '--- cloned /node_modules/mydependency/intl/en/longtext.txt\n',
       '    extracted: additional message\n',
-      '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt' +
-      '\n--- scanned: 3 js, 0 html \n--- skipped: 0 js, 0 html ' +
-      '\n--- extracted: 1 msges, 2 words, 18 characters\n',
+      new RegExp('^\n[-]{3} root: \n[-]{3} max depth: unlimited' +
+        '\n[-]{3} cloned: 1 txt' +
+        '\n[-]{3} scanned: [23]{1} js, 0 html ' +
+        '\n[-]{3} skipped: 0 js, 0 html ' +
+        '\n[-]{3} extracted: 1 msges, 2 words, 18 characters\n'),
     ],
     err: [
     ],

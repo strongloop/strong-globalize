@@ -142,7 +142,8 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
         var myStdoutMsg = [];
         var myStderrMsg = [];
         function stdoutCb(txt) {
-          myStdoutMsg.push(txt);
+          // ignore the heart beat dots
+          if (txt !== '.') myStdoutMsg.push(txt);
           return VERBOSE ? null : '';
         }
         function stderrCb(txt) {

@@ -4,7 +4,6 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 var globalize = require('../lib/globalize');
-var helper = require('../lib/helper');
 var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
 
@@ -30,9 +29,4 @@ test('test pack message', function(t) {
     }, function() {
       t.end();
     });
-});
-
-test('misc help text', function(t) {
-  t.assert(helper.headerIncluded('name', 'name'));
-  t.end();
 });

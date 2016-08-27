@@ -34,7 +34,8 @@
       "browser.js",
       "lib/*.js",
       "bin/*.js"
-    ]
+    ],
+    "all": true
   },
   "bugs": {
     "url": "https://github.com/strongloop/strong-globalize/issues"

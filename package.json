@@ -29,6 +29,12 @@
     "posttest": "tap --coverage-report=lcov --no-browser && tap --coverage-report=text"
   },
   "nyc": {
+    "include": [
+      "index.js",
+      "browser.js",
+      "lib/*.js",
+      "bin/*.js"
+    ]
   },
   "bugs": {
     "url": "https://github.com/strongloop/strong-globalize/issues"

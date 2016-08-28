@@ -75,3 +75,9 @@ test('setRootDir test', function(t) {
       t.end();
     });
 });
+
+test('headerIncluded in string', function(t) {
+  t.assert(helper.headerIncluded('name', 'name'));
+  t.end();
+});
+

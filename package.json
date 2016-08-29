@@ -24,8 +24,18 @@
   "browser": "browser.js",
   "scripts": {
     "pretest": "eslint ./ && jscs ./",
+    "coveralls": "tap --coverage-report=text-lcov | coveralls",
     "test": "tap --bail --coverage --coverage-report=cobertura --timeout=200 test/test-*.*",
-    "posttest": "nyc report --reporter=lcov && nyc report"
+    "posttest": "tap --coverage-report=lcov --no-browser && tap --coverage-report=text"
+  },
+  "nyc": {
+    "include": [
+      "index.js",
+      "browser.js",
+      "lib/*.js",
+      "bin/*.js"
+    ],
+    "all": true
   },
   "bugs": {
     "url": "https://github.com/strongloop/strong-globalize/issues"
@@ -59,8 +69,7 @@
     "eslint-config-strongloop": "^1.0.0",
     "intercept-stdout": "^0.1.2",
     "jscs": "^2.8.0",
-    "nyc": "^5.3.0",
     "shelljs": "^0.7.0",
-    "tap": "^5.1.1"
+    "tap": "^7.0.0"
   }
 }

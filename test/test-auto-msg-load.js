@@ -78,8 +78,8 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
       },
       function(cb) {
         var targetMsgJson = {
-          '3625530735ca7c9c82a92e175567b983': 'second - primary depth message',
           '2b98ad6283669674d93a859cfac60ce8': 'third - primary depth message',
+          '3625530735ca7c9c82a92e175567b983': 'second - primary depth message',
           'bcce77306579f3003521bdf464b93365': 'fourth - second depth message',
           'efc671b7d450e2536f4ba0eebd4d04e1': 'fifth - primary depth message',
         };

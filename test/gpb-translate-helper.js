@@ -76,8 +76,7 @@ var targets = {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- translating gpbtestmain_messages.json\n',
         '*** translation failed: messages.json\n',
@@ -85,8 +84,7 @@ var targets = {
         '*** translation failed: plain.txt\n',
         '--- translated 0 messages, 0 words, 0 characters\n',
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- linting gpbtestmain de\n',
         '--- linted gpbtestmain de\n',
@@ -189,8 +187,7 @@ var targets = {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- translating gpbtestmain_messages.json\n',
         '*** translation failed: messages.json\n',
@@ -198,8 +195,7 @@ var targets = {
         '*** translation failed: plain.txt\n',
         '--- translated 0 messages, 0 words, 0 characters\n',
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- linting gpbtestmain de\n',
         '--- linted gpbtestmain de\n',
@@ -302,16 +298,13 @@ var targets = {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- translating gpbtestmain_messages.json\n',
         '--- translating gpbtestmain_plain.txt\n',
-        new RegExp(
-          '--- translated 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- translated 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- linting gpbtestmain de\n',
         '--- linted gpbtestmain de\n',
@@ -430,16 +423,13 @@ var targets = {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- translating gpbtestmain_messages.json\n',
         '--- translating gpbtestmain_plain.txt\n',
-        new RegExp(
-          '--- translated 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- translated 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- linting gpbtestmain de\n',
         '--- linted gpbtestmain de\n',
@@ -558,16 +548,13 @@ var targets = {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- translating gpbtestmain_messages.json\n',
         '--- translating gpbtestmain_plain.txt\n',
-        new RegExp(
-          '--- translated 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- translated 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- linting gpbtestmain de\n',
         '--- linted gpbtestmain de\n',
@@ -686,16 +673,13 @@ var targets = {
     translate000: {
       out: [
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- translating gpbtestmain_messages.json\n',
         '--- translating gpbtestmain_plain.txt\n',
-        new RegExp(
-          '--- translated 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- translated 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linting gpbtestmain en\n',
-        new RegExp(
-          '--- linted 2 messages, 25 words, 13[36]{1} characters\n'),
+        /--- linted 2 messages, 25 words, 13[36]{1} characters\n/,
         '--- linted gpbtestmain en\n',
         '--- linting gpbtestmain de\n',
         '--- linted gpbtestmain de\n',

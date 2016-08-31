@@ -11,6 +11,7 @@ var test = require('tap').test;
 var targets = {
   miscformat: {
     out: [
+      // console.log output is followed by '\n' process.stdout.write is not.
       'notice\n',
       'informational\n',
       'debug\n',

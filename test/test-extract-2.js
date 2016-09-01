@@ -11,8 +11,8 @@ var targets = {
   extract000: {
     out: [
       '--- cloned /node_modules/gsub/intl/en/gsub.txt\n',
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
       '    extracted: User name is %s.\n',
       '    extracted: user: %s\n',
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
@@ -24,8 +24,8 @@ var targets = {
   },
   extract001: {
     out: [
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
       '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
@@ -36,8 +36,8 @@ var targets = {
   },
   extract002: {
     out: [
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
       '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
@@ -49,8 +49,8 @@ var targets = {
   extract003: {
     out: [
       '--- cloned /node_modules/gsub/intl/en/gsub.txt\n',
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
       '    extracted: User name is %s.\n',
       '    extracted: user: %s\n',
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
@@ -62,8 +62,8 @@ var targets = {
   },
   extract004: {
     out: [
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
-      new RegExp('^[\*]{3} Skipped non-literal argument of \"g.log\" at '),
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
+      /^[\*]{3} Skipped non-literal argument of "g\.log" at /,
       '    extracted: User name is %s.\n',
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
@@ -87,17 +87,32 @@ var targets = {
         '[\*]{58}\n\n$'),
     ],
   },
+  extract012: {
+    out: [
+      '*** Skipped non-literal argument of "g.log" at /index.js:9\n',
+      '    extracted: part2\n',
+      '    extracted: part1\n',
+      '    extracted: paragraph content of class strong-globalize\n',
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+      '--- scanned: 1 js, 1 html \n--- skipped: 0 js, 0 html \n' +
+      '--- extracted: 3 msges, 8 words, 53 characters\n',
+    ],
+    err: [
+    ],
+  },
 };
+
 test('test extract misc testing', function(t) {
   sltTH.testHarness(t, targets, false,
-    function(name, unhook_intercept, callback) {
-      var blackList = null;
+    function(name, unhook_intercept, checkResults) {
+      var blackList = (name === 'extract000') ? 'foo.js' : null;
       var deep = (name === 'extract000' || name === 'extract003');
       var suppressOutput = false;
       extract.extractMessages(blackList, deep, suppressOutput,
         function(_err) {
           unhook_intercept();
-          callback();
+          t.notOk(_err, 'extractMessages succeeds.');
+          checkResults();
         });
     }, function() {
       t.end();

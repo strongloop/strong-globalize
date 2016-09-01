@@ -20,14 +20,14 @@ var targets = {
     out: [
     ],
     err: [
-      new RegExp('^[\*]{3} setRootDir: Intl dir not found under: '),
+      /^[\*]{3} setRootDir: Intl dir not found under: /,
     ],
   },
   setdir002: {
     out: [
     ],
     err: [
-      new RegExp('^[\*]{3} setRootDir: Root path is not a directory: '),
+      /^[\*]{3} setRootDir: Root path is not a directory: /,
     ],
   },
 };

@@ -26,6 +26,8 @@ var content_singleton_body = 'function test() {\n' +
   'g.ewrite(\'ewrite\');\n' +
   'g.owrite       (\'owrite\');\n' +
   'g.write(\'write\');\n' +
+  'g.help(\'write1\');\n' +
+  'g.silly(\'write2\');\n' +
   'msg = g.format(\'format of %s and %s\', \'zero\', \'one\');\n' +
   'msg = g.format(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
   'msg = g.f(\'format of {zero} and {one}\', \n' +
@@ -54,6 +56,8 @@ var content_multiple = 'var SG = require("strong-globalize");\n' +
   'Q.ewrite(\'ewrite\');\n' +
   'N.owrite       (\'owrite\');\n' +
   'g.write(\'write\');\n' +
+  'Q.prompt(\'write1\');\n' +
+  'N.verbose(\'write2\');\n' +
   'msg = Q.data  (\'format of %s and %s\', \'zero\', \'one\');\n' +
   'msg = N.format(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
   'msg = g.f(\'format of {zero} and {one}\', \n' +
@@ -76,7 +80,9 @@ var content_multiple_new = '// line 1\n//line 2\n' +
   'g.warning(\'warn\');\n' +
   'g.notice(\'ewrite\');\n' +
   'g.informational(\'owrite\');\n' +
-  'g.debug(\'write\');\n' +
+  'g.data(\'write\');\n' +
+  'g.data(\'write1\');\n' +
+  'g.data(\'write2\');\n' +
   'msg = g.help  (\'format of %s and %s\', \'zero\', \'one\');\n' +
   'msg = g.notice(\'format of {0} and {1}\', \'zero\', \'one\');\n' +
   'msg = g.prompt(\'format of {zero} and {one}\', \n' +
@@ -100,6 +106,8 @@ function subTest(mode, t) {
     'ewrite',
     'owrite',
     'write',
+    'write1',
+    'write2',
     'format of %s and %s',
     'format of {0} and {1}',
     'format of {zero} and {one}',
@@ -119,42 +127,46 @@ function subTest(mode, t) {
   t.comment(JSON.stringify(enBundlePre, null, 2));
   g.setDefaultLanguage(helper.ENGLISH);
 
+  var baseIndex = 11; // of format test cases
+
   targetMsgs.forEach(function(tgtMsg, ix) {
-    if (ix > 9) return;
-    t.equal(g.t(tgtMsg), tgtMsg,
+    if (ix > baseIndex) return;
+    t.equal(g.formatMessage(tgtMsg), tgtMsg,
       'read t right on \'' + tgtMsg + '\'');
   });
 
   targetMsgs.forEach(function(tgtMsg, ix) {
-    if (ix > 9) return;
-    t.equal(g.format(tgtMsg), tgtMsg,
+    if (ix > baseIndex) return;
+    t.equal(g.formatMessage(tgtMsg), tgtMsg,
       'read format right on \'' + tgtMsg + '\'');
   });
 
   var util = require('util');
-  var targetMsg = util.format(targetMsgs[10], 'zero', 'one');
+  var targetMsg = util.format(targetMsgs[baseIndex + 1], 'zero', 'one');
   var resultMsg = null;
-  resultMsg = g.t(targetMsgs[11], ['zero', 'one']);
+  resultMsg = g.formatMessage(targetMsgs[baseIndex + 2], ['zero', 'one']);
   t.comment(resultMsg);
   t.equal(resultMsg, targetMsg,
     'filled t in array \'' + targetMsg + '\'');
-  resultMsg = g.t(targetMsgs[11], {0: 'zero', 1: 'one'});
+  resultMsg = g.formatMessage(targetMsgs[baseIndex + 2], {0: 'zero', 1: 'one'});
   t.comment(resultMsg);
   t.equal(resultMsg, targetMsg,
     'filled t in object 0, 1 \'' + targetMsg + '\'');
-  resultMsg = g.t(targetMsgs[12], {zero: 'zero', one: 'one'});
+  resultMsg = g.formatMessage(targetMsgs[baseIndex + 3],
+    {zero: 'zero', one: 'one'});
   t.comment(resultMsg);
   t.equal(resultMsg, targetMsg,
     'filled t in object zero, one \'' + targetMsg + '\'');
-  resultMsg = g.f(targetMsgs[11], ['zero', 'one']);
+  resultMsg = g.formatMessage(targetMsgs[baseIndex + 2], ['zero', 'one']);
   t.comment(resultMsg);
   t.equal(resultMsg, targetMsg,
     'filled format in array \'' + targetMsg + '\'');
-  resultMsg = g.format(targetMsgs[11], {0: 'zero', 1: 'one'});
+  resultMsg = g.formatMessage(targetMsgs[baseIndex + 2], {0: 'zero', 1: 'one'});
   t.comment(resultMsg);
   t.equal(resultMsg, targetMsg,
     'filled format in object 0, 1 \'' + targetMsg + '\'');
-  resultMsg = g.format(targetMsgs[12], {zero: 'zero', one: 'one'});
+  resultMsg = g.formatMessage(targetMsgs[baseIndex + 3],
+    {zero: 'zero', one: 'one'});
   t.comment(resultMsg);
   t.equal(resultMsg, targetMsg,
     'filled format in object zero, one \'' + targetMsg + '\'');

@@ -12,7 +12,7 @@ var targets = {
     out: [
     ],
     err: [
-      new RegExp('[\"]{0,1}undefined[\"]{0,1} == true\n'),
+      /["]{0,1}undefined["]{0,1} == true\n/,
     ],
   },
   setregex001: {

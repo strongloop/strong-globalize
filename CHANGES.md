@@ -1,3 +1,65 @@
+2016-09-01, Version 2.6.9
+=========================
+
+ * Use string notation for one line regex (Setogit)
+
+ * Add comment to say why some have '\n' (Setogit)
+
+ * Suppress the heart-beat dots in the log (Setogit)
+
+ * Remove headerIncluded test (Setogit)
+
+ * Add plain text and other test cases (Setogit)
+
+ * Make it work for windows (Setogit)
+
+ * Clean up lint (Setogit)
+
+ * Remove commented-out functions (Setogit)
+
+ * Add more extract test cases (Setogit)
+
+ * Add unhappy extract cases (Setogit)
+
+ * Remove old debug code; add pseudoloc tests (Setogit)
+
+ * Improve HTML extraction test (Setogit)
+
+ * Improve test coverage (Setogit)
+
+ * deps: import globalize and cldrjs packages (Ryan Graham)
+
+ * Sort extracted and translated msges by keys (Setogit)
+
+ * deps: upgrade to tap v7 (Ryan Graham)
+
+ * test: report coverage for untested files (Ryan Graham)
+
+ * test: use inclusive filter for coverage (Ryan Graham)
+
+ * test: use tap's coverage instead of nyc (Ryan Graham)
+
+ * Add regex test and fix a bug (Setogit)
+
+ * Fix a bug in headerIncluded and add test (Setogit)
+
+ * Cache results of md5 calls (Miroslav Bajtoš)
+
+ * Reuse messages formatters (Miroslav Bajtoš)
+
+ * benchmark: fix format benchmark (Miroslav Bajtoš)
+
+ * Enable translate tests on travis (Setogit)
+
+ * Add two more string test cases (Setogit)
+
+ * Add test (Setogit)
+
+ * Round to positive integer then bound (Setogit)
+
+ * Handle null case (Setogit)
+
+
 2016-08-20, Version 2.6.8
 =========================
 

@@ -1,4 +1,10 @@
-2016-09-01, Version 2.6.9
+2016-09-03, Version 2.6.10
+==========================
+
+ * Fall back to md5 if getHash is undefined (Setogit)
+
+
+2016-08-31, Version 2.6.9
 =========================
 
  * Use string notation for one line regex (Setogit)

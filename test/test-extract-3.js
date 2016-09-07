@@ -21,6 +21,19 @@ var targets = {
     err: [
     ],
   },
+  extract014: {
+    out: [
+      '    extracted: text from index.js\n',
+      '    extracted: text from lib0\n',
+      '    extracted: text from lib1\n',
+      '    extracted: text from lib2\n',
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+      '--- scanned: 5 js, 0 html \n--- skipped: 0 js, 0 html \n' +
+      '--- extracted: 4 msges, 13 words, 60 characters\n',
+    ],
+    err: [
+    ],
+  },
 };
 
 test('test extract misc cases 2', function(t) {

@@ -24,6 +24,10 @@ function StrongGlobalize(options) {
   if (!(this instanceof StrongGlobalize)) {
     return new StrongGlobalize(options);
   }
+  if (typeof options === 'string') {
+    exports.SetRootDir(options);
+    options = undefined;
+  }
   if (!global.STRONGLOOP_GLB) globalize.setDefaultLanguage();
   var defaults = {
     language: global.STRONGLOOP_GLB.DEFAULT_LANG,

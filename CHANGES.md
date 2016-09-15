@@ -1,4 +1,10 @@
-2016-09-03, Version 2.6.10
+2016-09-15, Version 2.7.0
+=========================
+
+ * Detect strong-globalize in shared module (Miroslav Bajtoš)
+
+
+2016-09-02, Version 2.6.10
 ==========================
 
  * Fall back to md5 if getHash is undefined (Setogit)

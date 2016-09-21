@@ -139,7 +139,6 @@ For example, the following does not work as intended because the package sub cal
 
 ```js
 // main/index.js -- my root package
-// all string resources are deep extracted and translated under intl of this package
 var SG = require('strong-globalize');
 var request = require('request');
 var sub = require('sub');
@@ -165,7 +164,6 @@ The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of 
 
 ```js
 // main/index.js -- my root package
-// all string resources are deep extracted and translated under intl of this package
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var request = require('request');
@@ -187,6 +185,24 @@ var g = SG();
 
 ```
 
+More concise coding is as follows:
+
+```js
+// main/index.js -- my root package
+var g = require('strong-globalize')(__dirname);
+var request = require('request');
+var sub = require('sub');
+
+...
+```
+```js
+// sub/index.js -- my sub package
+var g = require('strong-globalize')();
+var request = require('request');
+
+...
+
+```
 # Language Config Customization
 
 Out of box, one CLDR file is included in `strong-globalize/cldr` directory.  CLDR stands for Common Locale Data Repository.  In the installation of `strong-globalize` for your production deployment, you can replace the out-of-box CLDR file entirely, or add extra CLDR data to the `cldr` directory.  There are approximately 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.

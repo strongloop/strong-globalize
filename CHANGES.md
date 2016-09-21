@@ -1,3 +1,15 @@
+2016-09-21, Version 2.8.0
+=========================
+
+ * Update README (Setogit)
+
+ * Allow root dir instead of an option (Sam Roberts)
+
+ * Remove Unicode BOM (Setogit)
+
+ * Remove 32 char hash from file name in -d mode (Setogit)
+
+
 2016-09-15, Version 2.7.0
 =========================
 

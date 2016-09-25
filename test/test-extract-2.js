@@ -17,7 +17,8 @@ var targets = {
       '    extracted: user: %s\n',
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
         '--- scanned: 2 js, 0 html \n--- skipped: 0 js, 0 html \n' +
-        '--- extracted: 2 msges, 6 words, 26 characters\n',
+        '--- extracted: 2 msges, 6 words, 26 characters \n' +
+        '--- intl zz suppressed\n',
     ],
     err: [
     ],
@@ -55,7 +56,8 @@ var targets = {
       '    extracted: user: %s\n',
       '\n--- root: \n--- max depth: unlimited\n--- cloned: 1 txt\n' +
         '--- scanned: 2 js, 0 html \n--- skipped: 0 js, 0 html \n' +
-        '--- extracted: 2 msges, 6 words, 26 characters\n',
+        '--- extracted: 2 msges, 6 words, 26 characters \n' +
+        '--- intl zz suppressed\n',
     ],
     err: [
     ],
@@ -108,7 +110,8 @@ test('test extract misc testing', function(t) {
       var blackList = (name === 'extract000') ? 'foo.js' : null;
       var deep = (name === 'extract000' || name === 'extract003');
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput,
+      var suppressZz = deep;
+      extract.extractMessages(blackList, deep, suppressOutput, suppressZz,
         function(_err) {
           unhook_intercept();
           t.notOk(_err, 'extractMessages succeeds.');

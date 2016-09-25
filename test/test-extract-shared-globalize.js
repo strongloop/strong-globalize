@@ -29,7 +29,8 @@ test('test extract from project using shared globalize module', function(t) {
       var blackList = null;
       var deep = true;
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput,
+      var suppressZz = false;
+      extract.extractMessages(blackList, deep, suppressOutput, suppressZz,
         function(_err) {
           unhook_intercept();
           t.notOk(_err, 'extractMessages succeeds.');

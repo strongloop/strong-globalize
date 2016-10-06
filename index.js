@@ -55,7 +55,8 @@ function SetRootDir(rootDir, options) {
       helper.isLoadMessages(rootDir)) {
     var langs = Object.keys(global.STRONGLOOP_GLB.bundles);
     langs.forEach(function(lang) {
-      translate.loadMsgFromFile(lang, rootDir);
+      translate.loadMsgFromFile(lang, rootDir,
+        global.STRONGLOOP_GLB.AUTO_MSG_LOADING !== helper.AML_NONE);
     });
   }
 }

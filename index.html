@@ -1,0 +1,1348 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Strong-globalize by strongloop</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Strong-globalize</h1>
+        <p>strong-globalize is built on Unicode CLDR and jquery/globalize and implements automatic extraction of strings from JS source code and HTML templates, lint the string resource, machine-translate them in seconds.  In runtime, it loads locale and string resource into memory and provides a hook to persistent logging.</p>
+        <p class="view"><a href="https://github.com/strongloop/strong-globalize">View the Project on GitHub <small>strongloop/strong-globalize</small></a></p>
+        <ul>
+          <li><a href="https://github.com/strongloop/strong-globalize/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/strongloop/strong-globalize/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/strongloop/strong-globalize">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="strong-globalize" class="anchor" href="#strong-globalize" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>strong-globalize</h1>
+
+<p>StrongLoop Globalize CLI and API</p>
+
+<p><a href="https://badge.fury.io/js/strong-globalize">
+<img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18">
+</a>
+<a href="https://travis-ci.org/strongloop/strong-globalize">
+<img src="https://travis-ci.org/strongloop/strong-globalize.svg?branch=master" alt="Build Status">
+</a>
+<a href="https://coveralls.io/github/strongloop/strong-globalize?branch=master">
+<img src="https://coveralls.io/repos/github/strongloop/strong-globalize/badge.svg?branch=master" alt="Test Coverage">
+</a></p>
+
+<ul>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#autonomous-message-loading">Autonomous Message Loading</a></li>
+<li><a href="#language-config-customization">Language Config Customization</a></li>
+<li><a href="#runtime-language-switching">Runtime Language Switching</a></li>
+<li><a href="#pseudo-localization-support">Pseudo Localization Support</a></li>
+<li><a href="#deep-string-resource-extraction">Deep String Resource Extraction</a></li>
+<li><a href="#html-template-globalization">HTML Template Globalization</a></li>
+<li><a href="#json-yaml-file-globalization">JSON YAML File Globalization</a></li>
+<li><a href="#persistent-logging">Persistent Logging</a></li>
+<li><a href="#demo">Demo</a></li>
+<li><a href="#sample-code">Sample Code</a></li>
+<li><a href="#other-resources">Other Resources</a></li>
+<li><a href="#cli---extract-lint-and-translate">CLI - extract, lint, and translate</a></li>
+<li>
+<a href="#api---set-system-defaults">API - Set system defaults</a>
+
+<ul>
+<li><a href="#sgsetdefaultlanguagelang">SG.SetDefaultLanguage</a></li>
+<li><a href="#sgsetrootdirrootpath">SG.SetRootDir</a></li>
+<li><a href="#sgsethtmlregexregex-regexhead-regextail">SG.SetHtmlRegex</a></li>
+<li><a href="#sgsetpersistentlogginglogcallback-disableconsole">SG.SetPersistentLogging</a></li>
+<li><a href="#gsetlanguagelang">g.setLanguage</a></li>
+<li><a href="#ggetlanguage">g.getLanguage</a></li>
+</ul>
+</li>
+<li>
+<a href="#api---formatters">API - Formatters</a>
+
+<ul>
+<li><a href="#gformatmessagepath-variables">g.formatMessage</a></li>
+<li><a href="#gtpath-variables">g.t</a></li>
+<li><a href="#gmpath-variables">g.m</a></li>
+<li><a href="#gformatcurrencyvalue-currencysymbol-options">g.formatCurrency</a></li>
+<li><a href="#gcvalue-currencysymbol-options">g.c</a></li>
+<li><a href="#gformatdatevalue-options">g.formatDate</a></li>
+<li><a href="#gdvalue-options">g.d</a></li>
+<li><a href="#gformatnumbervalue-options">g.formatNumber</a></li>
+<li><a href="#gnvalue-options">g.n</a></li>
+</ul>
+</li>
+<li>
+<a href="#api---wrappers">API - Wrappers</a>
+
+<ul>
+<li><a href="#gerrorpath-capital-error">g.Error</a></li>
+<li><a href="#gformatpath-">g.format</a></li>
+<li><a href="#gfpath-">g.f</a></li>
+<li><a href="#gewritepath-">g.ewrite</a></li>
+<li><a href="#gowritepath-">g.owrite</a></li>
+<li><a href="#gwritepath-">g.write</a></li>
+</ul>
+</li>
+<li>
+<a href="#wrappers-for-rfc-5424-syslog-message-severities">API - RFC 5424 Syslog Message Severities</a>
+
+<ul>
+<li><a href="#gemergencypath-">g.emergency</a></li>
+<li><a href="#galertpath-">g.alert</a></li>
+<li><a href="#gcriticalpath-">g.critical</a></li>
+<li><a href="#gerrorpath-small-error">g.error</a></li>
+<li><a href="#gwarningpath-">g.warning</a></li>
+<li><a href="#gnoticepath-">g.notice</a></li>
+<li><a href="#ginformationalpath-">g.informational</a></li>
+<li><a href="#gdebugpath-">g.debug</a></li>
+</ul>
+</li>
+<li>
+<a href="#wrappers-for-nodejs-console">API - Node.js Console</a>
+
+<ul>
+<li><a href="#ghelppath-">g.warn</a></li>
+<li><a href="#gdebugpath-">g.info</a></li>
+<li><a href="#gdatapath-">g.log</a></li>
+</ul>
+</li>
+<li>
+<a href="#wrappers-for-misc-logging-levels">API - Misc Logging Levels</a>
+
+<ul>
+<li><a href="#ghelppath-">g.help</a></li>
+<li><a href="#gdebugpath-">g.debug</a></li>
+<li><a href="#gdatapath-">g.data</a></li>
+<li><a href="#gpromptpath-">g.prompt</a></li>
+<li><a href="#gverbosepath-">g.verbose</a></li>
+<li><a href="#ginputpath-">g.input</a></li>
+<li><a href="#gsillypath-">g.silly</a></li>
+</ul>
+</li>
+<li>
+<a href="#usage-examples">Usage Examples</a>
+
+<ul>
+<li><a href="#use-gf-for-utilformat">use g.f for util.format</a></li>
+<li><a href="#use-gwrite-for-processstdoutwrite">use g.write for process.stdout.write</a></li>
+<li><a href="#place-holders">place holders</a></li>
+<li><a href="#double-curly-braces-not-to-translate">double curly braces not to translate</a></li>
+<li><a href="#help-txt-files">help txt files</a></li>
+<li><a href="#help-txt-files-and-msg-keys">help txt files and msg keys</a></li>
+<li><a href="#manually-add-message-strings">manually add message strings</a></li>
+</ul>
+</li>
+</ul>
+
+<h1>
+<a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h1>
+
+<p><code>strong-globalize</code> is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. </p>
+
+<p><code>strong-globalize</code> is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package.  <code>strong-globalize</code> provides these features:</p>
+
+<ul>
+<li>
+<a href="#api---formatters">shorthands and wrappers</a> for the format functions supported by Node.js console, jquery/globalize, and util.format,</li>
+<li>
+<a href="#cli---extract-lint-and-translate">automatic extraction</a> of the strings from JS code and <a href="#globalize-html-templates">HTML templates</a> and auto-creation of resource JSON,</li>
+<li>
+<a href="#cli---extract-lint-and-translate">machine translation</a> of the resource JSON using <a href="#liblocal-credentialsjson">IBM Globalization Pipeline on Bluemix</a>,</li>
+<li>in <a href="#api---set-system-defaults">Node.js runtime</a>, loads not only the CLDR data sets but the localized string resources of your module as well as all the statically and dynamically dependent modules.</li>
+<li>
+<a href="#persistent-logging">function hook for logging</a> localized user messages so that the client can log what is shown to the end user along with the original English message.</li>
+</ul>
+
+<p>As shown in the <a href="#demo">Demo section</a>, the code written with <code>strong-globalize</code> is simpler, better structured, and easier to read than the original code written as an English-only product; and more importantly, you get all the features at no extra effort.</p>
+
+<p>With <code>strong-globalize</code>, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.</p>
+
+<ul>
+<li>node.js versions: 0.10, 0.12, 4, 5, 6</li>
+<li>cldr version: 29.0.1</li>
+<li>out-of-box languages - 31: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, zh-Hant',
+ar', 'bn', 'cs', 'el', 'fi', 'hi', 'id', 'lt', 'nb', 'nl', 'pl', 'ro', 'sl', 'sv',
+'ta', 'te', 'th', 'tr', 'uk', 'vi'</li>
+</ul>
+
+<p>You can customize (add/remove) any languages supported by the Unicode CLDR in your <code>strong-globalize</code> installation.</p>
+
+<h2>
+<a id="about-test" class="anchor" href="#about-test" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>About Test</h2>
+
+<p>The line test coverage with and without core part of translation tests are currently <code>90%</code> and <a href="https://coveralls.io/github/strongloop/strong-globalize?branch=master"><code>80%</code></a> respectively.</p>
+
+<p>With the out-of-box setting, <code>npm test</code> runs all tests but the core translation tests because it requires connection to the machine translation service.  To enable the machine translation, please set the environment variables described in <a href="#liblocal-credentialsjson">this section</a>.</p>
+
+<p>With custom setting such as customized language configuration, some tests may fail.  You can edit target messages in the failing test modules to suit your custom setting.  To do so, set DEBUG global variable of test/slt-test-helper.js and run the test, identify the actual error messages, then copy and paste the actual error messages to the failing test modules.</p>
+
+<h1>
+<a id="autonomous-message-loading" class="anchor" href="#autonomous-message-loading" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autonomous Message Loading</h1>
+
+<p>All packages are created equal.  <code>Autonomous Message Loading</code> is the core concept of <code>strong-globalize</code> designed for globalization of modular and highly distributed Nodejs applications.  Two key terminologies are <code>root directory</code> and <code>master root directory</code>:</p>
+
+<p><code>root directory</code> or simply <code>rootDir</code>: the package's current working directory where <code>intl</code> directory resides.</p>
+
+<p><code>master root directory</code>: the root directory of the package that called <code>SG.SetRootDir</code> first.  Any package in the application can be the <code>master root directory</code>.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the <code>master root directory</code> is the <code>root directory</code> of the package at the root of the application's dependency tree.  <code>slt-globalize -d</code> must run under the <code>master root directory</code> so that all the string resources in the application are extracted and stored under the <code>master root directory's intl/en</code>. </p>
+
+<p>Once all the string resource files are <a href="#deep-string-resource-extraction">deep-extracted</a> and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the string resources in the dependencies, set <code>autonomousMsgLoading</code> to <code>none</code> in the <code>SetRootDir</code> call of the top level package.  Since 'none' is the default, simply <code>SG.SetRootDir(rootDir)</code> does it.</p>
+
+<p>In development phase, with regular extraction mode, <code>{autonomousMsgLoading: 'all'}</code> must be set so that string resource included in each dependent package will be used.</p>
+
+<p>Third option is to set specific package names of which the string resources get loaded.  One use case of the third option is that you have several dependent packages which you know are properly translated and the translation can be used as-is.  For all the other packages, message strings will be deep-extracted and translated.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>, {autonomousMsgLoading<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>none<span class="pl-pds">'</span></span>}); <span class="pl-c">// same as SG.SetRootDir(__dirname);</span>
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>({language<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>}); <span class="pl-c">// same as SG();</span>
+
+<span class="pl-c">// use formatters and wrappers API</span>
+
+<span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Welcome!<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>For example, the following does not work as intended because the package sub calls <code>SG.SetRootDir</code> first:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// main/index.js -- my root package</span>
+<span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> sub <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>sub<span class="pl-pds">'</span></span>);
+
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>();
+
+<span class="pl-k">...</span></pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// sub/index.js -- my sub package</span>
+<span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>();
+
+<span class="pl-k">...</span>
+</pre></div>
+
+<p>The 'MUST' coding practice is to call <code>SG.SetRootDir</code> in the very first line of the main module in each package:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// main/index.js -- my root package</span>
+<span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> sub <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>sub<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>();
+
+<span class="pl-k">...</span></pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// sub/index.js -- my sub package</span>
+<span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>();
+
+<span class="pl-k">...</span>
+</pre></div>
+
+<p>More concise coding is as follows:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// main/index.js -- my root package</span>
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>)(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> sub <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>sub<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">...</span></pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// sub/index.js -- my sub package</span>
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>)();
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">...</span>
+</pre></div>
+
+<h1>
+<a id="language-config-customization" class="anchor" href="#language-config-customization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Language Config Customization</h1>
+
+<p>Out of box, one CLDR file is included in <code>strong-globalize/cldr</code> directory.  CLDR stands for Common Locale Data Repository.  In the installation of <code>strong-globalize</code> for your production deployment, you can replace the out-of-box CLDR file entirely, or add extra CLDR data to the <code>cldr</code> directory.  There are approximately 450 locales (language/culture variations) defined in the Unicode CLDR.  Among them, there are 40+ variations of French and 100+ variations of English.</p>
+
+<p><code>strong-globalize</code> provides a utility tool under util directory.  The tool assembles only the languages you need to support in your <code>strong-globalize</code> installation.  For example, the out-of-box gz file for the 11 languages is 135KB.  See README of the utility under util directory.</p>
+
+<p>In runtime, <code>strong-globalize</code> dynamically loads to memory just the CLDR data required for the specific language by <code>setLanguage()</code>.  First, it examines all the <code>gz</code> files under cldr directory in alphabetical order, then searches for the language.  If the language is defined in two or more CLDR files, duplicate objects will be overwritten in the examination order.</p>
+
+<h2>
+<a id="message-string-resource" class="anchor" href="#message-string-resource" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Message String Resource</h2>
+
+<p>English string resource files must exist under <code>intl/en</code> directory.  Translated string resource files are stored on each language sub-directory under <code>intl</code>  If a message is not found in the translated resource files, the corresponding English message is displayed.</p>
+
+<p>CLDR data has no dependencies on string resources.  For example, you can load 100 language CLDR data and no translated string resources but the English string resource.  However, if there is a translated non-English string resource exists for language xx under <code>intl/xx</code> the CLDR data for <code>xx</code> must be loaded.  <code>xx</code> is one of the languages defined in the CLDR file(s).</p>
+
+<h1>
+<a id="runtime-language-switching" class="anchor" href="#runtime-language-switching" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Runtime Language Switching</h1>
+
+<p>There are two primary types of Node.js packages <code>strong-globalize</code> is targeting:</p>
+
+<ul>
+<li>Command line interface utility (short life; static language setting) such as <a href="#cli---extract-lint-and-translate"><code>slt-globalize</code> itself</a>,</li>
+<li>Web applications such as LoopBack apps (long life; dynamic language switching to respect browser language set in HTTP <code>Accept-Language</code> header.  See `negotiator' on npmjs.com).</li>
+</ul>
+
+<h2>
+<a id="common-part" class="anchor" href="#common-part" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Common part</h2>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>(); <span class="pl-c">// use the default</span></pre></div>
+
+<h2>
+<a id="static-language-setting-in-cli-utility" class="anchor" href="#static-language-setting-in-cli-utility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static language setting in CLI utility</h2>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// the common part comes here.</span>
+
+<span class="pl-c">// then, use formatters and wrappers API always in the same language</span>
+<span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Welcome!<span class="pl-pds">'</span></span>);</pre></div>
+
+<h2>
+<a id="dynamic-language-switching-in-web-application" class="anchor" href="#dynamic-language-switching-in-web-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dynamic language switching in Web application</h2>
+
+<p>Setting language to <code>strong-globalize</code> instance is pretty cheap.  CLDR data set and translated messages are preloaded at the initial use.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// the common part comes here.</span>
+
+<span class="pl-c">// set language first, then, use formatters and wrappers API</span>
+<span class="pl-c">// See 'negotiator' on Npmjs.com for 'getAcceptLanguage()'</span>
+<span class="pl-smi">g</span>.<span class="pl-en">setLanguage</span>(<span class="pl-en">getAcceptLanguage</span>()); <span class="pl-c">// once per session</span>
+
+<span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Welcome!<span class="pl-pds">'</span></span>);</pre></div>
+
+<h1>
+<a id="pseudo-localization-support" class="anchor" href="#pseudo-localization-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pseudo Localization Support</h1>
+
+<p><code>strong-globalize</code> has a feature similar to traditional <code>pseudo localization.</code></p>
+
+<p>First, Machine Translation with <code>slt-globalize -t</code> can be used like the traditional <code>pseudo localization.</code>  See <a href="#cli---extract-lint-and-translate">the CLI - extract, lint, and translate section</a> for details of <code>slt-globalize -t</code> command.</p>
+
+<p>Second, in runtime, set the environment variable <code>STRONG_GLOBALIZE_PSEUDO_LOC_PREAMBLE</code> and <code>strong-globalize</code> adds the string in front of every message processed by the message formatter.  If you already have translated message files (by machine or human) and set the language, the string is added to every message in that language.</p>
+
+<p>Third, <code>strong-globalize</code> reserves the language code <code>zz</code> as pseudo-language.  <code>slt-globalize -e</code> generates <code>intl/zz/messages.json</code> and <code>intl/zz/messages_inverted.json</code> which show the location of each message extracted from JS files.</p>
+
+<p>Note that <code>strong-globalize</code> does not use <code>intl/zz/*.json</code> in runtime.  They are reference only.  They are useful to detect globalization bugs usually called <code>hard-coded</code> strings.  For example, intl/en/messages.json shows "Shipping cost is {0}." string is properly globalized and extracted to intl/en/messages.json with the auto-generated message key as "77decb50aa6360f0dc9c8ded9086b94e".  intl/zz/messages.json shows the string is located at line#31 of <code>index.js</code> as the argument of function call <code>g.log</code>.  intl/zz/messages_inverted.json shows that at the line#20 of <code>index.js</code> there is a string "%s Hello %s" as the first argument of <code>util.format</code> which looks like a globalization bug.</p>
+
+<p>Also note that <code>slt-globalize -e</code> extracts the first argument of every function call if it's a literal string or concatenation of literal strings.  Literal strings in other arguments of function calls are NOT extracted.</p>
+
+<p><code>intl/en/messages.json</code>:</p>
+
+<pre><code>{
+  "77decb50aa6360f0dc9c8ded9086b94e": "Shipping cost is {0}.",
+  "b5d4af08bf61e58d375923977290d67b": "Listening on {0} by {1}."
+}
+</code></pre>
+
+<p><code>intl/zz/messages.json</code>:</p>
+
+<pre><code>{
+  "77decb50aa6360f0dc9c8ded9086b94e": [
+    "g.log:index.js:31"
+  ],
+  "b5d4af08bf61e58d375923977290d67b": [
+    "g.log:index.js:29"
+  ],
+  "%s Hello %s": [
+    "util.format:index.js:20"
+  ],
+  "http://localhost:": [
+    "request:index.js:35"
+  ]
+}
+</code></pre>
+
+<p>and, <code>intl/zz/messages_inverted.json</code>:</p>
+
+<pre><code>{
+  "index.js": {
+    "20": [
+      "util.format('%s Hello %s', ... )"
+    ],
+    "29": [
+      "g.log('b5d4af08bf61e58d375923977290d67b')"
+    ],
+    "31": [
+      "g.log('77decb50aa6360f0dc9c8ded9086b94e')"
+    ],
+    "35": [
+      "request('http://localhost:')"
+    ]
+  }
+}
+</code></pre>
+
+<h1>
+<a id="deep-string-resource-extraction" class="anchor" href="#deep-string-resource-extraction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Deep String Resource Extraction</h1>
+
+<p><code>strong-globalize</code> CLI supports string resource auto-extraction in two modes: <code>regular extraction</code> mode and <code>deep extraction</code> mode.  The regular extraction mode is invoked with <code>slt-globalize -e</code> and typically used in package development phase.  The deep extraction mode <code>slt-globalzie -d</code> is designed to be used in globalization of enterprise-scale applications.</p>
+
+<h2>
+<a id="regular-extraction" class="anchor" href="#regular-extraction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Regular Extraction</h2>
+
+<p>Suppose you have a package named <code>gmain</code> which has two JS files: <code>index.js</code> and <code>lib/util.js</code> and the two JS files contain the same <code>g.log('user: %s', userName)</code> call in line# 8 and line# 12 respectively.  Running <code>slt-globalize -e</code> under the application root directory, <code>/Users/user/gmain</code> will generate <code>intl/en/messages.json</code> and <code>intl/zz/messages.json</code> as shown in the <a href="#pseudo-localization-support">Pseudo Localization Support</a> section.  Note that <code>slt-globalize -e</code> extracts all strong-globalized literal strings as well as non-globalized literal string with positional information in to <code>intl/zz/messages.json</code>.  It is useful to pin-point untranslated strings in the source code.</p>
+
+<p>In the regular extraction mode, <code>strong-globalize</code> scans all JS and Html templates owned by the <code>gmain</code> package no matter how deep the directory structure goes -- for example, <code>gmain/lib/usa/california/sanfrancisco/util.js</code> is scanned.  However, it does not examine dependent files under <code>node_modules</code> or <code>test</code> directory.  All <code>strong-globalized</code> literal strings in JS and Html files of the target package will be extracted and stored in <code>intl/en/messages.json</code> along with the positional information stored in <code>intl/zz/messages.json</code>.  All non-strong-globalized literal strings in the first argument of all JS function calls are extracted and stored in <code>intl/zz/messages.json</code> along with the positional information.</p>
+
+<p>In runtime, the string resource JSON files under <code>intl</code> will be loaded on to memory as needed.</p>
+
+<p><strong>Use Case</strong>: Self-contained CLI utility package is typically code-globalized and distributed with or without translated messages.json.  API library packages are typically code-globalized and distributed without translation.  Such library packages are then downloaded and used as part of enterprise-scale applications.</p>
+
+<pre><code>/Users/user
+          └── gmain
+              ├── index.js
+              ├── intl
+              │   ├── de
+              │   ├── en
+              │   ├── es
+              │   ├── fr
+              │   ├── it
+              │   ├── ja
+              │   ├── ko
+              │   ├── pt
+              │   ├── ru
+              │   ├── zh-Hans
+              │   ├── zh-Hant
+              │   └── zz
+              ├── lib
+              │   └── usa
+              │       └── california
+              │           └── sanfrancisco
+              │               └── util.js
+              ├── node_modules
+              │   ├── express
+              │   ├── request
+              │   └── strong-globalize -&gt; /usr/local/lib/node_modules/strong-globalize
+              └── package.json
+</code></pre>
+
+<h2>
+<a id="deep-extraction" class="anchor" href="#deep-extraction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Deep Extraction</h2>
+
+<p>Enterprise-scale applications may depend on dozens of third party packages directly or indirectly.  Such applications typically download dependent packages using <code>npm install</code> and can globalize them using the <code>Deep Extraction</code> mode.</p>
+
+<p>For example, suppose <code>gmain</code> package has one dependent package <code>gsub</code> which is installed under <code>gmain/node_modules</code> as shown in the directory structure diagram below.  <code>slt-globalize -d</code> traverses the <code>npm v3 style</code> dependency tree and extracts all the strong-globalized string literals into <code>gmain/intl/en/messages.json</code>.  This way, all the literal strings in your package <code>gmain</code> as well as all the dependent modules are extracted and can be translated consistently at <code>gmain/intl</code> level.  Note that the <code>package.json</code> dependency traversal is different from simple directory traversal.</p>
+
+<p>Note that <a href="#globalize-html-templates">string resource extraction from Html templates</a> is supported in the regular extraction mode only.</p>
+
+<h2>
+<a id="strongloop_globalize_max_depth-environment-variable" class="anchor" href="#strongloop_globalize_max_depth-environment-variable" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>STRONGLOOP_GLOBALIZE_MAX_DEPTH</code> environment variable</h2>
+
+<p>As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on <code>gmain/intl/zz/messages.json</code>, <code>gmain/intl/zz/messages.json</code> may also grow exponentially and cause <code>slt-globalize -d</code> to run out of resource on your computer.</p>
+
+<p>To manage such situations, you can set <code>STRONGLOOP_GLOBALIZE_MAX_DEPTH</code> environment variable.  <code>slt-globalize -d</code> stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by dependencies defined in <code>package.json</code>.</p>
+
+<p>For example, invoking <code>STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d</code> under <code>/Users/user/gmain</code> works as follows.  <code>gmain/index.js</code> is depth 1; thus examined.  <code>gmain/lib/usa/california/sanfrancisco/util.js</code> is depth 5, not examined although it's part of your <code>gmain</code> package.  <code>gmain/node_modules/gsub/index.js</code> is level 3, thus examined.  Likewise, all the files directly under <code>gmain/node_modules/express</code> and <code>gmain/node_modules/request</code> will also be examined and literal strings are extracted to <code>gmain/intl/zz/messages.json</code>.</p>
+
+<h2>
+<a id="npm-v3-dependency-resolution" class="anchor" href="#npm-v3-dependency-resolution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>npm v3</code> dependency resolution</h2>
+
+<p><code>npm v3</code> tries to install all dependent packages in the root <code>node_modules</code> directory, i.e., <code>gmain/node_modules</code> in the above example, which means that most dependent package directories are at depth level 2.  Therefore, <code>STRONGLOOP_GLOBALIZE_MAX_DEPTH</code> does not help in <code>npm v3</code> installed applications.  <code>slt-globalize -d [black list]</code> option can help to reduce the number of packages to scan. </p>
+
+<pre><code>/Users/user
+          └── gmain
+              ├── index.js
+              ├── intl
+              │   ├── de
+              │   ├── en
+              │   ├── es
+              │   ├── fr
+              │   ├── it
+              │   ├── ja
+              │   ├── ko
+              │   ├── pt
+              │   ├── ru
+              │   ├── zh-Hans
+              │   ├── zh-Hant
+              │   └── zz
+              ├── lib
+              │   └── usa
+              │       └── california
+              │           └── sanfrancisco
+              │               └── util.js
+              ├── node_modules
+              │   ├── express
+              │   ├── gsub
+              │   │   ├── index.js
+              │   │   ├── node_modules
+              │   │   │   └── strong-globalize -&gt; /usr/local/lib/node_modules/strong-globalize
+              │   │   └── package.json
+              │   ├── request
+              │   └── strong-globalize -&gt; /usr/local/lib/node_modules/strong-globalize
+              └── package.json
+</code></pre>
+
+<h1>
+<a id="html-template-globalization" class="anchor" href="#html-template-globalization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTML Template Globalization</h1>
+
+<p>Many UI strings are included in HTML templates.  <code>slt-globalize -e</code> supports string extraction from the HTML templates as well as JS files.  Once extracted, <code>slt-globalize -t</code> can be used to translate the resource JSON.</p>
+
+<p>In the following example, the two strings <code>{{StrongLoop}} History Board</code> and <code>History board shows the access history to the e-commerce web site.</code> are extracted to JSON.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>board-header section-header<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">h2</span>&gt;{{{{StrongLoop}} History Board | globalize}}&lt;/<span class="pl-ent">h2</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;
+&lt;<span class="pl-ent">div</span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">"</span>help-note<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">p</span>&gt;
+    {{ History board shows the access history to the e-commerce web site. | globalize }}
+  &lt;/<span class="pl-ent">p</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<p><code>strong-globalize</code> supports <code>{{ &lt;string to be localized&gt; | globalize }}</code> out of box.  In case you need other pattern matching rule for your template engine, you can set custom RegExp by <code>setHtmlRegex</code> API.</p>
+
+<p>The string extraction works for CDATA as well.  <code>Text in cdata</code> is extracted in the following example:</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;!<span class="pl-c1">[CDATA[</span>
+<span class="pl-c1">  {{Text in cdata | globalize }}</span>
+<span class="pl-c1">]]</span>&gt;</pre></div>
+
+<h1>
+<a id="json-yaml-file-globalization" class="anchor" href="#json-yaml-file-globalization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JSON YAML File Globalization</h1>
+
+<p>You can directly pass the file name of JSON or YAML file and a list of fields to <code>g.t</code> or <code>g.formatMessage</code>.  The file name is a path relative to the root directory of the package.  The list of the fields is a string notation of two dimensional array being a list of the values to globalize.  In the sample code below, <code>data.json</code> is the JSON file and <code>index.js</code> shows how to globalize all fields of <code>data.json</code>.  <code>g.t</code> loads the globalized object into memory which is usually done by <code>require(&lt;file name&gt;)</code> or <code>fs.readFile</code> followed by <code>JSON.parse</code>.  Note that the file name and the list must be provided as string literals directly in <code>g.t</code> call.   YAML file globalization works in exactly the same way.</p>
+
+<p>Note that <code>strong-globalize</code> supports <a href="#help-txt-files-and-msg-keys">traditional message key approach</a> as well.  To take the message key approach in JSON file globalization, manually define a message key like <code>msgKey</code>, store the key and content value pair in <code>intl/en/messages.json</code>, then in run-time, load the JSON file as usual (<code>require</code> or <code>readFile &amp; parse</code>) first and overwrite the value with g.t('msgKey').</p>
+
+<p><a href="#help-txt-files">Plain text file globalization</a> works in the same way except that 1. the text file name is a path relative to <code>intl/en</code> of the package, and 2. since the entire text file is a message, there are no parameters equivalent to the field list.</p>
+
+<p>In the above paragraphs, <code>g.f</code> can be used instead of <code>g.t</code> if you'd like.</p>
+
+<p><code>test/fixtures/extract007' is the YAML equivalent.  Likewise,</code>test/fixtures/formatyaml001<code>is the parallel of</code>test/fixtures/formatjson001`.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// test/fixtures/extract006/index.js</span>
+<span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>();
+
+<span class="pl-k">var</span> json <span class="pl-k">=</span> <span class="pl-smi">g</span>.<span class="pl-en">t</span>(<span class="pl-s"><span class="pl-pds">'</span>data/data.json<span class="pl-pds">'</span></span>,
+  <span class="pl-s"><span class="pl-pds">'</span>[<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  "title",<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["types", 0],<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["types", 1],<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["types", 2],<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["types", 3],<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["threeWrites", "e"],<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["threeWrites", "o"],<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>  ["threeWrites", "w"]<span class="pl-pds">'</span></span> <span class="pl-k">+</span>
+  <span class="pl-s"><span class="pl-pds">'</span>]<span class="pl-pds">'</span></span>);
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-c1">JSON</span>.<span class="pl-en">stringify</span>(json, <span class="pl-c1">null</span>, <span class="pl-c1">2</span>));</pre></div>
+
+<p><code>test/fixtures/extract006/data/data.json</code></p>
+
+<div class="highlight highlight-source-js"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>This is an error.<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>types<span class="pl-pds">"</span></span><span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>log<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>info<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>warn<span class="pl-pds">"</span></span>],
+    <span class="pl-s"><span class="pl-pds">"</span>threeWrites<span class="pl-pds">"</span></span> <span class="pl-k">:</span> {
+      <span class="pl-s"><span class="pl-pds">"</span>e<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>ewrite<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>o<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>owrite<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>write<span class="pl-pds">"</span></span>
+    }
+}
+</pre></div>
+
+<pre><code> test/fixtures/extract006
+                        ├── data
+                        │   └── data.json
+                        ├── index.js
+                        ├── intl
+                        │   ├── de
+                        │   │   └── messages.json
+                        │   ├── en
+                        │   │   └── messages.json
+                        │   ├── es
+                        │   │   └── messages.json
+                        │   ├── fr
+                        │   │   └── messages.json
+                        │   ├── it
+                        │   │   └── messages.json
+                        │   ├── ja
+                        │   │   └── messages.json
+                        │   ├── ko
+                        │   │   └── messages.json
+                        │   ├── pt
+                        │   │   └── messages.json
+                        │   ├── ru
+                        │   ├── zh-Hans
+                        │   │   └── messages.json
+                        │   ├── zh-Hant
+                        │   │   └── messages.json
+                        │   └── zz
+                        │       ├── messages.json
+                        │       └── messages_inverted.json
+                        ├── node_modules
+                        │   └── strong-globalize
+                        │       ├── ...
+                        │       ...
+                        │
+                        └── package.json
+</code></pre>
+
+<h1>
+<a id="persistent-logging" class="anchor" href="#persistent-logging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Persistent Logging</h1>
+
+<p><code>strong-globalize</code> provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  </p>
+
+<h2>
+<a id="sgsetpersistentlogginglogcallback-disableconsole" class="anchor" href="#sgsetpersistentlogginglogcallback-disableconsole" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>SG.SetPersistentLogging(logCallback, disableConsole)</code>
+</h2>
+
+<p><code>logCallback</code> is called when a user message is sent to <code>stdout</code> or <code>stderr</code> to show to the user.  Two arguments passed to <code>logCallback</code> are: <code>level (string)</code> and <code>msg (object)</code> which has three properties: <code>message (UTF8 string)</code> which is the localized message shown to the user, <code>orig (UTF8 string)</code> the corresponding original English message with placeholder(s), and <code>vars (an array of argument(s) for the placeholder(s))</code>.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  language<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>ja<span class="pl-pds">'</span></span>,
+  message<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>ホスト:localhostのポート:8123へ送っています。<span class="pl-pds">'</span></span>,
+  orig<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Sending to host: %s, port: %d ...<span class="pl-pds">'</span></span>,
+  vars<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>localhost<span class="pl-pds">'</span></span>, <span class="pl-c1">8123</span>],
+}</pre></div>
+
+<p><code>disableConsole</code> (default: <code>false</code>) is a boolean to specify whether to send the messsage to <code>stdout</code> or <code>stderr</code>.  <code>disableConsole</code> should be set to <code>true</code> in case the client controls the user communication.  For example, if the client uses <code>winston</code> file transport for logging, the client code would look like this:</p>
+
+<p>Client:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetDefaultLanguage</span>();
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>(); <span class="pl-c">// strong-globalize handle</span>
+<span class="pl-k">var</span> w <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>winston<span class="pl-pds">'</span></span>); <span class="pl-c">// winston handle</span>
+<span class="pl-en">initWinston</span>(w);
+<span class="pl-c">// let strong-globalize to show it to the user</span>
+<span class="pl-k">var</span> disableConsole <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+<span class="pl-c1">SG</span>.<span class="pl-en">SetPersistentLogging</span>(<span class="pl-smi">w</span>.<span class="pl-smi">log</span>, disableConsole);
+
+<span class="pl-k">function</span> <span class="pl-en">initWinston</span>(<span class="pl-smi">w</span>) {
+  <span class="pl-k">var</span> options <span class="pl-k">=</span> {
+    filename<span class="pl-k">:</span> <span class="pl-c1">__dirname</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>/system.log<span class="pl-pds">'</span></span>,
+    maxsize<span class="pl-k">:</span> <span class="pl-c1">1000000</span>,
+    maxFiles<span class="pl-k">:</span> <span class="pl-c1">10</span>,
+    zippedArchive<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+  };
+  <span class="pl-smi">w</span>.<span class="pl-c1">add</span>(<span class="pl-smi">w</span>.<span class="pl-smi">transports</span>.<span class="pl-smi">File</span>, options);
+  <span class="pl-c">// let strong-globalize to show it to the user</span>
+  <span class="pl-smi">w</span>.<span class="pl-c1">remove</span>(<span class="pl-smi">w</span>.<span class="pl-smi">transports</span>.<span class="pl-smi">Console</span>);
+}</pre></div>
+
+<h2>
+<a id="persistent-logging-demo-gmainindexjs" class="anchor" href="#persistent-logging-demo-gmainindexjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Persistent Logging Demo <code>gmain/index.js</code>
+</h2>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> express <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> app <span class="pl-k">=</span> <span class="pl-en">express</span>();
+<span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>); 
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+<span class="pl-k">var</span> gsub <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>gsub<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> w <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>winston<span class="pl-pds">'</span></span>); <span class="pl-c">// winston handle</span>
+
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>(); <span class="pl-c">// strong-globalize handle</span>
+<span class="pl-en">initWinston</span>(w); <span class="pl-c">// see the Client initialization</span>
+<span class="pl-k">var</span> disableConsole <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+<span class="pl-c1">SG</span>.<span class="pl-en">SetPersistentLogging</span>(<span class="pl-smi">w</span>.<span class="pl-smi">log</span>, disableConsole);
+
+<span class="pl-smi">app</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>) {
+  <span class="pl-k">var</span> helloMessage <span class="pl-k">=</span> <span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>%s Hello World<span class="pl-pds">'</span></span>, <span class="pl-smi">g</span>.<span class="pl-en">d</span>(<span class="pl-k">new</span> <span class="pl-en">Date</span>()));
+  <span class="pl-smi">w</span>.<span class="pl-en">info</span>(helloMessage); <span class="pl-c">// write only to the log file with 'info' level</span>
+  <span class="pl-smi">res</span>.<span class="pl-en">end</span>(helloMessage);
+});
+
+<span class="pl-k">var</span> port <span class="pl-k">=</span> <span class="pl-c1">process</span>.<span class="pl-smi">env</span>.<span class="pl-c1">PORT</span> <span class="pl-k">||</span> <span class="pl-c1">8123</span>;
+<span class="pl-smi">app</span>.<span class="pl-en">listen</span>(port, <span class="pl-k">function</span>() {
+  <span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Listening on %s by %s.<span class="pl-pds">'</span></span>, port, <span class="pl-smi">gsub</span>.<span class="pl-en">getUserName</span>());
+});
+
+<span class="pl-c1">setInterval</span>(<span class="pl-k">function</span>(){
+  <span class="pl-smi">g</span>.<span class="pl-en">owrite</span>(<span class="pl-s"><span class="pl-pds">'</span>Sending request to %s ...<span class="pl-pds">'</span></span>, port);
+  <span class="pl-en">request</span>(<span class="pl-s"><span class="pl-pds">'</span>http://localhost:<span class="pl-pds">'</span></span> <span class="pl-k">+</span> port,
+    <span class="pl-k">function</span>(<span class="pl-smi">error</span>, <span class="pl-smi">response</span>, <span class="pl-smi">body</span>) {<span class="pl-en">console</span>.<span class="pl-c1">log</span>(body);});
+},<span class="pl-c1">1000</span>);
+
+<span class="pl-smi">g</span>.<span class="pl-en">info</span>(<span class="pl-smi">gsub</span>.<span class="pl-en">getHelpText</span>()); <span class="pl-c">// write to both console and the log file with 'info' level</span></pre></div>
+
+<p>Note:
+<code>w.info(helloMessage)</code> directly calls the winston API <code>info</code> and write <code>helpMessage</code> to the log file.
+<code>g.info(gsub.getHelpText())</code> writes the localized help text to both console and the log file with <code>info</code> level.  The other <code>strong-globalize</code> API calls, i.e., <code>g.log</code> and <code>g.owrite</code> also write the localized message to both console and the log file with <code>info</code> level.</p>
+
+<h1>
+<a id="other-resources" class="anchor" href="#other-resources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other Resources</h1>
+
+<p>[1]  <a href="https://github.com/Setogit/sg-example-001-date-currency">https://github.com/Setogit/sg-example-001-date-currency</a></p>
+
+<p>A complete strong-globalized application with machine-translated messages.  In addition to message formatting, date and currency formatting examples are included.  You can install and quickly see how the strong-globalized (or SG'ed in short) app works.  Just install and <code>node index.js</code></p>
+
+<p>[2]  <a href="https://github.com/Setogit/sg-example-002-glob-pipeline">https://github.com/Setogit/sg-example-002-glob-pipeline</a></p>
+
+<p>Detailed 15-step instruction with 15 screen-shots to set up IBM Globalization Pipeline on Bluemix</p>
+
+<h1>
+<a id="cli---extract-lint-and-translate" class="anchor" href="#cli---extract-lint-and-translate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CLI - extract, lint, and translate</h1>
+
+<h2>
+<a id="npm-install--g-strong-globalize" class="anchor" href="#npm-install--g-strong-globalize" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>npm install -g strong-globalize</code>
+</h2>
+
+<p>You can safely ignore these warnings because <code>strong-globalize</code> statically bundles cldr-data for production use.</p>
+
+<div class="highlight highlight-source-js"><pre>npm <span class="pl-c1">WARN</span> <span class="pl-c1">EPEERINVALID</span> globalize@<span class="pl-c1">1.1</span>.<span class="pl-ii">1</span> requires a peer <span class="pl-k">of</span> cldr<span class="pl-k">-</span>data@<span class="pl-k">&gt;=</span><span class="pl-c1">25</span> but none was installed.
+npm <span class="pl-c1">WARN</span> <span class="pl-c1">EPEERINVALID</span> cldrjs@<span class="pl-c1">0.4</span>.<span class="pl-ii">4</span> requires a peer <span class="pl-k">of</span> cldr<span class="pl-k">-</span>data@<span class="pl-k">&gt;=</span><span class="pl-c1">25</span> but none was installed.</pre></div>
+
+<h3>
+<a id="usage-slt-globalize-options" class="anchor" href="#usage-slt-globalize-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>usage: <code>slt-globalize [options]</code>
+</h3>
+
+<p>Options:</p>
+
+<ul>
+<li> <code>-d,--deepextract [black list]</code>  Deep-extract resource strings.</li>
+<li> <code>-e,--extract [black list]</code>      Extract resource strings to en/messages.json except for directories on [black list] separated by a space.</li>
+<li> <code>-h,--help</code>         Print this message and exit.</li>
+<li> <code>-l,--lint</code>         Check validity of string resource.</li>
+<li> <code>-t,--translate</code>    Translate string resource.</li>
+<li> <code>-v,--version</code>      Print version and exit.</li>
+</ul>
+
+<h2>
+<a id="liblocal-credentialsjson" class="anchor" href="#liblocal-credentialsjson" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>lib/local-credentials.json</h2>
+
+<p>To access Globalization Pipeline on Bluemix service for machine translation, credentials should be provided in one of the two ways:</p>
+
+<p>(1) By strong-globalize/lib/local-credentials.json</p>
+
+<p>Copy and paste your credentials look like the following from the dashboard of Globalization Pipeline on Bluemix service into <code>strong-globalize/lib/local-credentials.json</code>.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>credentials<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>https://gp-beta-rest.ng.bluemix.net/translate/rest<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>userId<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>6e41ceac9f14b493faxxxxxxxxxxxxxx<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>vLbqlkjPhJiwJlkjwou8woO82hk2huku<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>instanceId<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>6888888888888e6d2f458b1b4b5fd010<span class="pl-pds">"</span></span>
+  }
+}</pre></div>
+
+<p>(2) By environment variables</p>
+
+<p>For example,</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">BLUEMIX_URL</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>https://gp-beta-rest.ng.bluemix.net/translate/rest<span class="pl-pds">"</span></span>
+<span class="pl-c1">BLUEMIX_USER</span><span class="pl-k">=</span><span class="pl-ii">6e41ceac9f14b493faxxxxxxxxxxxxxx</span>
+<span class="pl-c1">BLUEMIX_PASSWORD</span><span class="pl-k">=</span>vLbqlkjPhJiwJlkjwou8woO82hk2huku
+<span class="pl-c1">BLUEMIX_INSTANCE</span><span class="pl-k">=</span><span class="pl-ii">6888888888888e6d2f458b1b4b5fd010</span>
+slt<span class="pl-k">-</span>globalize <span class="pl-k">-</span>t</pre></div>
+
+<p>Please see <a href="#other-resources">Other Resources</a> for step-by-step instructions to set up the service.</p>
+
+<h1>
+<a id="api---set-system-defaults" class="anchor" href="#api---set-system-defaults" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API - Set system defaults</h1>
+
+<h3>
+<a id="var-sg--requirestrong-globalize" class="anchor" href="#var-sg--requirestrong-globalize" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>var SG = require('strong-globalize);</code>
+</h3>
+
+<h2>
+<a id="sgsetrootdirrootpath-options" class="anchor" href="#sgsetrootdirrootpath-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>SG.SetRootDir(rootPath, options)</code>
+</h2>
+
+<ul>
+<li>
+<code>rootPath</code> : {<code>string</code>} App's root directory full path.  Every client must set its root directory where <code>package.json</code> and <code>intl</code> directory exist.  All resources under this directory including dependent modules are loaded in runtime.  <code>SetRootDir</code> must be called once and only once usually in the main js module.</li>
+<li>
+<code>options</code> : {autonomousMsgLoading: ['<code>none</code>' | '<code>all</code>' |  -- load string resources at the master rootDir and the specified packages if the master package depends on them.</li>
+</ul>
+
+<h2>
+<a id="sgsetdefaultlanguagelang" class="anchor" href="#sgsetdefaultlanguagelang" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>SG.SetDefaultLanguage(lang)</code>
+</h2>
+
+<ul>
+<li>
+<code>lang</code> : {<code>string</code>} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, <code>strong-globalize</code> tries to use the OS language, then falls back to 'en'  It must be called at least once.  By default, it's called in SetRootDir, so it can be omitted completely.  Can be called multiple times.</li>
+</ul>
+
+<p><code>strong-globalize</code> uses the language code in a form of a combination of ISO 639-1 language code and ISO 15924 script code such as <code>zh-Hans</code> for Chinese - Han (Simplified variant).</p>
+
+<h2>
+<a id="sgsethtmlregexregex-regexhead-regextail" class="anchor" href="#sgsethtmlregexregex-regexhead-regextail" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>SG.SetHtmlRegex(regex, regexHead, regexTail)</code>
+</h2>
+
+<ul>
+<li>
+<code>regex</code> : {<code>RegExp</code>} to extract the whole string out of the HTML text</li>
+<li>
+<code>regexHead</code> : {<code>RegExp</code>} to trim the head portion from the extracted string</li>
+<li>
+<code>regexTail</code> : {<code>RegExp</code>} to trim the tail portion from the extracted string</li>
+</ul>
+
+<p>Most clients do not need to setHtmlRegex.  See <a href="#globalize-html-templates">the Globalize HTML Templates section</a> for details.</p>
+
+<h2>
+<a id="gsetlanguagelang" class="anchor" href="#gsetlanguagelang" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.setLanguage(lang)</code>
+</h2>
+
+<ul>
+<li>
+<code>lang</code> : {<code>string</code>} (optional) Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.  If omitted, <code>strong-globalize</code> tries to use the OS language, then falls back to 'en'  It must be called at least once.  Can be called multiple times.</li>
+</ul>
+
+<h2>
+<a id="ggetlanguage" class="anchor" href="#ggetlanguage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.getLanguage()</code>
+</h2>
+
+<ul>
+<li>returns {<code>string</code>} Language ID such as de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, and zh-Hant.</li>
+</ul>
+
+<h1>
+<a id="api---formatters" class="anchor" href="#api---formatters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API - Formatters</h1>
+
+<h3>
+<a id="var-g--sglanguage-en" class="anchor" href="#var-g--sglanguage-en" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>var g = SG({language: 'en'});</code>
+</h3>
+
+<h2>
+<a id="gformatmessagepath-variables" class="anchor" href="#gformatmessagepath-variables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.formatMessage(path, variables)</code>
+</h2>
+
+<ul>
+<li>
+<code>path {string}</code> The message key</li>
+<li>
+<code>variables {object}</code> (optional, default: null) List of placeholder key and content value pair</li>
+</ul>
+
+<h2>
+<a id="gtpath-variables" class="anchor" href="#gtpath-variables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.t(path, variables)</code>
+</h2>
+
+<p>alias of <code>formatMessage</code></p>
+
+<h2>
+<a id="gmpath-variables" class="anchor" href="#gmpath-variables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.m(path, variables)</code>
+</h2>
+
+<p>alias of <code>formatMessage</code></p>
+
+<h2>
+<a id="gformatcurrencyvalue-currencysymbol-options" class="anchor" href="#gformatcurrencyvalue-currencysymbol-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.formatCurrency(value, currencySymbol, options)</code>
+</h2>
+
+<ul>
+<li>
+<code>value {number}</code> integer or float</li>
+<li>
+<code>currencySymbol {string}</code> ISO 4217 three-letter currency code such as <code>'USD'</code> for US Dollars </li>
+<li>
+<code>options {object}</code> (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.</li>
+</ul>
+
+<h2>
+<a id="gcvalue-currencysymbol-options" class="anchor" href="#gcvalue-currencysymbol-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.c(value, currencySymbol, options)</code>
+</h2>
+
+<p>alias of <code>formatCurrency</code></p>
+
+<h2>
+<a id="gformatdatevalue-options" class="anchor" href="#gformatdatevalue-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.formatDate(value, options)</code>
+</h2>
+
+<ul>
+<li>
+<code>value {Date object}</code> Date</li>
+<li>
+<code>options {object}</code> (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.</li>
+</ul>
+
+<h2>
+<a id="gdvalue-options" class="anchor" href="#gdvalue-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.d(value, options)</code>
+</h2>
+
+<p>alias of <code>formatDate</code></p>
+
+<h2>
+<a id="gformatnumbervalue-options" class="anchor" href="#gformatnumbervalue-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.formatNumber(value, options)</code>
+</h2>
+
+<ul>
+<li>
+<code>value {number}</code> integer or float</li>
+<li>
+<code>options {object}</code> (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.</li>
+</ul>
+
+<h2>
+<a id="gnvalue-options" class="anchor" href="#gnvalue-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.n(value, options)</code>
+</h2>
+
+<p>alias of <code>formatNumber</code></p>
+
+<h1>
+<a id="api---wrappers" class="anchor" href="#api---wrappers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API - Wrappers</h1>
+
+<p>%s place holders are supported.  Intended to directly globalize strings embedded in the first parameter of Error, console.error, console.log, etc. and util.format by simply replacing console or util with require('strong-globalize').  'path' is the literal string.  'path' cannot be a variable.  If a variable is used as <code>path</code> the off-line extraction won't be able to extract because string data assigned to a variable is known only in runtime.</p>
+
+<h2>
+<a id="gerrorpath-capital-error" class="anchor" href="#gerrorpath-capital-error" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.Error(path, ...)</code>(capital Error)</h2>
+
+<p>returns Error with a formatted message.</p>
+
+<h2>
+<a id="gformatpath-" class="anchor" href="#gformatpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.format(path, ...)</code>
+</h2>
+
+<p>returns the result message from <code>formatMessage</code>.  intended to replace util.format.</p>
+
+<h2>
+<a id="gfpath-" class="anchor" href="#gfpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.f(path, ...)</code>
+</h2>
+
+<p>alias of <code>format</code></p>
+
+<h2>
+<a id="gewritepath-" class="anchor" href="#gewritepath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.ewrite(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>process.stderr.write</code>, and log to file with <code>error</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gowritepath-" class="anchor" href="#gowritepath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.owrite(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>process.stdout.write</code>, and log to file with <code>info</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gwritepath-" class="anchor" href="#gwritepath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.write(path, ...)</code>
+</h2>
+
+<p>alias of <code>owrite</code></p>
+
+<h3>
+<a id="wrappers-for-rfc-5424-syslog-message-severities" class="anchor" href="#wrappers-for-rfc-5424-syslog-message-severities" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Wrappers for RFC 5424 Syslog Message Severities</h3>
+
+<h2>
+<a id="gemergencypath-" class="anchor" href="#gemergencypath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.emergency(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.error</code>, and log to file with <code>emergency</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="galertpath-" class="anchor" href="#galertpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.alert(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.error</code>, and log to file with <code>alert</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gcriticalpath-" class="anchor" href="#gcriticalpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.critical(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.error</code>, and log to file with <code>critical</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gerrorpath-small-error" class="anchor" href="#gerrorpath-small-error" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.error(path, ...)</code>(small error)</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.error</code>, and log to file with <code>error</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gwarningpath-" class="anchor" href="#gwarningpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.warning(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.error</code>, and log to file with <code>warning</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gnoticepath-" class="anchor" href="#gnoticepath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.notice(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>notice</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="ginformationalpath-" class="anchor" href="#ginformationalpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.informational(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>informational</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gdebugpath-" class="anchor" href="#gdebugpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.debug(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>debug</code> level if persistent logging is set.</p>
+
+<h3>
+<a id="wrappers-for-nodejs-console" class="anchor" href="#wrappers-for-nodejs-console" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Wrappers for Node.js Console</h3>
+
+<h2>
+<a id="gwarnpath-" class="anchor" href="#gwarnpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.warn(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.error</code>, and log to file with <code>warn</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="ginfopath-" class="anchor" href="#ginfopath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.info(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>info</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="glogpath-" class="anchor" href="#glogpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.log(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>log</code> level if persistent logging is set.</p>
+
+<h3>
+<a id="wrappers-for-misc-logging-levels" class="anchor" href="#wrappers-for-misc-logging-levels" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Wrappers for Misc Logging Levels</h3>
+
+<h2>
+<a id="ghelppath-" class="anchor" href="#ghelppath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.help(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>help</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gdatapath-" class="anchor" href="#gdatapath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.data(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>data</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gpromptpath-" class="anchor" href="#gpromptpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.prompt(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>prompt</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gverbosepath-" class="anchor" href="#gverbosepath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.verbose(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>verbose</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="ginputpath-" class="anchor" href="#ginputpath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.input(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>input</code> level if persistent logging is set.</p>
+
+<h2>
+<a id="gsillypath-" class="anchor" href="#gsillypath-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>g.silly(path, ...)</code>
+</h2>
+
+<p>passes the result message from <code>formatMessage</code> to <code>console.log</code>, and log to file with <code>silly</code> level if persistent logging is set.</p>
+
+<h1>
+<a id="usage-examples" class="anchor" href="#usage-examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage Examples</h1>
+
+<p>Rule of thumb for auto-extraction with <code>slt-globalize -e</code>:</p>
+
+<ul>
+<li>String literals defined as the first argument (<code>path</code>) of the APIs is extracted.</li>
+<li>String literals concatenated with '+' in the first argument are extracted as a single message.</li>
+</ul>
+
+<h2>
+<a id="use-gf-for-utilformat" class="anchor" href="#use-gf-for-utilformat" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>use g.f for util.format</h2>
+
+<p>before:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">Error</span>(<span class="pl-smi">util</span>.<span class="pl-en">format</span>(<span class="pl-s"><span class="pl-pds">'</span>Directory %s does not exist<span class="pl-pds">'</span></span>, workingDir));</pre></div>
+
+<p>after:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">Error</span>(<span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>Directory %s does not exist<span class="pl-pds">'</span></span>, workingDir));</pre></div>
+
+<p>or</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">g</span>.<span class="pl-en">Error</span>(<span class="pl-s"><span class="pl-pds">'</span>Directory %s does not exist<span class="pl-pds">'</span></span>, workingDir);</pre></div>
+
+<h2>
+<a id="use-gwrite-for-processstdoutwrite" class="anchor" href="#use-gwrite-for-processstdoutwrite" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>use g.write for process.stdout.write</h2>
+
+<p>before globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// don't concatenate string. word order varies from language to language.</span>
+<span class="pl-c1">process</span>.<span class="pl-smi">stdout</span>.<span class="pl-c1">write</span>(<span class="pl-s"><span class="pl-pds">'</span>Directory <span class="pl-pds">'</span></span> <span class="pl-k">+</span> workingDir <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span> does not exist...<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>wrong globalization: (don't concatenate words;  word order varies from language to language)</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">process</span>.<span class="pl-smi">stdout</span>.<span class="pl-c1">write</span>(<span class="pl-smi">g</span>.<span class="pl-en">t</span>(<span class="pl-s"><span class="pl-pds">'</span>Directory <span class="pl-pds">'</span></span>) <span class="pl-k">+</span> workingDir <span class="pl-k">+</span> <span class="pl-smi">g</span>.<span class="pl-en">t</span>(<span class="pl-s"><span class="pl-pds">'</span> does not exist...<span class="pl-pds">'</span></span>));</pre></div>
+
+<p>right globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">g</span>.<span class="pl-c1">write</span>(<span class="pl-s"><span class="pl-pds">'</span>Directory %s does not exist...<span class="pl-pds">'</span></span>, workingDir);</pre></div>
+
+<h2>
+<a id="place-holders" class="anchor" href="#place-holders" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>place holders</h2>
+
+<p>You can use place holders and parameters in one of these four ways if you'd like:</p>
+
+<p>before globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">util</span>.<span class="pl-en">format</span>(<span class="pl-s"><span class="pl-pds">'</span>Deploy %s to %s failed: %s<span class="pl-pds">'</span></span>, what, url, err);</pre></div>
+
+<p>right globalization (4 ways)</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// 1 (recommended; simply replace `util` with `g`)</span>
+<span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>Deploy %s to %s failed: %s<span class="pl-pds">'</span></span>, what, url, err);
+<span class="pl-c">// 2</span>
+<span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>Deploy {0} to {1} failed: {2}<span class="pl-pds">'</span></span>, [what, url, err]);
+<span class="pl-c">// 3</span>
+<span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>Deploy {0} to {1} failed: {2}<span class="pl-pds">'</span></span>, {<span class="pl-c1">0</span><span class="pl-k">:</span> what, <span class="pl-c1">1</span><span class="pl-k">:</span> url, <span class="pl-c1">2</span><span class="pl-k">:</span> err});
+<span class="pl-c">// 4</span>
+<span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>Deploy {what} to {url} failed: {err}<span class="pl-pds">'</span></span>, {what<span class="pl-k">:</span> what, url<span class="pl-k">:</span> url, err<span class="pl-k">:</span> err});</pre></div>
+
+<p>When you put placeholders in help txt and msg messages, named or ordered placeholders should be used.  Named placeholder is something like <code>{userName}</code>.  Ordered placeholder is <code>{0}</code>, <code>{1}</code>, <code>{2}</code>, etc. which should be zero-base.</p>
+
+<p>Curly brace characters are reserved by <code>strong-globalize</code>.  In case curly brace characters are used in literal strings, escape them.  For example, <code>{User}</code> is a placeholder and '\x7bUser\x7d' is an escaped literal string rendered as '{User}'</p>
+
+<h2>
+<a id="double-curly-braces-not-to-translate" class="anchor" href="#double-curly-braces-not-to-translate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>double curly braces not to translate</h2>
+
+<p>Use double curly braces {{ }} as "don't translate" indicator.</p>
+
+<p>before globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">console</span>.<span class="pl-c1">error</span>(<span class="pl-s"><span class="pl-pds">'</span>Invalid usage (near option <span class="pl-cce">\'</span>%s<span class="pl-cce">\'</span>), try `%s --help`.<span class="pl-pds">'</span></span>, option, cmd);</pre></div>
+
+<p>right globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">g</span>.<span class="pl-en">error</span>(<span class="pl-s"><span class="pl-pds">'</span>Invalid usage (near option <span class="pl-cce">\'</span>%s<span class="pl-cce">\'</span>), try {{`%s --help`}}.<span class="pl-pds">'</span></span>, option, cmd);</pre></div>
+
+<h2>
+<a id="help-txt-files" class="anchor" href="#help-txt-files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>help txt files</h2>
+
+<p>before globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> help <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-smi">require</span>.<span class="pl-en">resolve</span>(<span class="pl-s"><span class="pl-pds">'</span>./help.txt<span class="pl-pds">'</span></span>), <span class="pl-s"><span class="pl-pds">'</span>utf-8<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>right globalization:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> help <span class="pl-k">=</span> <span class="pl-smi">g</span>.<span class="pl-en">t</span>(<span class="pl-s"><span class="pl-pds">'</span>help.txt<span class="pl-pds">'</span></span>); <span class="pl-c">// or g.f('help.txt');</span></pre></div>
+
+<p>and store help.txt file under intl/en.</p>
+
+<h2>
+<a id="help-txt-files-and-msg-keys" class="anchor" href="#help-txt-files-and-msg-keys" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>help txt files and msg keys</h2>
+
+<p>They must be uniquely named because they are used as-is in runtime message database where the messages come from other modules will be merged.  In case there are duplicate <em>.txt or msg</em>, it could be overwritten by other module(s) with the same name whichever is loaded later.  Best practice is to use your package name as part of the name.  For example, <code>msgMyPackage_ErrorMessage</code>.</p>
+
+<p>The rule of thumb is <code>strong-globalize</code> extracts messages from JS and HTML template files and creates the <code>messages.json</code> file (or appends extracted messages to the <code>messages.json</code> if it exists), but does not edit the help txt files, msg messages, or JS/HTML files provided by the client.</p>
+
+<p>Note that <code>strong-globalize</code> supports multiple txt and multiple json files under <code>intl/--/</code> directory.</p>
+
+<h2>
+<a id="manually-add-message-strings" class="anchor" href="#manually-add-message-strings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>manually add message strings</h2>
+
+<p><code>slt-globalize -e</code> command extracts message strings from your source JS files and HTML templates.  In case translation is needed for strings which are not in the source files, you can manually add them to the resource JSON files.  To manually add message strings to the resource file, use a key that begins with <code>msg</code> such as msgPortNumber.  Those keys are kept intact in auto-extraction and the value text will be properly translated.</p>
+
+<h1>
+<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h1>
+
+<p>To quickly switch the locale, change the OS's system locale or set <code>STRONGLOOP_GLOBALIZE_APP_LANGUAGE</code> environment variable to one of the supported languages such as <code>ja</code> for Japanese or <code>de</code> for German.</p>
+
+<p>For example, on OSX:</p>
+
+<div class="highlight highlight-source-js"><pre>cd gmain
+<span class="pl-c1">LANG</span><span class="pl-k">=</span>ja node <span class="pl-smi">index</span>.<span class="pl-smi">js</span></pre></div>
+
+<h2>
+<a id="gsubindexjs" class="anchor" href="#gsubindexjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>gsub/index.js</code>
+</h2>
+
+<p>before:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> fs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> util <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>util<span class="pl-pds">'</span></span>);
+
+<span class="pl-c1">exports</span>.<span class="pl-smi">getHelpText</span> <span class="pl-k">=</span> getHelpText;
+<span class="pl-c1">exports</span>.<span class="pl-smi">getUserName</span> <span class="pl-k">=</span> getUserName;
+
+<span class="pl-k">function</span> <span class="pl-en">getUserName</span>() {
+  <span class="pl-k">var</span> userName <span class="pl-k">=</span> <span class="pl-smi">util</span>.<span class="pl-en">format</span>(<span class="pl-s"><span class="pl-pds">'</span>user: %s<span class="pl-pds">'</span></span>, <span class="pl-c1">process</span>.<span class="pl-smi">env</span>.<span class="pl-c1">USER</span>);
+  <span class="pl-k">return</span> userName;
+}
+
+<span class="pl-k">function</span> <span class="pl-en">getHelpText</span>() {
+  <span class="pl-k">var</span> helpText <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-smi">require</span>.<span class="pl-en">resolve</span>(<span class="pl-s"><span class="pl-pds">'</span>./gsub.txt<span class="pl-pds">'</span></span>), <span class="pl-s"><span class="pl-pds">'</span>utf-8<span class="pl-pds">'</span></span>);
+  <span class="pl-k">return</span> helpText;
+}</pre></div>
+
+<p>after:</p>
+
+<ul>
+<li><code>var g = require('strong-globalize')();</code></li>
+<li>replace <code>util</code> with <code>g</code>
+</li>
+<li>replace <code>readFile *.txt</code> with simply <code>g.t</code> and move <code>./gsub.txt</code> to <code>./intl/en/gsub.txt</code>
+</li>
+<li>then, run <code>slt-globalize -e</code> to extract and <code>slt-globalize -t</code> to machine translate the string resource.</li>
+</ul>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>)();
+
+<span class="pl-c1">exports</span>.<span class="pl-smi">getHelpText</span> <span class="pl-k">=</span> getHelpText;
+<span class="pl-c1">exports</span>.<span class="pl-smi">getUserName</span> <span class="pl-k">=</span> getUserName;
+
+<span class="pl-k">function</span> <span class="pl-en">getUserName</span>() {
+  <span class="pl-k">var</span> userName <span class="pl-k">=</span> <span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>user: %s<span class="pl-pds">'</span></span>, <span class="pl-c1">process</span>.<span class="pl-smi">env</span>.<span class="pl-c1">USER</span>);
+  <span class="pl-k">return</span> userName;
+}
+
+<span class="pl-k">function</span> <span class="pl-en">getHelpText</span>() {
+  <span class="pl-k">return</span> <span class="pl-smi">g</span>.<span class="pl-en">t</span>(<span class="pl-s"><span class="pl-pds">'</span>gsub.txt<span class="pl-pds">'</span></span>);
+}</pre></div>
+
+<h2>
+<a id="gmainindexjs" class="anchor" href="#gmainindexjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>gmain/index.js</code>
+</h2>
+
+<p>before:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> express <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> app <span class="pl-k">=</span> <span class="pl-en">express</span>();
+<span class="pl-k">var</span> util <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>util<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> gsub <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>gsub<span class="pl-pds">'</span></span>);
+
+<span class="pl-smi">app</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>) {
+  <span class="pl-k">var</span> helloMessage <span class="pl-k">=</span> <span class="pl-smi">util</span>.<span class="pl-en">format</span>(<span class="pl-s"><span class="pl-pds">'</span>%s Hello World<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-en">Date</span>());
+  <span class="pl-smi">res</span>.<span class="pl-en">end</span>(helloMessage);
+});
+
+<span class="pl-k">var</span> port <span class="pl-k">=</span> <span class="pl-c1">process</span>.<span class="pl-smi">env</span>.<span class="pl-c1">PORT</span> <span class="pl-k">||</span> <span class="pl-c1">8123</span>;
+<span class="pl-smi">app</span>.<span class="pl-en">listen</span>(port, <span class="pl-k">function</span>() {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Listening on %s by %s.<span class="pl-pds">'</span></span>, port, <span class="pl-smi">gsub</span>.<span class="pl-en">getUserName</span>());
+});
+
+<span class="pl-c1">setInterval</span>(<span class="pl-k">function</span>(){
+    <span class="pl-c1">process</span>.<span class="pl-smi">stdout</span>.<span class="pl-c1">write</span>(<span class="pl-s"><span class="pl-pds">'</span>Sending request to <span class="pl-pds">'</span></span> <span class="pl-k">+</span> port <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>...<span class="pl-pds">'</span></span>);
+    <span class="pl-en">request</span>(<span class="pl-s"><span class="pl-pds">'</span>http://localhost:<span class="pl-pds">'</span></span> <span class="pl-k">+</span> port,
+        <span class="pl-k">function</span>(<span class="pl-smi">error</span>, <span class="pl-smi">response</span>, <span class="pl-smi">body</span>) {<span class="pl-en">console</span>.<span class="pl-c1">log</span>(body);});
+},<span class="pl-c1">1000</span>);
+
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">gsub</span>.<span class="pl-en">getHelpText</span>());</pre></div>
+
+<p>after:</p>
+
+<ul>
+<li><code>var SG = require('strong-globalize');</code></li>
+<li><code>SG.SetRootDir( ... );</code></li>
+<li><code>var g = SG();</code></li>
+<li>replace <code>util</code> with <code>g</code>
+</li>
+<li>replace <code>console</code> with <code>g</code>
+</li>
+<li>replace <code>process.stdout</code> with <code>g</code>
+</li>
+<li>wrap <code>new Date()</code> with <code>g.d()</code>
+</li>
+<li>then, run <code>slt-globalize -e</code> to extract and <code>slt-globalize -t</code> to machine translate the string resource.</li>
+</ul>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-c1">SG</span>.<span class="pl-en">SetRootDir</span>(<span class="pl-c1">__dirname</span>);
+
+<span class="pl-k">var</span> express <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>express<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>request<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> app <span class="pl-k">=</span> <span class="pl-en">express</span>();
+<span class="pl-k">var</span> gsub <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>gsub<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-en">SG</span>();
+
+<span class="pl-smi">app</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>) {
+  <span class="pl-k">var</span> helloMessage <span class="pl-k">=</span> <span class="pl-smi">g</span>.<span class="pl-en">f</span>(<span class="pl-s"><span class="pl-pds">'</span>%s Hello World<span class="pl-pds">'</span></span>, <span class="pl-smi">g</span>.<span class="pl-en">d</span>(<span class="pl-k">new</span> <span class="pl-en">Date</span>()));
+  <span class="pl-smi">res</span>.<span class="pl-en">end</span>(helloMessage);
+});
+
+<span class="pl-k">var</span> port <span class="pl-k">=</span> <span class="pl-c1">process</span>.<span class="pl-smi">env</span>.<span class="pl-c1">PORT</span> <span class="pl-k">||</span> <span class="pl-c1">8123</span>;
+<span class="pl-smi">app</span>.<span class="pl-en">listen</span>(port, <span class="pl-k">function</span>() {
+  <span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>Listening on %s by %s.<span class="pl-pds">'</span></span>, port, <span class="pl-smi">gsub</span>.<span class="pl-en">getUserName</span>());
+});
+
+<span class="pl-c1">setInterval</span>(<span class="pl-k">function</span>(){
+    <span class="pl-smi">g</span>.<span class="pl-en">owrite</span>(<span class="pl-s"><span class="pl-pds">'</span>Sending request to %s ...<span class="pl-pds">'</span></span>, port);
+    <span class="pl-en">request</span>(<span class="pl-s"><span class="pl-pds">'</span>http://localhost:<span class="pl-pds">'</span></span> <span class="pl-k">+</span> port,
+        <span class="pl-k">function</span>(<span class="pl-smi">error</span>, <span class="pl-smi">response</span>, <span class="pl-smi">body</span>) {<span class="pl-en">console</span>.<span class="pl-c1">log</span>(body);});
+},<span class="pl-c1">1000</span>);
+
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">gsub</span>.<span class="pl-en">getHelpText</span>());</pre></div>
+
+<h1>
+<a id="sample-code" class="anchor" href="#sample-code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Code</h1>
+
+<p>Sample code is included under <code>examples</code> directory.  Let's browse the code and quickly study the standard coding pattern of <code>strong-globalize</code>.</p>
+
+<pre><code>examples
+├── gmain
+│   ├── index.js
+│   ├── intl
+│   │   ├── en
+│   │   │   └── messages.json
+│   │   └── zz
+│   │       ├── messages.json
+│   │       └── messages_inverted.json
+│   └── package.json
+└── gsub
+    ├── index.js
+    ├── intl
+    │   ├── en
+    │   │   ├── help.txt
+    │   │   └── messages.json
+    │   └── zz
+    │       ├── messages.json
+    │       └── messages_inverted.json
+    ├── lib
+    │   └── util.js
+    └── package.json
+</code></pre>
+
+<h2>
+<a id="first-argument" class="anchor" href="#first-argument" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>First argument</h2>
+
+<p><code>strong-globalize</code> extracts literal strings passed as the first argument of the <code>strong-globalize</code> functions.  In globalizing existing modules, most code changes you are going to make will be to make sure all literal strings are in that form.  Usually, you do not need to globalize debug text.</p>
+
+<h2>
+<a id="three-types-of-module" class="anchor" href="#three-types-of-module" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Three types of Module</h2>
+
+<p>From <code>strong-globalize</code> point of view, the role of every JS file is one of the three types:</p>
+
+<p>a. <code>master main</code> -- <code>SetRootDir(__dirname)</code> is declared right after <code>require('strong-globalize')</code> which is placed at the very first line of the main JS module of the root package in the application.  See <code>examples/gmain/index.js</code>.  <code>SG.SetDefaultLanguage();</code> is optional if the <code>lang</code> parameter is omitted or 'en' (English) is used as the default language.</p>
+
+<p>b. <code>main</code> -- The main JS module of all the other packages in the application must call <code>SetRootDir(__dirname)</code> in the first line of the main JS module of all the other (non-root) packages.  See examples/gsub/index.js.</p>
+
+<p>c. <code>sub</code> -- All the other JS modules that call the <code>strong-globalize</code> function require <code>strong-globalize</code> as <code>var g = require('strong-globalize')();</code>  See examples/gsub/lib/util.js<code>In case you need multiple</code>strong-globalize` instances, do the following:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-c1">SG</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> gFrench <span class="pl-k">=</span> <span class="pl-en">SG</span>(<span class="pl-s"><span class="pl-pds">'</span>fr<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> gSpanish <span class="pl-k">=</span> <span class="pl-en">SG</span>(<span class="pl-s"><span class="pl-pds">'</span>es<span class="pl-pds">'</span></span>);
+<span class="pl-c">// parallel use</span>
+<span class="pl-smi">gFrench</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>text in French<span class="pl-pds">'</span></span>);
+<span class="pl-smi">gSpanish</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>text in Spanish<span class="pl-pds">'</span></span>);
+<span class="pl-smi">gFrench</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>second text in French<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>You can also re-use one instance multiple times as follows:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> g <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>strong-globalize<span class="pl-pds">'</span></span>)();
+<span class="pl-smi">g</span>.<span class="pl-en">setLanguage</span>(<span class="pl-s"><span class="pl-pds">'</span>fr<span class="pl-pds">'</span></span>);
+<span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>text in French<span class="pl-pds">'</span></span>);
+<span class="pl-smi">g</span>.<span class="pl-en">setLanguage</span>(<span class="pl-s"><span class="pl-pds">'</span>es<span class="pl-pds">'</span></span>);
+<span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>text in Spanish<span class="pl-pds">'</span></span>);
+<span class="pl-smi">g</span>.<span class="pl-en">setLanguage</span>(<span class="pl-s"><span class="pl-pds">'</span>fr<span class="pl-pds">'</span></span>);
+<span class="pl-smi">g</span>.<span class="pl-en">log</span>(<span class="pl-s"><span class="pl-pds">'</span>second text in French<span class="pl-pds">'</span></span>);</pre></div>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/strongloop">strongloop</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

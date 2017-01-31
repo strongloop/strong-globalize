@@ -65,7 +65,7 @@ StrongGlobalize.prototype.owrite = function() {
 StrongGlobalize.prototype.write = StrongGlobalize.prototype.owrite;
 
 function rfc5424(type, args, fn) {
-  return fn.apply(null, [type, ': '].concat(args));
+  return fn.apply(console, [type, ': '].concat(args));
 }
 // RFC 5424 Syslog Message Severities
 StrongGlobalize.prototype.emergency = function() {

@@ -1,3 +1,25 @@
+2017-02-01, Version 2.8.1
+=========================
+
+ * Fix rfc5424 loggers in browser (Miroslav Bajtoš)
+
+ * Set theme jekyll-theme-cayman (Tetsuo Seto)
+
+ * Set theme jekyll-theme-slate (Tetsuo Seto)
+
+ * Delete CNAME (Tetsuo Seto)
+
+ * Update (Tetsuo Seto)
+
+ * Set theme jekyll-theme-cayman and migrate Page Generator content (Tetsuo Seto)
+
+ * Create CNAME (Tetsuo Seto)
+
+ * Create master branch via GitHub (Tetsuo Seto)
+
+ * Avoid insecure minmatch 2.x dependency (Setogit)
+
+
 2016-09-21, Version 2.8.0
 =========================
 

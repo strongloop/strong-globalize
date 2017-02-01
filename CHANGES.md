@@ -1,3 +1,9 @@
+2017-02-01, Version 2.8.2
+=========================
+
+ * Improve console logs in browser (Miroslav Bajtoš)
+
+
 2017-02-01, Version 2.8.1
 =========================
 

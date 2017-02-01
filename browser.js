@@ -65,7 +65,16 @@ StrongGlobalize.prototype.owrite = function() {
 StrongGlobalize.prototype.write = StrongGlobalize.prototype.owrite;
 
 function rfc5424(type, args, fn) {
-  return fn.apply(console, [type, ': '].concat(args));
+  // Convert args from function arguments object to a regular array
+  args = Array.prototype.slice.call(args);
+  if (typeof args[0] === 'string') {
+    // The first argument may contain formatting instructions like %s
+    // which must be preserved.
+    args[0] = type + ': ' + args[0];
+  } else {
+    args = [type, ': '].concat(args);
+  }
+  return fn.apply(console, args);
 }
 // RFC 5424 Syslog Message Severities
 StrongGlobalize.prototype.emergency = function() {
@@ -81,7 +90,7 @@ StrongGlobalize.prototype.error = function() {
   return rfc5424('error', arguments, console.error);
 };
 StrongGlobalize.prototype.warning = function() {
-  return rfc5424('warning', arguments, console.error);
+  return rfc5424('warning', arguments, console.warn);
 };
 StrongGlobalize.prototype.notice = function() {
   return rfc5424('notice', arguments, console.log);
@@ -95,7 +104,7 @@ StrongGlobalize.prototype.debug = function() {
 
 // Node.js console
 StrongGlobalize.prototype.warn = function() {
-  return rfc5424('warn', arguments, console.error);
+  return rfc5424('warn', arguments, console.warn);
 };
 StrongGlobalize.prototype.info = function() {
   return rfc5424('info', arguments, console.log);

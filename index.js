@@ -105,6 +105,8 @@ StrongGlobalize.prototype.Error = function() {
 };
 
 StrongGlobalize.prototype.f = function() {
+  var msg = helper.bypassMsges(arguments, this._options.language);
+  if (msg) return msg;
   globalize.loadGlobalize(this._options.language);
   return globalize.packMessage(arguments, null,
     false, this._options.language);

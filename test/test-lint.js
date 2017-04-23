@@ -36,7 +36,7 @@ var targets = {
     ],
     err: [
       '*** null en:msg002RightPrphanPlaceholderUrl seems to' +
-        ' have an right orphan placeholder:\n',
+        ' have a right orphan placeholder:\n',
       '***    url}\n',
       '*** English file is malformed. Other languages not checked.\n',
     ],
@@ -48,7 +48,7 @@ var targets = {
     ],
     err: [
       '*** null en:msg003LeftPrphanPlaceholderPort seems to' +
-        ' have an left orphan placeholder:\n',
+        ' have a left orphan placeholder:\n',
       '***   {port \n',
       '*** English file is malformed. Other languages not checked.\n',
     ],

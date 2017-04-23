@@ -1,3 +1,11 @@
+2017-04-23, Version 2.8.3
+=========================
+
+ * Fix typo in the lint CLI messages (Setogit)
+
+ * Extract improvement: bug fix and dependency (Tetsuo Seto)
+
+
 2017-02-01, Version 2.8.2
 =========================
 

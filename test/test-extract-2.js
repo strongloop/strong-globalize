@@ -82,8 +82,8 @@ var targets = {
       new RegExp('^\n[\*]{58}\n' +
         '[\*]{2} Please fix the JS code or blacklist the directory\.\n' +
         '[\*]{2} \/index\.js\n' +
-        '[\*]{2} \{\"lineNumber\":8,\"description\":\"Illegal' +
-        ' return statement\",\"index\":19[29]{1}' + '\}\n' +
+        '[\*]{2} \{\"index\":[0-9]{3},\"lineNumber\":8,' +
+        '\"description\":\"Illegal return statement\"' + '\}\n' +
         '[\*]{58}\n\n$'),
     ],
   },

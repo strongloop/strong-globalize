@@ -12,11 +12,13 @@ var targets = {
     out: [
       '--- cloned /node_modules/mydependency/intl/en/longtext.txt\n',
       '    extracted: additional message\n',
-      new RegExp('^\n[-]{3} root: \n[-]{3} max depth: unlimited' +
+      new RegExp('^\n[-]{3} root: ' +
+        '\n[-]{3} max depth: unlimited' +
         '\n[-]{3} cloned: 1 txt' +
         '\n[-]{3} scanned: [23]{1} js, 0 html ' +
         '\n[-]{3} skipped: 0 js, 0 html ' +
-        '\n[-]{3} extracted: 1 msges, 2 words, 18 characters\n'),
+        '\n[-]{3} extracted: 1 msges, 2 words, 18 characters ' +
+        '\n[-]{3} intl zz suppressed'),
     ],
     err: [
     ],
@@ -29,7 +31,8 @@ test('test extract misc cases 2', function(t) {
       var blackList = null;
       var deep = (name === 'extract013');
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput,
+      var suppressZz = true;
+      extract.extractMessages(blackList, deep, suppressOutput, suppressZz,
         function(_err) {
           unhook_intercept();
           t.notOk(_err, 'extractMessages succeeds.');

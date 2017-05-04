@@ -27,7 +27,9 @@ function main(argv, callback) {
 
   var parser = new Parser([':',
     'd(deepextract)',
+    'D(Deepextract)',
     'e(extract)',
+    'E(Extract)',
     'h(help)',
     'l(lint)',
     't(translate)',
@@ -48,6 +50,8 @@ function main(argv, callback) {
         return callback();
       case 'd':
       case 'e':
+      case 'D':
+      case 'E':
         cmd = option.option;
         // slt-global -e vendor node_modules
         if (process.argv.length > parser.optind()) {
@@ -69,7 +73,8 @@ function main(argv, callback) {
     }
   }
 
-  if (cmd !== 'd' && cmd !== 'e' && parser.optind() !== argv.length) {
+  if (cmd !== 'd' && cmd !== 'e' && cmd !== 'D' && cmd !== 'E' &&
+      parser.optind() !== argv.length) {
     console.error('Invalid usage (extra arguments), try `%s --help`.', $0);
     return callback(true);
   }
@@ -89,15 +94,31 @@ function main(argv, callback) {
   }
 
   if (cmd === 'e') {
-    extract.extractMessages(blackList, false, false, function(err, result) {
-      return callback(err);
-    });
+    extract.extractMessages(blackList, false, false, false,
+      function(err, result) {
+        return callback(err);
+      });
   }
 
   if (cmd === 'd') {
-    extract.extractMessages(blackList, true, false, function(err, result) {
-      return callback(err);
-    });
+    extract.extractMessages(blackList, true, false, false,
+      function(err, result) {
+        return callback(err);
+      });
+  }
+
+  if (cmd === 'E') {
+    extract.extractMessages(blackList, false, false, true,
+      function(err, result) {
+        return callback(err);
+      });
+  }
+
+  if (cmd === 'D') {
+    extract.extractMessages(blackList, true, false, true,
+      function(err, result) {
+        return callback(err);
+      });
   }
 
   if (cmd === undefined) {

@@ -68,7 +68,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         var savedMaxDepth = process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH;
         process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = null;
         var unhook_intercept = stdout(stdoutCb, stderrCb);
-        extract.extractMessages(null, true, true, function(err, result) {
+        extract.extractMessages(null, true, true, false, function(err, result) {
           unhook_intercept();
           if (err) t.fail('extractMessages failed.');
           else t.pass('extractMessages succeeds.');

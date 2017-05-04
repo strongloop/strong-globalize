@@ -20,7 +20,8 @@ var targets = {
         '\n[-]{3} cloned: 3 txt' +
         '\n[-]{3} scanned: [23]{1} js, 0 html ' +
         '\n[-]{3} skipped: 0 js, 0 html ' +
-        '\n[-]{3} extracted: 1 msges, 4 words, 17 characters\n'),
+        '\n[-]{3} extracted: 1 msges, 4 words, 17 characters ' +
+        '\n[-]{3} intl zz suppressed\n'),
     ],
     err: [
     ],
@@ -33,7 +34,8 @@ test('test extract misc cases 3', function(t) {
       var blackList = null;
       var deep = (name === 'extract014');
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput,
+      var suppressZz = true;
+      extract.extractMessages(blackList, deep, suppressOutput, suppressZz,
         function(_err) {
           unhook_intercept();
           t.notOk(_err, 'extractMessages succeeds.');

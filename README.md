@@ -363,7 +363,11 @@ Note that [string resource extraction from Html templates](#globalize-html-templ
 
 As the size of your application grows, the number of dependent packages can grow exponentially.  Since non-globalized literal strings are also recorded on `gmain/intl/zz/messages.json`, `gmain/intl/zz/messages.json` may also grow exponentially and cause `slt-globalize -d` to run out of resource on your computer.
 
-To manage such situations, you can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by dependencies defined in `package.json`.
+To manage such situations,
+
+A. Use '-D' option and suppress `intl/zz` creation in the deep extraction mode.  
+
+B. You can set `STRONGLOOP_GLOBALIZE_MAX_DEPTH` environment variable.  `slt-globalize -d` stops traversing at the specified directory depth.  Note that it works as directory depth although the traversal is controlled by dependencies defined in `package.json`.
 
 For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under `/Users/user/gmain` works as follows.  `gmain/index.js` is depth 1; thus examined.  `gmain/lib/usa/california/sanfrancisco/util.js` is depth 5, not examined although it's part of your `gmain` package.  `gmain/node_modules/gsub/index.js` is level 3, thus examined.  Likewise, all the files directly under `gmain/node_modules/express` and `gmain/node_modules/request` will also be examined and literal strings are extracted to `gmain/intl/zz/messages.json`.
 
@@ -624,7 +628,9 @@ npm WARN EPEERINVALID cldrjs@0.4.4 requires a peer of cldr-data@>=25 but none wa
 
 Options:
 -  `-d,--deepextract [black list]`  Deep-extract resource strings.
+-  `-D,--Deepextract [black list]`  Deep-extract without intl/zz.
 -  `-e,--extract [black list]`      Extract resource strings to en/messages.json except for directories on [black list] separated by a space.
+-  `-E,--Extract [black list]`      Extract without intl/zz.
 -  `-h,--help`         Print this message and exit.
 -  `-l,--lint`         Check validity of string resource.
 -  `-t,--translate`    Translate string resource.

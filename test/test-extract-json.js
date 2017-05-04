@@ -67,7 +67,8 @@ test('test extract msges from json file', function(t) {
       var blackList = null;
       var deep = false;
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput,
+      var suppressZz = false;
+      extract.extractMessages(blackList, deep, suppressOutput, suppressZz,
         function(_err) {
           unhook_intercept();
           callback();

@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var sltTH = require('./slt-test-helper');
 var test = require('tap').test;
@@ -270,12 +271,13 @@ var targets = {
   },
 };
 
-var skipTranslate = (!process.env.BLUEMIX_URL ||
+var skipTranslate = (!process.env.SG_VERBOSE ||
+  !process.env.BLUEMIX_URL ||
   !process.env.BLUEMIX_USER || !process.env.BLUEMIX_PASSWORD ||
   !process.env.BLUEMIX_INSTANCE);
 
 if (skipTranslate) {
-  test('test translate misc testing', function(t) {
+  test('skip translate misc testing', function(t) {
     t.pass();
     t.end();
   });

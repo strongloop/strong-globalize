@@ -1,3 +1,5 @@
+'use strict';
+
 var f = require('util').format;
 var g = require('../lib/globalize');
 var helper = require('../lib/helper');

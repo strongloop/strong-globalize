@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname, {autonomousMsgLoading: 'all'});
@@ -32,5 +33,5 @@ app.listen(port, function() {
 
 setInterval(function() {
   request('http://localhost:' + port,
-		function(_error, response, body) { console.log(body); });
+    function(_error, response, body) { console.log(body); });
 }, 1000);

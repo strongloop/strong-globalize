@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var gpb = require('g11n-pipeline');
 var helper = require('../lib/helper');
@@ -834,9 +835,8 @@ var targets = {
 
 var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
   !!process.env.BLUEMIX_USER && !!process.env.BLUEMIX_PASSWORD &&
-  !!process.env.BLUEMIX_INSTANCE)
-              ? false
-              : {skip: 'Incomplete Bluemix environment'};
+  !!process.env.BLUEMIX_INSTANCE) ? false :
+  {skip: 'Incomplete Bluemix environment'};
 
 function loginToGpb(callback) {
   var credentials = {
@@ -865,14 +865,14 @@ function fakeGpbTestPriv(t, testId, callback) {
   options[testId] = true;
   interceptGpb(options);
   sltTH.testHarness(t, targets[testId], false,
-      function(name, unhook_intercept, cb) {
-        translate.translateResource(function(_err) {
-          unhook_intercept();
-          cb();
-        });
-      }, function() {
-        return callback();
+    function(name, unhook_intercept, cb) {
+      translate.translateResource(function(_err) {
+        unhook_intercept();
+        cb();
       });
+    }, function() {
+      return callback();
+    });
 }
 
 function interceptGpb(options) {

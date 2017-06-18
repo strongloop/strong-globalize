@@ -94,7 +94,7 @@ As shown in the [Demo section](#demo), the code written with `strong-globalize` 
 
 With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
-- node.js versions: 0.10, 0.12, 4, 5, 6
+- node.js versions: 4, 6, 8
 - cldr version: 29.0.1
 - out-of-box languages - 31: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, zh-Hant',
  ar', 'bn', 'cs', 'el', 'fi', 'hi', 'id', 'lt', 'nb', 'nl', 'pl', 'ro', 'sl', 'sv',

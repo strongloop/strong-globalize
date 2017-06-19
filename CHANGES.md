@@ -1,4 +1,14 @@
-2017-04-23, Version 2.8.3
+2017-06-19, Version 2.8.4
+=========================
+
+ * Add null checks (Setogit)
+
+ * Housekeeping (Tetsuo Seto)
+
+ * Blacklist strong-globalize in deep extraction (Setogit)
+
+
+2017-04-22, Version 2.8.3
 =========================
 
  * Fix typo in the lint CLI messages (Setogit)

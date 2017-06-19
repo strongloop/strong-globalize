@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var g = require('../lib/globalize');
 var helper = require('../lib/helper');
@@ -35,10 +36,10 @@ var content_singleton_body = 'function test() {\n' +
 
 test('extract from JS and fill-in with singleton head',
   subTest.bind(content_singleton_head + content_singleton_body,
-  'singleton_head + singleton_body'));
+    'singleton_head + singleton_body'));
 test('extract from JS and fill-in with multiple head',
   subTest.bind(content_multiple_head + content_singleton_body,
-  'multiple_head + singleton_body'));
+    'multiple_head + singleton_body'));
 
 var content_multiple = 'var SG = require("strong-globalize");\n' +
   'var Q = require("strong-globalize")();\n' +
@@ -290,9 +291,9 @@ test('custom extraction regex', function(t) {
     'Text in cdata',
   ];
   extract.setHtmlRegex(
-      /{{LOCALIZE:.+}}/m,
-      /{{LOCALIZE:/m,
-      /}}/m
+    /{{LOCALIZE:.+}}/m,
+    /{{LOCALIZE:/m,
+    /}}/m
   );
   var extractedMsgs = [];
   extract.scanHtml(content, testFileName).forEach(function(m) {

@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var async = require('async');
 var extract = require('../lib/extract');
@@ -14,6 +15,12 @@ var shell = require('shelljs');
 var stdout = require('intercept-stdout');
 var test = require('tap').test;
 var translate = require('../lib/translate');
+
+var translateMaybeSkip = (!process.env.SG_VERBOSE ||
+  !process.env.BLUEMIX_URL ||
+  !process.env.BLUEMIX_USER || !process.env.BLUEMIX_PASSWORD ||
+  !process.env.BLUEMIX_INSTANCE) ?
+  {skip: 'Incomplete Bluemix environment'} : false;
 
 var VERBOSE = process.env.SG_VERBOSE;
 
@@ -41,12 +48,6 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
     global.STRONGLOOP_GLB = null;
     helper.initGlobForSltGlobalize();
     helper.setRootDir(destDir);
-
-    var translateMaybeSkip = (!!process.env.BLUEMIX_URL &&
-      !!process.env.BLUEMIX_USER && !!process.env.BLUEMIX_PASSWORD &&
-      !!process.env.BLUEMIX_INSTANCE)
-                ? false
-                : {skip: 'Incomplete Bluemix environment'};
 
     async.series([
       function(cb) {

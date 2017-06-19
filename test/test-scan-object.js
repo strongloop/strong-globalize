@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var helper = require('../lib/helper');
 var test = require('tap').test;
@@ -149,10 +150,10 @@ function testScan(returnErrors) {
   test('object scan object with' + (returnErrors ? '' : 'out') + ' errors',
     function(t) {
       t.match(ret.length, exptd.length,
-      'return length matched.');
+        'return length matched.');
       exptd.forEach(function(exp, ix) {
         t.match(ret[ix], exp,
-        'right text is returned ' + ix.toString());
+          'right text is returned ' + ix.toString());
       });
       t.end();
     });

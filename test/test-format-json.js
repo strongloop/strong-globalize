@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var SG = require('../index');
 var helper = require('../lib/helper');
@@ -61,40 +62,40 @@ var allKeys = '[' +
 
 test('test formatJson and formatYaml', function(t) {
   sltTH.testHarness(t, targets, false,
-      function(name, unhook_intercept, callback) {
-        var rootDir = helper.getRootDir();
-        global.STRONGLOOP_GLB = null;
-        SG.SetRootDir(rootDir);
-        var g = SG();
-        var fileName = null;
-        if (name === 'formatjson001') fileName = 'data.json';
-        if (name === 'formatyaml001') fileName = 'data.yml';
-        switch (name) {
-          case 'formatjson001':
-          case 'formatyaml001':
-            g.formatMessage(fileName, allKeys);
-            var langs = loadMsgHelper.wellKnownLangs;
-            langs.forEach(function(lang) {
-              g.setLanguage(lang);
-              var dataJson = g.formatMessage(fileName,
-                '[' +
-                '"title",' +
-                '["types", 0],' +
-                '["types", 1],' +
-                '["types", 2],' +
-                '["types", 3],' +
-                '["threeWrites", "e"],' +
-                '["threeWrites", "o"],' +
-                '["threeWrites", "w"]' +
-                ']', lang);
-              console.log(JSON.stringify(dataJson));
-            });
-            break;
-          default:
-        }
-        unhook_intercept();
-        callback();
-      }, function() {
-        t.end();
-      });
+    function(name, unhook_intercept, callback) {
+      var rootDir = helper.getRootDir();
+      global.STRONGLOOP_GLB = null;
+      SG.SetRootDir(rootDir);
+      var g = SG();
+      var fileName = null;
+      if (name === 'formatjson001') fileName = 'data.json';
+      if (name === 'formatyaml001') fileName = 'data.yml';
+      switch (name) {
+        case 'formatjson001':
+        case 'formatyaml001':
+          g.formatMessage(fileName, allKeys);
+          var langs = loadMsgHelper.wellKnownLangs;
+          langs.forEach(function(lang) {
+            g.setLanguage(lang);
+            var dataJson = g.formatMessage(fileName,
+              '[' +
+              '"title",' +
+              '["types", 0],' +
+              '["types", 1],' +
+              '["types", 2],' +
+              '["types", 3],' +
+              '["threeWrites", "e"],' +
+              '["threeWrites", "o"],' +
+              '["threeWrites", "w"]' +
+              ']', lang);
+            console.log(JSON.stringify(dataJson));
+          });
+          break;
+        default:
+      }
+      unhook_intercept();
+      callback();
+    }, function() {
+      t.end();
+    });
 });

@@ -2,12 +2,13 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var SG = require('../index');
 var helper = require('../lib/helper');
 
 var wellKnownLangs = ['en', 'de', 'es', 'fr', 'it', 'pt', 'ja',
-'ko', 'zh-Hans', 'zh-Hant'];
+  'ko', 'zh-Hans', 'zh-Hant'];
 exports.wellKnownLangs = wellKnownLangs;
 
 var msgWanted = {
@@ -109,8 +110,7 @@ function secondaryMgr(rootDir, lang, t, aml, positive, callback) {
       if (callback) callback();
     }
   }, disableConsole);
-  t.ok(msgFound[0].indexOf(
-    'StrongGlobalize persistent logging started') === 0,
+  t.ok(msgFound[0].indexOf('StrongGlobalize persistent logging started') === 0,
     'StrongGlobalize persistent logging started');
   require('secondary')();
 }

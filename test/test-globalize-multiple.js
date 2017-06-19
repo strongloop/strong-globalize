@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var SG = require('../index');
 var test = require('tap').test;
@@ -13,13 +14,13 @@ test('SetDefaultLanguage', function(t) {
   t.assert(systemLocale && systemLocale.attributes &&
     systemLocale.attributes.bundle &&
     systemLocale.attributes.bundle === 'en',
-    'System language is set to en.');
+  'System language is set to en.');
   SG.SetDefaultLanguage();
   var systemLocale = global.STRONGLOOP_GLB.locale();
   t.assert(systemLocale && systemLocale.attributes &&
     systemLocale.attributes.bundle &&
     systemLocale.attributes.bundle === 'en',
-    'System language is set to en by default.');
+  'System language is set to en by default.');
   t.end();
 });
 

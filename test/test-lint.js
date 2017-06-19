@@ -2,6 +2,7 @@
 // Node module: strong-globalize
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
+'use strict';
 
 var lint = require('../lib/lint');
 var sltTH = require('./slt-test-helper');
@@ -184,16 +185,16 @@ var targets = {
 
 test('test lint misc testing', function(t) {
   sltTH.testHarness(t, targets, false,
-      function(name, unhook_intercept, callback) {
-        var checkAllLangs = (name === 'lint004');
-        var mustErr = (name !== 'lint004' && name !== 'lint005');
-        lint.lintMessageFiles(!checkAllLangs, function(err) {
-          unhook_intercept();
-          if (mustErr) t.assert(err, name + ' must error.');
-          else t.assert(!err, name + ' must not error.');
-          callback();
-        });
-      }, function() {
-        t.end();
+    function(name, unhook_intercept, callback) {
+      var checkAllLangs = (name === 'lint004');
+      var mustErr = (name !== 'lint004' && name !== 'lint005');
+      lint.lintMessageFiles(!checkAllLangs, function(err) {
+        unhook_intercept();
+        if (mustErr) t.assert(err, name + ' must error.');
+        else t.assert(!err, name + ' must not error.');
+        callback();
       });
+    }, function() {
+      t.end();
+    });
 });

@@ -1,4 +1,6 @@
-2017-06-19, Version 2.8.4
+
+
+2017-06-18, Version 2.8.4
 =========================
 
  * Add null checks (Setogit)

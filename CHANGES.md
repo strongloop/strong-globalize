@@ -1,4 +1,10 @@
-2017-04-23, Version 2.8.3
+2017-06-21, Version 2.8.5
+=========================
+
+ * Blacklist strong-globalize in deep extraction (Setogit)
+
+
+2017-04-22, Version 2.8.3
 =========================
 
  * Fix typo in the lint CLI messages (Setogit)

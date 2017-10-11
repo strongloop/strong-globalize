@@ -1,4 +1,4 @@
-#!
+#!/usr/bin/env node
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 var g = SG();

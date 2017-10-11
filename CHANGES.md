@@ -1,3 +1,16 @@
+2017-10-11, Version 3.1.0
+=========================
+
+ * Upgrade deps to avoid warning of security concerns (Raymond Feng)
+
+ * Fix style issues (Raymond Feng)
+
+ * Add advisory exception (loay)
+
+
+2017-06-21, Version 3.0.0
+=========================
+
 
 
 2017-06-18, Version 2.8.4

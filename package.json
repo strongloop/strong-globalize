@@ -45,10 +45,10 @@
   },
   "dependencies": {
     "async": "^2.4.1",
-    "debug": "^2.6.8",
+    "debug": "^3.1.0",
     "esprima": "^4.0.0",
     "estraverse": "^4.2.0",
-    "g11n-pipeline": "^1.4.0",
+    "g11n-pipeline": "^2.0.1",
     "htmlparser2": "^3.9.2",
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
@@ -59,15 +59,15 @@
     "posix-getopt": "^1.2.0",
     "word-count": "^0.2.2",
     "xtend": "^4.0.1",
-    "yamljs": "^0.2.10"
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.0",
     "eslint": "^4.0.0",
     "eslint-config-strongloop": "^2.1.0",
     "intercept-stdout": "^0.1.2",
     "jscs": "^2.11.0",
     "shelljs": "^0.7.8",
-    "tap": "^7.1.2"
+    "tap": "^10.7.2"
   }
 }

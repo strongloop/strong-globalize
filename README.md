@@ -1,5 +1,6 @@
 # strong-globalize
 
+Testing Travis
 StrongLoop Globalize CLI and API
 
 <a href="https://badge.fury.io/js/strong-globalize">

@@ -1,4 +1,4 @@
-# strong-globalize
+# strong-globalize 
 
 StrongLoop Globalize CLI and API
 

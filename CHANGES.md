@@ -1,3 +1,9 @@
+2017-10-23, Version 2.10.0
+==========================
+
+ * Upgrade deps to remove nsp warnings (Raymond Feng)
+
+
 2017-10-18, Version 2.9.0
 =========================
 

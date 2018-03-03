@@ -40,6 +40,8 @@ test('language mapping for GPB', function(t) {
 
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
+SG.SetAppLanguages();
+
 var g = SG();
 
 test('register resource tag', function(t) {
@@ -74,3 +76,16 @@ test('remove double curly braces', function(t) {
     'Remove double curly braces.');
   t.end();
 });
+
+test('accept-language header', function(t) {
+  var req = {
+    headers: {
+      'accept-language': 'en',
+    },
+  };
+  var message = g.http(req).f('Test message');
+  t.equal(message, 'Test message');
+  t.end();
+});
+
+

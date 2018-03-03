@@ -101,6 +101,16 @@ var targets = {
     err: [
     ],
   },
+  extract015: {
+    out: [
+      '    extracted: User name is %s.\n',
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+      '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
+      '--- extracted: 1 msges, 4 words, 17 characters\n',
+    ],
+    err: [
+    ],
+  },
 };
 
 test('test extract misc testing', function(t) {

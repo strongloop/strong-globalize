@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "async": "^2.4.1",
+    "accept-language": "^3.0.18",
     "debug": "^3.1.0",
     "esprima": "^4.0.0",
     "estraverse": "^4.2.0",

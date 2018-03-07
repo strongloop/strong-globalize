@@ -18,6 +18,7 @@ var xtend = require('xtend');
 exports = module.exports = StrongGlobalize;
 exports.SetRootDir = SetRootDir;
 exports.SetDefaultLanguage = globalize.setDefaultLanguage;
+exports.SetAppLanguages = globalize.setAppLanguages;
 exports.SetPersistentLogging = globalize.setPersistentLogging;
 
 function StrongGlobalize(options) {
@@ -28,10 +29,16 @@ function StrongGlobalize(options) {
     exports.SetRootDir(options);
     options = undefined;
   }
-  if (!global.STRONGLOOP_GLB) globalize.setDefaultLanguage();
+  if (!global.STRONGLOOP_GLB) {
+    globalize.setDefaultLanguage();
+    globalize.setAppLanguages();
+  }
+
   var defaults = {
     language: global.STRONGLOOP_GLB.DEFAULT_LANG,
+    appLanguages: global.STRONGLOOP_GLB.APP_LANGS,
   };
+
   this._options = options ? xtend(defaults, options) : defaults;
 }
 
@@ -216,4 +223,35 @@ StrongGlobalize.prototype.silly = function() {
   globalize.loadGlobalize(this._options.language);
   return globalize.rfc5424('silly', arguments, console.log,
     this._options.language);
+};
+
+/**
+ * This function is useful for applications (e.g. express)
+ * that have an HTTP Request object with headers.
+ *
+ * You can pass the request object, and it will negotiate
+ * the best matching language to globalize the message.
+ *
+ * The matching algorithm is done against the languages
+ * supported by the application. (those included in the intl dir)
+ *
+ * @param req
+ * @returns {*}
+ */
+var sgCache = new Map(); /* eslint-env es6 */
+StrongGlobalize.prototype.http = function(req) {
+
+  var matchingLang = helper.getLanguageFromRequest(req,
+    this._options.appLanguages,
+    this._options.language);
+
+  var sg = sgCache.get(matchingLang);
+  if (sg) {
+    return sg;
+  }
+
+  sg = new StrongGlobalize(this._options);
+  sg.setLanguage(matchingLang);
+  sgCache.set(matchingLang, sg);
+  return sg;
 };

@@ -1,3 +1,13 @@
+2018-03-07, Version 3.2.0
+=========================
+
+ * Add testcases for g.http.YYYY pattern (Miguel Mendoza)
+
+ * Add Accept-Language negotiation (Miguel Mendoza)
+
+ * Refactor literal extraction from AST (Miguel Mendoza)
+
+
 2017-10-11, Version 3.1.0
 =========================
 

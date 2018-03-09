@@ -8,6 +8,7 @@
 // Single-instance strong-globalize
 // module.exports = require('./lib/globalize');
 
+
 // Multi-instance strong-globalize
 var globalize = require('./lib/globalize');
 var helper = require('./lib/helper');
@@ -20,6 +21,29 @@ exports.SetRootDir = SetRootDir;
 exports.SetDefaultLanguage = globalize.setDefaultLanguage;
 exports.SetAppLanguages = globalize.setAppLanguages;
 exports.SetPersistentLogging = globalize.setPersistentLogging;
+
+/**
+ * FIXME: workaround for
+ * https://github.com/strongloop/strong-globalize/issues/127
+ *
+ * Monkey-patching Cldr.prototype.get for `zz`
+ * See:
+ * https://github.com/rxaviers/cldrjs/blob/master/src/core/likely_subtags.js#L75
+ */
+try {
+  const Cldr = require('cldrjs');
+  const get = Cldr.prototype.get;
+  Cldr.prototype.get = function(path) {
+    if (Array.isArray(path)) {
+      path = path.map(function(p) {
+        return p === 'zz' ? 'en' : p;
+      });
+    }
+    return get.call(this, path);
+  };
+} catch (e) {
+  // Ignore
+}
 
 function StrongGlobalize(options) {
   if (!(this instanceof StrongGlobalize)) {

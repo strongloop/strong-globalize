@@ -6,6 +6,7 @@
 
 var SG = require('../index');
 var test = require('tap').test;
+var path = require('path');
 
 test('SetDefaultLanguage', function(t) {
   SG.SetRootDir(__dirname);
@@ -21,6 +22,13 @@ test('SetDefaultLanguage', function(t) {
     systemLocale.attributes.bundle &&
     systemLocale.attributes.bundle === 'en',
   'System language is set to en by default.');
+  t.end();
+});
+
+test('use zz', function(t) {
+  var g = new SG(path.join(__dirname, './fixtures/zz'));
+  g.setLanguage('zz');
+  g.f('Example app listening on port 3000!');
   t.end();
 });
 
@@ -129,7 +137,7 @@ test('formatDate', function(t) {
   t.end();
 });
 
-test('formatCurency', function(t) {
+test('formatCurrency', function(t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
   var g = new SG();
@@ -146,7 +154,7 @@ test('formatCurency', function(t) {
   t.comment(message);
   targetMsg = '123,456.79 US dollars';
   t.equal(message, targetMsg,
-    'English instalce works.');
+    'English instance works.');
 
   g.setLanguage('de');
   message = g.c(value, symbol);

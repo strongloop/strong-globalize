@@ -1,4 +1,12 @@
-2018-03-07, Version 3.2.0
+2018-03-15, Version 3.3.0
+=========================
+
+ * fix: workaround issues to use `zz` pseudo code (Raymond Feng)
+
+ * fix: switch to published globalize npm module (Raymond Feng)
+
+
+2018-03-06, Version 3.2.0
 =========================
 
  * Add testcases for g.http.YYYY pattern (Miguel Mendoza)

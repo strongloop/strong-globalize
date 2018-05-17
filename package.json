@@ -50,7 +50,7 @@
     "estraverse": "^4.2.0",
     "g11n-pipeline": "^2.0.1",
     "htmlparser2": "^3.9.0",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.5",
     "md5": "^2.0.0",
     "mkdirp": "^0.5.1",
     "mktmpdir": "^0.1.1",

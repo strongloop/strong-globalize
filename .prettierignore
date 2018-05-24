@@ -1,0 +1,10 @@
+*.json
+*.md
+packages/*/lib/**/*
+public/**/*
+templates/**/*
+
+coverage/
+packages/runtime/benchmark/format.js
+packages/runtime/examples/**/*
+packages/runtime/util/**/*

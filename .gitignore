@@ -25,20 +25,6 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
-lib/local-credentials.json
 .nyc_output
-!test/node_modules
-!test/node_modules/third/node_modules
-!test/fixtures/extract000/node_modules
-!test/fixtures/extract001/node_modules
-!test/fixtures/extract002/node_modules
-!test/fixtures/extract003/node_modules
-!test/fixtures/extract004/node_modules
-!test/fixtures/extract005/node_modules
-!test/fixtures/extract013/node_modules
-!test/fixtures/extract014/node_modules
-!test/fixtures/translate000/node_modules
-!test/fixtures/translate001/node_modules
-!test/fixtures/translate002/node_modules
 .DS_Store
 !.travis.yml

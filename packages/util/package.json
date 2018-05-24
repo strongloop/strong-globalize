@@ -1,0 +1,29 @@
+{
+  "name": "strong-globalize-util",
+  "description": "StrongLoop Globalize - Util",
+  "version": "4.0.0",
+  "private": true,
+  "keywords": [
+    "StrongLoop",
+    "globalize",
+    "cldr"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/strongloop/strong-globalize.git"
+  },
+  "author": "Tetsuo Seto <tseto@us.ibm.com>",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "readmeFilename": "README.md",
+  "main": "app.js",
+  "bugs": {
+    "url": "https://github.com/strongloop/strong-globalize/issues"
+  },
+  "dependencies": {
+    "cldr-data": "^32.0.1",
+    "lodash": "^4.17.10"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "lerna": "2.11.0",
+  "packages": ["packages/*"],
+  "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "message": "chore: publish release"
+    },
+    "run": {
+      "prefix": false,
+      "loglevel": "silent"
+    },
+    "clean": {
+      "loglevel": "silent",
+      "concurrency": 8,
+      "yes": true
+    }
+  },
+  "version": "4.0.0"
+}

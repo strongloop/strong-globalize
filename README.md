@@ -1,6 +1,6 @@
 # strong-globalize
 
-StrongLoop Globalize CLI and API
+This repository contains StrongLoop Globalize CLI and Runtime modules.
 
 <a href="https://badge.fury.io/js/strong-globalize">
 <img src="https://badge.fury.io/js/strong-globalize.svg" alt="npm version" height="18">
@@ -11,6 +11,21 @@ StrongLoop Globalize CLI and API
 <a href='https://coveralls.io/github/strongloop/strong-globalize?branch=master'>
 <img src='https://coveralls.io/repos/github/strongloop/strong-globalize/badge.svg?branch=master' alt='Test Coverage'/>
 </a>
+
+# What's new in 4.0.0
+
+Starting from 4.0.0, it becomes a monorepo managed by [lerna](https://lernajs.io/)
+with the following packages:
+
+- strong-globalize-cli: CLI for translate, lint, and extract
+- strong-globalize: APIs and implementation for globalization
+- strong-globalize-util: Utility to generate CLDR json data file
+
+Please note most of the code has been rewritten in TypeScript.
+
+To install the cli, run `npm i -g strong-globalize`.
+
+# Table of contents
 
 * [Architecture](#architecture)
 * [Autonomous Message Loading](#autonomous-message-loading)
@@ -81,7 +96,7 @@ StrongLoop Globalize CLI and API
 
 # Architecture
 
-`strong-globalize` is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module. 
+`strong-globalize` is built on top of two foundation layers: Unicode CLDR and jquery/globalize.  The Unicode CLDR provides key building blocks for software to support the world's languages, with the largest and most extensive standard repository of locale data available.  jquery/globalize is a JavaScript library for internationalization and localization that leverages the Unicode CLDR JSON data. The library works both for the browser and as a Node.js module.
 
 `strong-globalize` is a JavaScript library for internationalization and localization (globalization in one word) of a Node.js package.  `strong-globalize` provides these features:
 - [shorthands and wrappers](#api---formatters) for the format functions supported by Node.js console, jquery/globalize, and util.format,
@@ -94,8 +109,8 @@ As shown in the [Demo section](#demo), the code written with `strong-globalize` 
 
 With `strong-globalize`, there will be no more 'English product first and worry about localization later'; there will be only one globalized codebase from day one.  If you choose, you can still ship it with a few language resources (or English only) initially and incrementally add, remove, or update the resources and ship anytime as you go.
 
-- node.js versions: 4, 6, 8
-- cldr version: 29.0.1
+- node.js versions: 8, 10
+- cldr version: 32.0.1
 - out-of-box languages - 31: de, en, es, fr, it, ja, ko, pt, ru, zh-Hans, zh-Hant',
  ar', 'bn', 'cs', 'el', 'fi', 'hi', 'id', 'lt', 'nb', 'nl', 'pl', 'ro', 'sl', 'sv',
  'ta', 'te', 'th', 'tr', 'uk', 'vi'
@@ -117,7 +132,7 @@ All packages are created equal.  `Autonomous Message Loading` is the core concep
 
 `root directory` or simply `rootDir`: the package's current working directory where `intl` directory resides.
 
-`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources in the application are extracted and stored under the `master root directory's intl/en`. 
+`master root directory`: the root directory of the package that called `SG.SetRootDir` first.  Any package in the application can be the `master root directory`.  It's determined solely by the loading order and once the master is chosen, it does not change in the application's life.  Usually, the `master root directory` is the `root directory` of the package at the root of the application's dependency tree.  `slt-globalize -d` must run under the `master root directory` so that all the string resources in the application are extracted and stored under the `master root directory's intl/en`.
 
 Once all the string resource files are [deep-extracted](#deep-string-resource-extraction) and translated at the top level package, the original string resources in the dependencies should not be loaded.  To disable loading the string resources in the dependencies, set `autonomousMsgLoading` to `none` in the `SetRootDir` call of the top level package.  Since 'none' is the default, simply `SG.SetRootDir(rootDir)` does it.
 
@@ -126,9 +141,9 @@ In development phase, with regular extraction mode, `{autonomousMsgLoading: 'all
 Third option is to set specific package names of which the string resources get loaded.  One use case of the third option is that you have several dependent packages which you know are properly translated and the translation can be used as-is.  For all the other packages, message strings will be deep-extracted and translated.
 
 ```js
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname, {autonomousMsgLoading: 'none'}); // same as SG.SetRootDir(__dirname);
-var g = SG({language: 'en'}); // same as SG();
+const g = new SG({language: 'en'});
 
 // use formatters and wrappers API
 
@@ -139,22 +154,22 @@ For example, the following does not work as intended because the package sub cal
 
 ```js
 // main/index.js -- my root package
-var SG = require('strong-globalize');
-var request = require('request');
-var sub = require('sub');
+const SG = require('strong-globalize');
+const request = require('request');
+const sub = require('sub');
 
 SG.SetRootDir(__dirname);
-var g = SG();
+const g = new SG();
 
 ...
 ```
 ```js
 // sub/index.js -- my sub package
-var SG = require('strong-globalize');
-var request = require('request');
+const SG = require('strong-globalize');
+const request = require('request');
 
 SG.SetRootDir(__dirname);
-var g = SG();
+const g = new SG();
 
 ...
 
@@ -164,22 +179,22 @@ The 'MUST' coding practice is to call `SG.SetRootDir` in the very first line of 
 
 ```js
 // main/index.js -- my root package
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-var request = require('request');
-var sub = require('sub');
+const request = require('request');
+const sub = require('sub');
 
-var g = SG();
+const g = new SG();
 
 ...
 ```
 ```js
 // sub/index.js -- my sub package
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-var request = require('request');
+const request = require('request');
 
-var g = SG();
+const g = new SG();
 
 ...
 
@@ -189,16 +204,16 @@ More concise coding is as follows:
 
 ```js
 // main/index.js -- my root package
-var g = require('strong-globalize')(__dirname);
-var request = require('request');
-var sub = require('sub');
+const g = require('strong-globalize')(__dirname);
+const request = require('request');
+const sub = require('sub');
 
 ...
 ```
 ```js
 // sub/index.js -- my sub package
-var g = require('strong-globalize')();
-var request = require('request');
+const g = require('strong-globalize')();
+const request = require('request');
 
 ...
 
@@ -225,9 +240,9 @@ There are two primary types of Node.js packages `strong-globalize` is targeting:
 
 ## Common part
 ```js
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-var g = SG(); // use the default
+const g = new SG(); // use the default
 ```
 ## Static language setting in CLI utility
 ```js
@@ -370,7 +385,7 @@ For example, invoking `STRONGLOOP_GLOBALIZE_MAX_DEPTH=3 slt-globalize -d` under 
 
 ## `npm v3` dependency resolution
 
-`npm v3` tries to install all dependent packages in the root `node_modules` directory, i.e., `gmain/node_modules` in the above example, which means that most dependent package directories are at depth level 2.  Therefore, `STRONGLOOP_GLOBALIZE_MAX_DEPTH` does not help in `npm v3` installed applications.  `slt-globalize -d [black list]` option can help to reduce the number of packages to scan. 
+`npm v3` tries to install all dependent packages in the root `node_modules` directory, i.e., `gmain/node_modules` in the above example, which means that most dependent package directories are at depth level 2.  Therefore, `STRONGLOOP_GLOBALIZE_MAX_DEPTH` does not help in `npm v3` installed applications.  `slt-globalize -d [black list]` option can help to reduce the number of packages to scan.
 
 ```
 /Users/user
@@ -447,11 +462,11 @@ In the above paragraphs, `g.f` can be used instead of `g.t` if you'd like.
 
 ```js
 // test/fixtures/extract006/index.js
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-var g = SG();
+const g = new SG();
 
-var json = g.t('data/data.json',
+const json = g.t('data/data.json',
   '[' +
   '  "title",' +
   '  ["types", 0],' +
@@ -518,7 +533,7 @@ console.log(JSON.stringify(json, null, 2));
 
 # Persistent Logging
 
-`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.  
+`strong-globalize` provides 'persistent logging' by passing all the localized messages as well as the original English messages to client-supplied callback function.
 
 ## `SG.SetPersistentLogging(logCallback, disableConsole)`
 `logCallback` is called when a user message is sent to `stdout` or `stderr` to show to the user.  Two arguments passed to `logCallback` are: `level (string)` and `msg (object)` which has three properties: `message (UTF8 string)` which is the localized message shown to the user, `orig (UTF8 string)` the corresponding original English message with placeholder(s), and `vars (an array of argument(s) for the placeholder(s))`.
@@ -536,18 +551,18 @@ console.log(JSON.stringify(json, null, 2));
 
 Client:
 ```js
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
-var g = SG(); // strong-globalize handle
-var w = require('winston'); // winston handle
+const g = new SG(); // strong-globalize handle
+const w = require('winston'); // winston handle
 initWinston(w);
 // let strong-globalize to show it to the user
-var disableConsole = false;
+const disableConsole = false;
 SG.SetPersistentLogging(w.log, disableConsole);
 
 function initWinston(w) {
-  var options = {
+  const options = {
     filename: __dirname + '/system.log',
     maxsize: 1000000,
     maxFiles: 10,
@@ -562,26 +577,26 @@ function initWinston(w) {
 ## Persistent Logging Demo `gmain/index.js`
 
 ```js
-var express = require('express');
-var request = require('request');
-var app = express();
-var SG = require('strong-globalize'); 
+const express = require('express');
+const request = require('request');
+const app = express();
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
-var gsub = require('gsub');
-var w = require('winston'); // winston handle
+const gsub = require('gsub');
+const w = require('winston'); // winston handle
 
-var g = SG(); // strong-globalize handle
+const g = new SG(); // strong-globalize handle
 initWinston(w); // see the Client initialization
-var disableConsole = false;
+const disableConsole = false;
 SG.SetPersistentLogging(w.log, disableConsole);
 
 app.get('/', function(req, res) {
-  var helloMessage = g.f('%s Hello World', g.d(new Date()));
+  const helloMessage = g.f('%s Hello World', g.d(new Date()));
   w.info(helloMessage); // write only to the log file with 'info' level
   res.end(helloMessage);
 });
 
-var port = process.env.PORT || 8123;
+const port = process.env.PORT || 8123;
 app.listen(port, function() {
   g.log('Listening on %s by %s.', port, gsub.getUserName());
 });
@@ -630,13 +645,13 @@ Options:
 -  `-t,--translate`    Translate string resource.
 -  `-v,--version`      Print version and exit.
 
-## lib/local-credentials.json
+## local-credentials.json
 
 To access Globalization Pipeline on Bluemix service for machine translation, credentials should be provided in one of the two ways:
 
-(1) By strong-globalize/lib/local-credentials.json
+(1) By strong-globalize-cli/local-credentials.json
 
-Copy and paste your credentials look like the following from the dashboard of Globalization Pipeline on Bluemix service into `strong-globalize/lib/local-credentials.json`.
+Copy and paste your credentials look like the following from the dashboard of Globalization Pipeline on Bluemix service into `strong-globalize-cli/local-credentials.json`.
 
 ```js
 {
@@ -664,7 +679,7 @@ Please see [Other Resources](#other-resources) for step-by-step instructions to 
 
 # API - Set system defaults
 
-### `var SG = require('strong-globalize);`
+### `const SG = require('strong-globalize);`
 
 ## `SG.SetRootDir(rootPath, options)`
 - `rootPath` : {`string`} App's root directory full path.  Every client must set its root directory where `package.json` and `intl` directory exist.  All resources under this directory including dependent modules are loaded in runtime.  `SetRootDir` must be called once and only once usually in the main js module.
@@ -694,7 +709,7 @@ Most clients do not need to setHtmlRegex.  See [the Globalize HTML Templates sec
 
 # API - Formatters
 
-### `var g = SG({language: 'en'});`
+### `const g = new SG({language: 'en'});`
 
 ## `g.formatMessage(path, variables)`
 - `path {string}` The message key
@@ -708,7 +723,7 @@ alias of `formatMessage`
 
 ## `g.formatCurrency(value, currencySymbol, options)`
 - `value {number}` integer or float
-- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars 
+- `currencySymbol {string}` ISO 4217 three-letter currency code such as `'USD'` for US Dollars
 - `options {object}` (optional) jquery/globalize option format.  If omitted, StrongLoop default is used.
 
 ## `g.c(value, currencySymbol, options)`
@@ -882,11 +897,11 @@ g.error('Invalid usage (near option \'%s\'), try {{`%s --help`}}.', option, cmd)
 
 before globalization:
 ```js
-var help = fs.readFileSync(require.resolve('./help.txt'), 'utf-8');
+const help = fs.readFileSync(require.resolve('./help.txt'), 'utf-8');
 ````
 right globalization:
 ```js
-var help = g.t('help.txt'); // or g.f('help.txt');
+const help = g.t('help.txt'); // or g.f('help.txt');
 ```
 and store help.txt file under intl/en.
 
@@ -917,36 +932,36 @@ LANG=ja node index.js
 before:
 
 ```js
-var fs = require('fs');
-var util = require('util');
+const fs = require('fs');
+const util = require('util');
 
 exports.getHelpText = getHelpText;
 exports.getUserName = getUserName;
 
 function getUserName() {
-  var userName = util.format('user: %s', process.env.USER);
+  const userName = util.format('user: %s', process.env.USER);
   return userName;
 }
 
 function getHelpText() {
-  var helpText = fs.readFileSync(require.resolve('./gsub.txt'), 'utf-8');
+  const helpText = fs.readFileSync(require.resolve('./gsub.txt'), 'utf-8');
   return helpText;
 }
 ```
 after:
-- `var g = require('strong-globalize')();`
+- `const g = require('strong-globalize')();`
 - replace `util` with `g`
 - replace `readFile *.txt` with simply `g.t` and move `./gsub.txt` to `./intl/en/gsub.txt`
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-var g = require('strong-globalize')();
+const g = require('strong-globalize')();
 
 exports.getHelpText = getHelpText;
 exports.getUserName = getUserName;
 
 function getUserName() {
-  var userName = g.f('user: %s', process.env.USER);
+  const userName = g.f('user: %s', process.env.USER);
   return userName;
 }
 
@@ -960,18 +975,18 @@ function getHelpText() {
 before:
 
 ```js
-var express = require('express');
-var request = require('request');
-var app = express();
-var util = require('util');
-var gsub = require('gsub');
+const express = require('express');
+const request = require('request');
+const app = express();
+const util = require('util');
+const gsub = require('gsub');
 
 app.get('/', function(req, res) {
-  var helloMessage = util.format('%s Hello World', new Date());
+  const helloMessage = util.format('%s Hello World', new Date());
   res.end(helloMessage);
 });
 
-var port = process.env.PORT || 8123;
+const port = process.env.PORT || 8123;
 app.listen(port, function() {
   console.log('Listening on %s by %s.', port, gsub.getUserName());
 });
@@ -985,9 +1000,9 @@ setInterval(function(){
 console.log(gsub.getHelpText());
 ```
 after:
-- `var SG = require('strong-globalize');`
+- `const SG = require('strong-globalize');`
 - `SG.SetRootDir( ... );`
-- `var g = SG();`
+- `const g = new SG();`
 - replace `util` with `g`
 - replace `console` with `g`
 - replace `process.stdout` with `g`
@@ -995,22 +1010,22 @@ after:
 - then, run `slt-globalize -e` to extract and `slt-globalize -t` to machine translate the string resource.
 
 ```js
-var SG = require('strong-globalize');
+const SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 
-var express = require('express');
-var request = require('request');
-var app = express();
-var gsub = require('gsub');
+const express = require('express');
+const request = require('request');
+const app = express();
+const gsub = require('gsub');
 
-var g = SG();
+const g = new SG();
 
 app.get('/', function(req, res) {
-  var helloMessage = g.f('%s Hello World', g.d(new Date()));
+  const helloMessage = g.f('%s Hello World', g.d(new Date()));
   res.end(helloMessage);
 });
 
-var port = process.env.PORT || 8123;
+const port = process.env.PORT || 8123;
 app.listen(port, function() {
   g.log('Listening on %s by %s.', port, gsub.getUserName());
 });
@@ -1055,7 +1070,7 @@ examples
 ```
 
 
-## First argument 
+## First argument
 
 `strong-globalize` extracts literal strings passed as the first argument of the `strong-globalize` functions.  In globalizing existing modules, most code changes you are going to make will be to make sure all literal strings are in that form.  Usually, you do not need to globalize debug text.
 
@@ -1067,21 +1082,21 @@ a. `master main` -- `SetRootDir(__dirname)` is declared right after `require('st
 
 b. `main` -- The main JS module of all the other packages in the application must call `SetRootDir(__dirname)` in the first line of the main JS module of all the other (non-root) packages.  See examples/gsub/index.js.
 
-c. `sub` -- All the other JS modules that call the `strong-globalize` function require `strong-globalize` as `var g = require('strong-globalize')();`  See examples/gsub/lib/util.js`  In case you need multiple `strong-globalize` instances, do the following:
+c. `sub` -- All the other JS modules that call the `strong-globalize` function require `strong-globalize` as `const g = require('strong-globalize')();`  See examples/gsub/lib/util.js`  In case you need multiple `strong-globalize` instances, do the following:
 
 ```js
-var SG = require('strong-globalize');
-var gFrench = SG('fr');
-var gSpanish = SG('es');
+const SG = require('strong-globalize');
+const gFrench = new SG('fr');
+const gSpanish = new SG('es');
 // parallel use
 gFrench.log('text in French');
 gSpanish.log('text in Spanish');
 gFrench.log('second text in French');
-``` 
+```
 
 You can also re-use one instance multiple times as follows:
 ```js
-var g = require('strong-globalize')();
+const g = require('strong-globalize')();
 g.setLanguage('fr');
 g.log('text in French');
 g.setLanguage('es');

@@ -20,6 +20,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap",
     "build": "lerna run build",
+    "release": "npm test && lerna publish",
     "lint": "npm run prettier:check && npm run tslint",
     "lint:fix": "npm run prettier:fix && npm run tslint:fix",
     "prettier:cli": "prettier \"**/*.ts\" \"**/*.js\"",

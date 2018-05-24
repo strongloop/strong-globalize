@@ -11,7 +11,7 @@ import * as translate from './translate';
 import SG = require('strong-globalize');
 const {helper} = SG;
 
-async function main(argv: string[]) {
+async function main(args: string[]) {
   const options = optimist
     .options('h', {
       alias: 'help',
@@ -40,17 +40,23 @@ async function main(argv: string[]) {
         ' on [black list] separated by a space.',
     })
     .boolean(['h', 'v', 'l', 't', 'd', 'e'])
-    .parse(argv);
+    .parse(args);
 
   if (options.v) {
-    console.log(require('../package.json').version);
-    return;
+    const cliVersion = require('../package.json').version;
+    const runtimeVersion = require('strong-globalize/package.json').version;
+    console.log('Versions: CLI=%s, Runtime=%s', cliVersion, runtimeVersion);
+  }
+
+  if (args.length === 0) {
+    options.h = true;
   }
 
   if (options.h) {
-    optimist.help();
-    return;
+    console.log(optimist.help());
   }
+
+  if (options.h || options.v) return;
 
   const blackList: string[] = [];
   if (options.d || options.e) {
@@ -76,7 +82,8 @@ async function main(argv: string[]) {
   }
 }
 
-main(process.argv).catch(e => {
+// node node lib/cli.js ...
+main(process.argv.slice(2)).catch(e => {
   console.error(e);
   process.exit(1);
 });

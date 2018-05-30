@@ -8,7 +8,7 @@
     "cldr"
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=6"
   },
   "repository": {
     "type": "git",
@@ -44,6 +44,7 @@
     "mktmpdir": "^0.1.1",
     "optimist": "^0.6.1",
     "strong-globalize": "^4.0.0",
+    "util.promisify": "^1.0.0",
     "word-count": "^0.2.2",
     "yamljs": "^0.3.0"
   },

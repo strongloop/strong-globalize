@@ -11,7 +11,7 @@ import dbg = require('debug');
 const debug = dbg('strong-globalize-cli');
 import fs = require('fs');
 const gpb = require('g11n-pipeline');
-import {promisify} from 'util';
+import {promisify} from './promisify';
 import SG = require('strong-globalize');
 const {helper} = SG;
 import {AnyObject} from 'strong-globalize/lib/config';
@@ -19,7 +19,7 @@ import * as lint from './lint';
 import os = require('os');
 import path = require('path');
 import mkdirp = require('mkdirp');
-const mktmpdir = require('mktmpdir');
+const mktmpdir = require('mktmpdir') as Function;
 const wc = require('word-count');
 
 const createTmpDir = promisify(mktmpdir);
@@ -137,9 +137,9 @@ async function _translateResource() {
   let supportedLangs: AnyObject | undefined;
   let err;
   try {
-    const supportedTranslations = promisify(
-      gpClient.supportedTranslations.bind(gpClient)
-    );
+    const supportedTranslations = promisify(gpClient.supportedTranslations.bind(
+      gpClient
+    ) as Function);
     supportedLangs = await supportedTranslations({});
   } catch (e) {
     err = e;
@@ -305,7 +305,7 @@ async function translate(
   console.log('--- translating %s', bundleName);
   debug('*** 1 *** GPB.create');
   try {
-    const create = promisify(myBundle.create.bind(myBundle));
+    const create = promisify(myBundle.create.bind(myBundle) as Function);
     await create({
       sourceLanguage: 'en',
       targetLanguages: targetLangs,

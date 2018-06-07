@@ -18,7 +18,7 @@
   "license": "Artistic-2.0",
   "readmeFilename": "README.md",
   "main": "index.js",
-  "browser": "lib/browser.js",
+  "browser": "browser.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rimraf lib",

@@ -37,7 +37,7 @@
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
     "mkdirp": "^0.5.1",
-    "os-locale": "^2.0.0",
+    "os-locale": "^3.0.1",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {

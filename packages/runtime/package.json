@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "accept-language": "^3.0.18",
-    "debug": "^3.1.0",
+    "debug": "^4.0.1",
     "globalize": "^1.3.0",
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/debug": "0.0.30",
-    "@types/globalize": "0.0.33",
+    "@types/globalize": "0.0.34",
     "@types/lodash": "^4.14.108",
     "@types/md5": "^2.1.32",
     "@types/mkdirp": "^0.5.2",
@@ -54,8 +54,8 @@
     "mktmpdir": "^0.1.1",
     "prettier": "^1.12.1",
     "rimraf": "^2.6.2",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.2",
     "tap": "^12.0.1",
-    "typescript": "^2.8.3"
+    "typescript": "^3.0.3"
   }
 }

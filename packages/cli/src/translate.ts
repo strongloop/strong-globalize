@@ -110,7 +110,7 @@ export function getCredentials() {
  * will be returned.
  */
 // tslint:disable-next-line:no-any
-export function translateResource(cb?: ((err?: any) => void)): Promise<void> {
+export function translateResource(cb?: (err?: any) => void): Promise<void> {
   if (!cb) {
     return _translateResource();
   } else {
@@ -158,7 +158,7 @@ async function _translateResource() {
 }
 
 // tslint:disable-next-line:no-any
-function _translateResourceWithCallback(cb: ((err?: any) => void)) {
+function _translateResourceWithCallback(cb: (err?: any) => void) {
   const promise = _translateResource();
   promise
     .then(() => {

@@ -247,8 +247,8 @@ export function packMessage(
   const variables = percentInKey
     ? helper.mapArgs(path, args)
     : txtWithTwoOrMoreArgs
-      ? helper.repackArgs(args, 1)
-      : args[1];
+    ? helper.repackArgs(args, 1)
+    : args[1];
   let message = formatMessage(path, variables, lang);
   if (withOriginalMsg)
     message = {

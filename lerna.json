@@ -4,6 +4,9 @@
     "packages/*"
   ],
   "command": {
+    "bootstrap": {
+      "ci": false
+    },
     "publish": {
       "conventionalCommits": true,
       "message": "chore: publish release"

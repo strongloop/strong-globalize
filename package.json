@@ -52,5 +52,11 @@
     "tslint": "^5.14.0",
     "typescript": "^3.3.4000"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "files": [
+    "cldr/",
+    "lib/",
+    "src/",
+    "benchmark/"
+  ]
 }

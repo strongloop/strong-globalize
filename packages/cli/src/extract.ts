@@ -498,6 +498,8 @@ function processSourceFile(
   return entry;
 }
 
+function noop() {}
+
 export function scanHtml(
   content: string,
   fileName: string,
@@ -506,8 +508,16 @@ export function scanHtml(
   let msgs: AnyObject[] | null = [];
   const tn: string[] = [];
   const tc: string[] = [];
+
   const parser = new htmlparser.Parser(
     {
+      onparserinit: noop,
+      oncomment: noop,
+      onend: noop,
+      onreset: noop,
+      oncdatastart: noop,
+      oncommentend: noop,
+      onprocessinginstruction: noop,
       onopentag: function(name, attribs) {
         tn.push(name);
         tc.push(attribs.class); // could be null
@@ -532,7 +542,7 @@ export function scanHtml(
         }
         if (text) msgs!.push({msg: text});
       },
-      onclosetag: function(tagname) {
+      onclosetag: function() {
         tn.pop();
         tc.pop();
       },

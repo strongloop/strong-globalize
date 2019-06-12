@@ -23,7 +23,7 @@
     "url": "https://github.com/strongloop/strong-globalize/issues"
   },
   "dependencies": {
-    "cldr-data": "^32.0.1",
+    "cldr-data": "^35.1.0",
     "lodash": "^4.17.10"
   }
 }

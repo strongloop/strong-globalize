@@ -8,7 +8,7 @@
     "cldr"
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=8.9"
   },
   "repository": {
     "type": "git",

@@ -2,6 +2,9 @@
   "name": "strong-globalize-cli",
   "description": "StrongLoop Globalize - CLI",
   "version": "5.0.2",
+  "publishConfig": {
+    "tag": "lts"
+  },
   "keywords": [
     "StrongLoop",
     "globalize",

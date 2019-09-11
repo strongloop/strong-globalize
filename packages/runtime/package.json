@@ -34,28 +34,28 @@
     "accept-language": "^3.0.18",
     "debug": "^4.1.1",
     "globalize": "^1.4.2",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "mkdirp": "^0.5.1",
     "os-locale": "^4.0.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.4",
+    "@types/debug": "^4.1.5",
     "@types/globalize": "0.0.34",
-    "@types/lodash": "^4.14.136",
+    "@types/lodash": "^4.14.138",
     "@types/md5": "^2.1.32",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^10.14.12",
+    "@types/node": "^12.7.5",
     "@types/yamljs": "^0.2.30",
     "async": "^3.1.0",
-    "coveralls": "^3.0.5",
+    "coveralls": "^3.0.6",
     "intercept-stdout": "^0.1.2",
     "mktmpdir": "^0.1.1",
     "prettier": "^1.18.2",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "shelljs": "^0.8.3",
-    "tap": "^14.4.1",
-    "typescript": "^3.5.3"
+    "tap": "^14.6.2",
+    "typescript": "^3.6.3"
   }
 }

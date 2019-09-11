@@ -35,7 +35,7 @@
     "debug": "^4.1.1",
     "esprima": "^4.0.0",
     "estraverse": "^4.3.0",
-    "g11n-pipeline": "^4.0.1",
+    "g11n-pipeline": "^3.4.1",
     "globalize": "^1.4.2",
     "htmlparser2": "^3.10.1",
     "lodash": "^4.17.15",

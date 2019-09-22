@@ -14,7 +14,7 @@ This repository contains StrongLoop Globalize CLI and Runtime modules.
 
 # What's new in 4.0.0
 
-Starting from 4.0.0, it becomes a monorepo managed by [lerna](https://lernajs.io/)
+Starting from 4.0.0, it becomes a monorepo managed by [lerna](https://lerna.js.org/)
 with the following packages:
 
 - [strong-globalize-cli](packages/cli): CLI for translate, lint, and extract

@@ -11,7 +11,7 @@ var test = require('tap').test;
 
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
-SG.SetAppLanguages();
+SG.SetAppLanguages(['en', 'zh-cn', 'zh-Hans']);
 
 var g = new SG();
 
@@ -56,7 +56,7 @@ test('remove double curly braces', function(t) {
   t.end();
 });
 
-test('accept-language header', function(t) {
+test('accept-language header - en', function(t) {
   var req = {
     headers: {
       'accept-language': 'en',
@@ -64,5 +64,22 @@ test('accept-language header', function(t) {
   };
   var message = g.http(req).f('Test message');
   t.equal(message, 'Test message');
+  t.end();
+});
+
+test('accept-language header - alias', function(t) {
+  var req = {
+    headers: {
+      // alias to 'zh-Hans'
+      'accept-language': 'zh-cn',
+    },
+  };
+
+  // create a SG instance for language 'zh-Hans' and register it
+  var sg_hans = new SG({language: 'zh-Hans'});
+  SG.sgCache.set('zh-Hans', sg_hans);
+
+  var cachedSg = g.http(req);
+  t.equal(cachedSg.getLanguage(), 'zh-Hans');
   t.end();
 });

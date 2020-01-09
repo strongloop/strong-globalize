@@ -9,6 +9,7 @@ import * as helper from './helper';
 import * as path from 'path';
 
 import {AnyObject, STRONGLOOP_GLB} from './config';
+import {getLangAlias} from './helper';
 
 // tslint:disable:no-any
 
@@ -93,6 +94,7 @@ export class StrongGlobalize {
   }
 
   setLanguage(lang?: string) {
+    if (lang) lang = getLangAlias(lang);
     lang = helper.isSupportedLanguage(lang)
       ? lang
       : STRONGLOOP_GLB.DEFAULT_LANG;
@@ -352,11 +354,12 @@ export class StrongGlobalize {
     StrongGlobalize
   >(); /* eslint-env es6 */
   http(req: {headers: AnyObject}) {
-    const matchingLang = helper.getLanguageFromRequest(
+    let matchingLang = helper.getLanguageFromRequest(
       req,
       this._options.appLanguages,
       this._options.language
     );
+    matchingLang = getLangAlias(matchingLang);
 
     let sg = StrongGlobalize.sgCache.get(matchingLang);
     if (sg) {

@@ -12,6 +12,7 @@ import * as Globalize from 'globalize';
 import {parse} from 'yamljs';
 import {AnyObject, STRONGLOOP_GLB} from './config';
 import * as helper from './helper';
+import {getLangAlias} from './helper';
 const dbg = debugModule('strong-globalize');
 const osLocale = require('os-locale');
 const MapCache = require('lodash/_MapCache');
@@ -63,6 +64,7 @@ function osLanguage() {
  *     It tries to use OS language, then falls back to 'en'
  */
 export function setDefaultLanguage(lang?: string) {
+  if (lang) lang = getLangAlias(lang);
   lang = helper.isSupportedLanguage(lang) ? lang : undefined;
   lang = lang || MY_APP_LANG || OS_LANG || helper.ENGLISH;
   loadGlobalize(lang);
@@ -71,6 +73,7 @@ export function setDefaultLanguage(lang?: string) {
   }
   STRONGLOOP_GLB.locale!(lang);
   STRONGLOOP_GLB.DEFAULT_LANG = lang;
+
   return lang;
 }
 

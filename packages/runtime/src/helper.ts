@@ -952,3 +952,20 @@ export function removeDoubleCurlyBraces(json: AnyObject) {
     debug(count, key + ' : ' + json[key]);
   });
 }
+
+/**
+ * If an language has alias name that SG supports, return the alias name.
+ *
+ * The known aliases are hard-coded to solve issue
+ * https://github.com/strongloop/strong-globalize/issues/150
+ * @param lang
+ */
+export function getLangAlias(lang: string): string {
+  // The {lang: alias} pairs
+  const ALIAS_MAP: {[lang: string]: string} = {
+    'zh-cn': 'zh-Hans',
+    'zh-tw': 'zh-Hant',
+  };
+  if (lang && ALIAS_MAP.hasOwnProperty(lang)) return ALIAS_MAP[lang];
+  return lang;
+}

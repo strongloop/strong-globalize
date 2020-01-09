@@ -93,6 +93,18 @@ test('formatMessage', function(t) {
   targetMsg = 'Error：' + params.url + '或者' + params.port + '是無效。';
   t.equal(message, targetMsg, 'Traditional Chinese message formatting works.');
 
+  g.setDefaultLanguage('zh-cn');
+  message = g.formatMessage(key, params);
+  t.comment(message);
+  targetMsg = 'Error：' + params.url + '或者' + params.port + '是无效。';
+  t.equal(message, targetMsg, 'Simplified Chinese message formatting works.');
+
+  g.setDefaultLanguage('zh-tw');
+  message = g.formatMessage(key, params);
+  t.comment(message);
+  targetMsg = 'Error：' + params.url + '或者' + params.port + '是無效。';
+  t.equal(message, targetMsg, 'Traditional Chinese message formatting works.');
+
   g.setDefaultLanguage('de');
   message = g.formatMessage(key, params);
   t.comment(message);

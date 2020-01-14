@@ -1,3 +1,175 @@
+
+
+2020-01-09, Version strong-globalize@5.1.0
+==========================================
+
+ * feat: support alias (jannyHou)
+
+ * chore: update package locks (Miroslav Bajtoš)
+
+ * chore: update dependency versions in lock files (Miroslav Bajtoš)
+
+ * Fixed link to Lerna project (Ilia Smirnov)
+
+
+2019-09-11, Version strong-globalize@5.0.2
+==========================================
+
+
+
+2019-09-11, Version strong-globalize-util@5.0.2
+===============================================
+
+
+
+2019-09-11, Version strong-globalize-cli@6.0.2
+==============================================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: revert g11n-pipeline to 3.x (Raymond Feng)
+
+
+2019-09-11, Version strong-globalize@5.0.1
+==========================================
+
+
+
+2019-09-11, Version strong-globalize-util@5.0.1
+===============================================
+
+
+
+2019-09-11, Version strong-globalize-cli@6.0.1
+==============================================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: update dependencies (Raymond Feng)
+
+ * chore: update dependencies to latest versions (Miroslav Bajtoš)
+
+ * chore: add per-package `.npmrc` file to enforce package-lock (Miroslav Bajtoš)
+
+ * chore: update top-level dependencies (Miroslav Bajtoš)
+
+ * chore: fix versions in package-lock files (Miroslav Bajtoš)
+
+
+2019-06-13, Version strong-globalize@5.0.0
+==========================================
+
+
+
+2019-06-13, Version strong-globalize-util@5.0.0
+===============================================
+
+
+
+2019-06-13, Version strong-globalize-cli@6.0.0
+==============================================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: set minmimum version of node to be 8.9 (Raymond Feng)
+
+
+2019-06-12, Version strong-globalize@4.1.4
+==========================================
+
+
+
+2019-06-12, Version strong-globalize-util@4.2.0
+===============================================
+
+
+
+2019-06-12, Version strong-globalize-cli@5.0.2
+==============================================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: upgrade dependencies (Raymond Feng)
+
+ * chore: disable ci mode for bootstrap (Raymond Feng)
+
+
+2019-03-22, Version strong-globalize@4.1.3
+==========================================
+
+
+
+2019-03-22, Version strong-globalize-cli@5.0.1
+==============================================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: upgrade dependencies (Raymond Feng)
+
+
+2018-09-18, Version strong-globalize@4.1.2
+==========================================
+
+
+
+2018-09-18, Version strong-globalize-cli@5.0.0
+==============================================
+
+ * chore: publish release (Raymond Feng)
+
+ * use independent versioning (Raymond Feng)
+
+ * update deps (Raymond Feng)
+
+ * ci: Pass CI (Runrioter)
+
+ * Update`os-locale` to v3.0.1 (Runrioter Wung)
+
+
+2018-06-07, Version 4.1.1
+=========================
+
+ * chore: publish release (Raymond Feng)
+
+ * Fix browser support (Miroslav Bajtoš)
+
+
+2018-05-30, Version 4.1.0
+=========================
+
+ * chore: publish release (Raymond Feng)
+
+ * feat: add support for Node.js 6.x (Miroslav Bajtoš)
+
+ * chore: update README and LICENSE (Raymond Feng)
+
+ * fix: make it easier to configure credentials (Raymond Feng)
+
+
+2018-05-24, Version 4.0.2
+=========================
+
+ * chore: publish release (Raymond Feng)
+
+ * fix: fix cli processing (Raymond Feng)
+
+
+2018-05-24, Version 4.0.1
+=========================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: fix cli dependency (Raymond Feng)
+
+
+2018-05-24, Version 4.0.0
+=========================
+
+ * chore: publish release (Raymond Feng)
+
+ * chore: rewrite the code in TypeScript and lerna (Raymond Feng)
+
+
 2018-03-15, Version 3.3.0
 =========================
 

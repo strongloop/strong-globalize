@@ -354,12 +354,11 @@ export class StrongGlobalize {
     StrongGlobalize
   >(); /* eslint-env es6 */
   http(req: {headers: AnyObject}) {
-    let matchingLang = helper.getLanguageFromRequest(
+    const matchingLang = helper.getLanguageFromRequest(
       req,
       this._options.appLanguages,
       this._options.language
     );
-    matchingLang = getLangAlias(matchingLang);
 
     let sg = StrongGlobalize.sgCache.get(matchingLang);
     if (sg) {

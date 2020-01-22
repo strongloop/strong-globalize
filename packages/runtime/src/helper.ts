@@ -869,7 +869,11 @@ export function getLanguageFromRequest(
     return defaultLanguage;
   }
 
-  const reqLanguage = req.headers['accept-language'];
+  let languages = req.headers['accept-language'].split(',');
+  for (let i = 0; i < languages.length; i++) {
+    languages[i] = getLangAlias(languages[i]);
+  }
+  const reqLanguage = languages.join(',');
   if (!reqLanguage) {
     return defaultLanguage;
   }

@@ -11,7 +11,7 @@ var test = require('tap').test;
 
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
-SG.SetAppLanguages(['en', 'zh-cn', 'zh-Hans']);
+SG.SetAppLanguages(['en', 'zh-Hans']);
 
 var g = new SG();
 

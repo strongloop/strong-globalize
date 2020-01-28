@@ -1,7 +1,7 @@
-// Copyright IBM Corp. 2017,2018. All Rights Reserved.
-// Node module: @loopback/core
-// This file is licensed under the MIT License.
-// License text available at https://opensource.org/licenses/MIT
+// Copyright IBM Corp. 2018,2020. All Rights Reserved.
+// Node module: strong-globalize-cli
+// This file is licensed under the Artistic License 2.0.
+// License text available at https://opensource.org/licenses/Artistic-2.0
 
 // A temporary polyfill for util.promisify on Node.js 6.x
 // Remove it as part of https://github.com/strongloop/loopback-next/issues/611

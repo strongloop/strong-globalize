@@ -137,9 +137,9 @@ async function _translateResource() {
   let supportedLangs: AnyObject | undefined;
   let err;
   try {
-    const supportedTranslations = promisify(gpClient.supportedTranslations.bind(
-      gpClient
-    ) as Function);
+    const supportedTranslations = promisify(
+      gpClient.supportedTranslations.bind(gpClient) as Function
+    );
     supportedLangs = await supportedTranslations({});
   } catch (e) {
     err = e;

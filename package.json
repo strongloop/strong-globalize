@@ -45,12 +45,12 @@
     "url": "https://github.com/strongloop/strong-globalize/issues"
   },
   "devDependencies": {
-    "coveralls": "^3.0.6",
-    "lerna": "^3.16.4",
-    "prettier": "^1.18.2",
-    "tap": "^14.6.2",
-    "tslint": "^5.20.0",
-    "typescript": "^3.6.3"
+    "coveralls": "^3.0.9",
+    "lerna": "^3.20.2",
+    "prettier": "^1.19.1",
+    "tap": "^14.10.6",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
   },
   "dependencies": {}
 }

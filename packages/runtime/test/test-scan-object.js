@@ -139,7 +139,11 @@ function testScan(returnErrors) {
 testScan(false);
 testScan(true);
 
-var newKeys = [['a', 'a2'], ['b', 1], ['c', 'd', 'e']];
+var newKeys = [
+  ['a', 'a2'],
+  ['b', 1],
+  ['c', 'd', 'e'],
+];
 
 var newData = ['new text a2', 'new b one', 'new text e'];
 

@@ -865,13 +865,15 @@ export function getLanguageFromRequest(
   appLanguages: string[],
   defaultLanguage: string
 ): string {
-  if (!req || !req.headers) {
+  if (!req || !req.headers || !req.headers['accept-language']) {
     return defaultLanguage;
   }
 
   let languages = req.headers['accept-language'].split(',');
   for (let i = 0; i < languages.length; i++) {
-    languages[i] = getLangAlias(languages[i]);
+    let languageWeighted = languages[i].split(';');
+    languageWeighted[0] = getLangAlias(languageWeighted[0].trim());
+    languages[i] = languageWeighted.join(';');
   }
   const reqLanguage = languages.join(',');
   if (!reqLanguage) {

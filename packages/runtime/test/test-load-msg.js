@@ -12,7 +12,7 @@ var test = require('tap').test;
 
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
-SG.SetAppLanguages(['en', 'zh-Hans']);
+SG.SetAppLanguages(['en', 'zh-Hans', 'zh-Hant']);
 
 var g = new SG();
 
@@ -56,7 +56,36 @@ test('remove double curly braces', function(t) {
   t.equal(source.msgError, targetMsg, 'Remove double curly braces.');
   t.end();
 });
-
+test('no accept-language header', function(t) {
+  var req = {
+    headers: {
+      accept: 'application/json',
+    },
+  };
+  var message = g.http(req).f('Test message');
+  t.equal(message, 'Test message');
+  t.end();
+});
+test('empty accept-language header', function(t) {
+  var req = {
+    headers: {
+      'accept-language': '',
+    },
+  };
+  var message = g.http(req).f('Test message');
+  t.equal(message, 'Test message');
+  t.end();
+});
+test('accept-language header - *', function(t) {
+  var req = {
+    headers: {
+      'accept-language': '*',
+    },
+  };
+  var message = g.http(req).f('Test message');
+  t.equal(message, 'Test message');
+  t.end();
+});
 test('accept-language header - en', function(t) {
   var req = {
     headers: {
@@ -82,5 +111,24 @@ test('accept-language header - alias', function(t) {
 
   var cachedSg = g.http(req);
   t.equal(cachedSg.getLanguage(), 'zh-Hans');
+  t.end();
+});
+
+test('multiple, weighted, accept-language header with alias', function(t) {
+  var req = {
+    headers: {
+      'accept-language':
+        'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7 zh-cn;q=0.7, zh-tw;q=0.9 *;q=0.5',
+    },
+  };
+  // create a SG instance for language 'zh-Hans' and register it
+  var sg_hant = new SG({language: 'zh-Hant'});
+  SG.sgCache.set('zh-Hant', sg_hant);
+
+  var cachedSg = g.http(req);
+  t.equal(cachedSg.getLanguage(), 'zh-Hant');
+
+  var message = g.http(req).f('log');
+  t.equal(message, '原木');
   t.end();
 });

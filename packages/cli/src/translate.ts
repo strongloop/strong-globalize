@@ -11,7 +11,7 @@ import dbg = require('debug');
 const debug = dbg('strong-globalize-cli');
 import fs = require('fs');
 const gpb = require('g11n-pipeline');
-import {promisify} from './promisify';
+import {promisify} from 'util';
 import SG = require('strong-globalize');
 const {helper} = SG;
 import {AnyObject} from 'strong-globalize/lib/config';

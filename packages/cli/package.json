@@ -1,7 +1,7 @@
 {
   "name": "strong-globalize-cli",
   "description": "StrongLoop Globalize - CLI",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "keywords": [
     "StrongLoop",
     "globalize",
@@ -43,7 +43,7 @@
     "mkdirp": "^1.0.3",
     "mktmpdir": "^0.1.1",
     "optimist": "^0.6.1",
-    "strong-globalize": "^5.0.4",
+    "strong-globalize": "^5.0.5",
     "util.promisify": "^1.0.1",
     "word-count": "^0.2.2",
     "yamljs": "^0.3.0"

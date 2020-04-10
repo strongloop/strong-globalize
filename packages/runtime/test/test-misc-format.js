@@ -44,12 +44,12 @@ var targets = {
     err: [],
   },
 };
-test('misc format test', function(t) {
+test('misc format test', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       var rootDir = helper.getRootDir();
       SG.STRONGLOOP_GLB.reset();
       var g = null;
@@ -99,7 +99,7 @@ test('misc format test', function(t) {
       unhook_intercept();
       callback();
     },
-    function() {
+    function () {
       t.end();
     }
   );

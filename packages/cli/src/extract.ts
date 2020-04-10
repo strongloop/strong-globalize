@@ -68,7 +68,7 @@ const GLB_FN = [
   'silly',
 ];
 
-GLB_FN.forEach(fn => {
+GLB_FN.forEach((fn) => {
   assert(fn in SG.prototype, '"' + fn + '" is exported by strong-globalize.');
 });
 
@@ -198,7 +198,7 @@ export function extractMessages(
     const msgArray: AnyObject[] = [];
     if (messages && messages.length > 0) {
       // tslint:disable-next-line:no-any
-      messages.forEach(function(msg: any) {
+      messages.forEach(function (msg: any) {
         msgArray.push({
           msg: msg,
           callee: literalArg.callee,
@@ -213,7 +213,7 @@ export function extractMessages(
     if (!msgArray) return;
     let additionalMsges: AnyObject[] = [];
     const removeIx: number[] = [];
-    msgArray.forEach(function(m, ix) {
+    msgArray.forEach(function (m, ix) {
       if (m.msg.indexOf(helper.PSEUDO_TAG) > -1) return;
       // skip if it came from non-GLB_FN argument
       const fileType = helper.getTrailerAfterDot(m.msg);
@@ -228,16 +228,16 @@ export function extractMessages(
         removeIx.push(ix);
       }
     });
-    removeIx.forEach(function(ix) {
+    removeIx.forEach(function (ix) {
       delete msgArray[ix];
     });
     msgArray = _.compact(msgArray);
     msgArray = msgArray.concat(additionalMsges);
-    msgArray.forEach(function(m) {
+    msgArray.forEach(function (m) {
       m.hashedMsg = helper.hashKeys(m.msg) ? md5(m.msg) : m.msg;
     });
     msgArray = _.orderBy(msgArray, ['hashedMsg'], 'asc');
-    msgArray.forEach(function(m) {
+    msgArray.forEach(function (m) {
       const key = m.hashedMsg.replace(helper.PSEUDO_TAG, '');
       if (m.loc) {
         if (!msgsLoc) msgsLoc = {};
@@ -278,7 +278,7 @@ export function extractMessages(
     'js',
     false,
     deep,
-    function(content, fileName) {
+    function (content, fileName) {
       // We need to call require.resolve in order to resolve any simlinks
       const resolvedFileName = require.resolve(fileName);
       files[resolvedFileName] = {
@@ -293,21 +293,15 @@ export function extractMessages(
 
   _(files)
     .keys()
-    .forEach(function(resolvedFileName) {
+    .forEach(function (resolvedFileName) {
       processSourceFile(resolvedFileName, files, verboseMode);
     });
 
-  scannedJsCount = _(files)
-    .map(_.property('scanned'))
-    .map(Number)
-    .sum();
-  skippedJsCount = _(files)
-    .map(_.property('skipped'))
-    .map(Number)
-    .sum();
+  scannedJsCount = _(files).map(_.property('scanned')).map(Number).sum();
+  skippedJsCount = _(files).map(_.property('skipped')).map(Number).sum();
   _(files)
     .omitBy(_.property('skipped'))
-    .forEach(function(entry) {
+    .forEach(function (entry) {
       addToMsgs(entry.messages, entry.fileName);
     });
 
@@ -320,7 +314,7 @@ export function extractMessages(
       ['html', 'htm'],
       false,
       deep,
-      function(content, fileName) {
+      function (content, fileName) {
         scannedHtmlCount++;
         const messages = scanHtml(content, fileName, verboseMode);
         if (messages === null || messages === undefined) {
@@ -338,7 +332,7 @@ export function extractMessages(
     msgFiles = fs.readdirSync(enLangDirPath);
   } catch (e) {}
   if (msgFiles)
-    msgFiles.forEach(function(msgFile) {
+    msgFiles.forEach(function (msgFile) {
       let keys;
       if (msgFile.indexOf('.') === 0) return;
       const fileType = helper.getTrailerAfterDot(msgFile);
@@ -352,7 +346,7 @@ export function extractMessages(
           helper.stripBom(fs.readFileSync(msgFilePath, 'utf-8'))
         );
         keys = Object.keys(jsonObj);
-        keys.forEach(function(key) {
+        keys.forEach(function (key) {
           if (helper.hashKeys(key)) delete jsonObj[key];
         });
       } catch (e) {
@@ -369,7 +363,7 @@ export function extractMessages(
       } catch (e) {}
       if (jsonLocObj) {
         keys = Object.keys(jsonLocObj);
-        keys.forEach(function(key) {
+        keys.forEach(function (key) {
           delete jsonLocObj![key];
         });
       }
@@ -461,9 +455,9 @@ export function extractMessages(
 
 function invertLocObj(locObj: AnyObject) {
   const inv: AnyObject = {};
-  _.forEach(locObj, function(v1, k) {
+  _.forEach(locObj, function (v1, k) {
     if (typeof v1 === 'string') v1 = [v1];
-    v1.forEach(function(v2: string) {
+    v1.forEach(function (v2: string) {
       let colonPos = v2.lastIndexOf(':');
       if (colonPos === -1) return;
       let fileName = v2.substring(0, colonPos);
@@ -518,11 +512,11 @@ export function scanHtml(
       oncdatastart: noop,
       oncommentend: noop,
       onprocessinginstruction: noop,
-      onopentag: function(name, attribs) {
+      onopentag: function (name, attribs) {
         tn.push(name);
         tc.push(attribs.class); // could be null
       },
-      ontext: function(text) {
+      ontext: function (text) {
         text = text.trim().replace(/\s+/g, ' ');
         debug(text);
         if (tc.length > 0 && tc[tc.length - 1] === 'strong-globalize') {
@@ -542,11 +536,11 @@ export function scanHtml(
         }
         if (text) msgs!.push({msg: text});
       },
-      onclosetag: function() {
+      onclosetag: function () {
         tn.pop();
         tc.pop();
       },
-      onerror: function(err) {
+      onerror: function (err) {
         if (err) {
           const errMsg =
             '\n**********************************************************' +
@@ -607,7 +601,7 @@ export function scanAst(
         node.declarations.length > 0
       ) {
         const decls = node.declarations;
-        decls.forEach(function(d) {
+        decls.forEach(function (d) {
           if (
             d.type === 'VariableDeclarator' &&
             d.init &&
@@ -621,7 +615,7 @@ export function scanAst(
               callee = callee.callee;
             }
             if (callee.type === 'Identifier' && callee.name === 'require') {
-              argsParent.arguments.forEach(function(arg, ix) {
+              argsParent.arguments.forEach(function (arg, ix) {
                 if (arg.type !== 'Literal') return;
                 if (!(d.id && d.id.type && d.id.type === 'Identifier')) return;
 
@@ -669,7 +663,7 @@ export function scanAst(
         (node.kind === 'var' || node.kind === 'let' || node.kind === 'const')
       ) {
         const decls = node.declarations;
-        decls.forEach(function(d) {
+        decls.forEach(function (d) {
           if (
             d.type === 'VariableDeclarator' &&
             d.init &&

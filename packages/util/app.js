@@ -94,7 +94,7 @@ const cldrVersion = require(path.resolve(
 )).version;
 var CLDR = {};
 
-LANGS.forEach(function(lang) {
+LANGS.forEach(function (lang) {
   loadCldr(lang);
 });
 

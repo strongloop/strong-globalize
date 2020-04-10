@@ -13,16 +13,16 @@ var test = require('tap').test;
 var wellKnownLangs = loadMsgHelper.wellKnownLangs;
 var secondaryMgr = loadMsgHelper.secondaryMgr;
 
-test('secondary test NOT forking', function(t) {
+test('secondary test NOT forking', function (t) {
   async.forEachOfSeries(
     wellKnownLangs,
-    function(lang, ix, callback) {
-      secondaryMgr(__dirname, lang, t, helper.AML_ALL, true, function() {
+    function (lang, ix, callback) {
+      secondaryMgr(__dirname, lang, t, helper.AML_ALL, true, function () {
         t.pass('secondaryMgr succeeds for ' + lang);
         callback();
       });
     },
-    function(err) {
+    function (err) {
       if (err) t.fail('language iteration failed.');
       else t.pass('language iteration succeeds.');
       t.end();

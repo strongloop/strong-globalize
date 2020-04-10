@@ -9,7 +9,7 @@ var g = require('../lib/globalize');
 var helper = require('../lib/helper');
 var test = require('tap').test;
 
-test('setDefaultLanguage', function(t) {
+test('setDefaultLanguage', function (t) {
   helper.setRootDir(__dirname);
   var supportedLangs = helper.getSupportedLanguages();
   t.comment('Supported languages: %s', supportedLangs);
@@ -39,7 +39,7 @@ test('setDefaultLanguage', function(t) {
   t.end();
 });
 
-test('formatMessage', function(t) {
+test('formatMessage', function (t) {
   helper.setRootDir(__dirname);
   var params = {
     url: 'http:any.com',
@@ -141,7 +141,7 @@ test('formatMessage', function(t) {
   t.end();
 });
 
-test('formatNumber', function(t) {
+test('formatNumber', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var value = 123456.789;
@@ -225,7 +225,7 @@ test('formatNumber', function(t) {
   t.end();
 });
 
-test('formatDate', function(t) {
+test('formatDate', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var msecSinceTheEpoc = 1451446850425;
@@ -312,7 +312,7 @@ test('formatDate', function(t) {
   t.end();
 });
 
-test('formatCurency', function(t) {
+test('formatCurency', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var symbol = 'USD';
@@ -397,7 +397,7 @@ test('formatCurency', function(t) {
   t.end();
 });
 
-test('throw Error', function(t) {
+test('throw Error', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage('ja');
   var params = {

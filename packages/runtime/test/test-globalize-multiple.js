@@ -9,7 +9,7 @@ var SG = require('../');
 var test = require('tap').test;
 var path = require('path');
 
-test('SetDefaultLanguage', function(t) {
+test('SetDefaultLanguage', function (t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage('en');
   systemLocale = SG.STRONGLOOP_GLB.locale();
@@ -32,21 +32,21 @@ test('SetDefaultLanguage', function(t) {
   t.end();
 });
 
-test('use zz', function(t) {
+test('use zz', function (t) {
   var g = new SG(path.join(__dirname, './fixtures/zz'));
   g.setLanguage('zz');
   g.f('Example app listening on port 3000!');
   t.end();
 });
 
-test('use SG()', function(t) {
+test('use SG()', function (t) {
   var g = SG(path.join(__dirname, './fixtures/zz'));
   g.setLanguage('zz');
   g.f('Example app listening on port 3000!');
   t.end();
 });
 
-test('formatMessage', function(t) {
+test('formatMessage', function (t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
   var g = new SG();
@@ -89,7 +89,7 @@ test('formatMessage', function(t) {
   t.end();
 });
 
-test('formatNumber', function(t) {
+test('formatNumber', function (t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
   var g = new SG();
@@ -114,7 +114,7 @@ test('formatNumber', function(t) {
   t.end();
 });
 
-test('formatDate', function(t) {
+test('formatDate', function (t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
   var g = new SG();
@@ -145,7 +145,7 @@ test('formatDate', function(t) {
   t.end();
 });
 
-test('formatCurrency', function(t) {
+test('formatCurrency', function (t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
   var g = new SG();
@@ -171,7 +171,7 @@ test('formatCurrency', function(t) {
   t.end();
 });
 
-test('throw Error', function(t) {
+test('throw Error', function (t) {
   SG.SetRootDir(__dirname);
   SG.SetDefaultLanguage();
   var gJa = new SG({language: 'ja'});

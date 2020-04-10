@@ -62,21 +62,21 @@ var r = new RegExp('json', 'g');
 targets.extract010.err[0] = targets.extract010.err[0].replace(r, 'yml');
 targets.extract011.err[0] = targets.extract011.err[0].replace(r, 'yaml');
 
-test('test extract msges from json file', function(t) {
+test('test extract msges from json file', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       var blackList = null;
       var deep = false;
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput, function(_err) {
+      extract.extractMessages(blackList, deep, suppressOutput, function (_err) {
         unhook_intercept();
         callback();
       });
     },
-    function() {
+    function () {
       t.end();
     }
   );

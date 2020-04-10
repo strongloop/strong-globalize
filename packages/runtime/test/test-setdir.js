@@ -24,12 +24,12 @@ var targets = {
     err: [/^[\*]{3} setRootDir: Root path is not a directory: /],
   },
 };
-test('setRootDir test', function(t) {
+test('setRootDir test', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       switch (name) {
         case 'setdir000': {
           try {
@@ -68,13 +68,13 @@ test('setRootDir test', function(t) {
         }
       }
     },
-    function() {
+    function () {
       t.end();
     }
   );
 });
 
-test('headerIncluded in string', function(t) {
+test('headerIncluded in string', function (t) {
   t.assert(helper.headerIncluded('name', 'name'));
   t.end();
 });

@@ -129,7 +129,7 @@ function secondaryMgr(rootDir, lang, t, aml, positive, callback) {
   SG.STRONGLOOP_GLB.AUTO_MSG_LOADING = aml;
   SG.SetDefaultLanguage(lang);
   var disableConsole = true;
-  SG.SetPersistentLogging(function(level, msg) {
+  SG.SetPersistentLogging(function (level, msg) {
     msgFound.push(msg.message);
     if (msgFound.length === msgWanted[lang].length + 1) {
       for (var i = 0; i < msgFound.length - 1; i++) {

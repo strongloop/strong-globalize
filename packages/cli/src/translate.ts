@@ -73,7 +73,7 @@ function writeAllToMsg(lang: string, json: AnyObject) {
   assert(helper.isSupportedLanguage(lang), 'Unsupported language key: ' + lang);
   Object.keys(json)
     .sort()
-    .forEach(function(key) {
+    .forEach(function (key) {
       writeToMsg(lang, key, json[key]);
     });
 }
@@ -150,7 +150,7 @@ async function _translateResource() {
     throw e;
   }
   const langs: string[] = [];
-  myTargetLangs.forEach(function(targetLang) {
+  myTargetLangs.forEach(function (targetLang) {
     if (supportedLangs!.en.indexOf(targetLang) >= 0) langs.push(targetLang);
   });
   const tempDir = await createTmpDir();
@@ -164,7 +164,7 @@ function _translateResourceWithCallback(cb: (err?: any) => void) {
     .then(() => {
       cb();
     })
-    .catch(err => {
+    .catch((err) => {
       cb(err);
     });
 }
@@ -173,12 +173,12 @@ function reduceMsgFiles(intlDir: string, tempDir: string) {
   const langDirs = fs.readdirSync(tempDir);
   if (!langDirs) return;
   // console.log('======= langDirs:', langDirs);
-  langDirs.forEach(function(lang) {
+  langDirs.forEach(function (lang) {
     if (!helper.isSupportedLanguage(lang)) return;
     const tempLangDir = path.join(tempDir, lang);
     const tempMsgFiles = fs.readdirSync(tempLangDir);
     const jsonData: AnyObject = {};
-    tempMsgFiles.forEach(function(tempMsgFile) {
+    tempMsgFiles.forEach(function (tempMsgFile) {
       if (helper.getTrailerAfterDot(tempMsgFile) !== 'json') return;
       const matched = tempMsgFile.match(/^(.+)_[0-9]*\.json$/);
       if (!matched) return;
@@ -187,7 +187,7 @@ function reduceMsgFiles(intlDir: string, tempDir: string) {
       _.merge(jsonData[base], require(path.join(tempLangDir, tempMsgFile)));
     });
     const bases = Object.keys(jsonData);
-    bases.forEach(function(base) {
+    bases.forEach(function (base) {
       fs.writeFileSync(
         path.join(intlDir, lang, base) + '.json',
         JSON.stringify(helper.sortMsges(jsonData[base]), null, 2)
@@ -257,7 +257,7 @@ async function translateResourcePriv(
           }
         } catch (err) {
           console.log('*** translation failed: %s', msgFileX);
-          langs.forEach(function(lang) {
+          langs.forEach(function (lang) {
             lang = reverseAdjustLangFromGPB(lang);
             const msgFilePath = path.join(tempDir, lang, msgFileX);
             try {
@@ -340,11 +340,11 @@ async function translate(
 
   function writeToTxt(jsonObj: AnyObject, targetLang: string) {
     const keys = Object.keys(jsonObj);
-    keys.forEach(function(key) {
+    keys.forEach(function (key) {
       if (helper.getTrailerAfterDot(key) === 'txt') {
         let content = JSON.stringify(jsonObj[key]).slice(1, -1);
         delete jsonObj[key];
-        content = content.replace(/\\.?/g, function(esc) {
+        content = content.replace(/\\.?/g, function (esc) {
           if (esc === '\\n') return os.EOL;
           if (esc === '\\t') return '\x09';
           if (esc === '\\"') return '"';
@@ -374,7 +374,7 @@ async function translate(
   }
 
   async function sleep(ms: number) {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => resolve(), ms);
     });
   }

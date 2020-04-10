@@ -215,7 +215,7 @@ export function formatJson(
   }
   const msgs = helper.scanJson(variables, jsonData) as string[];
   const transMsgs: string[] = [];
-  msgs.forEach(function(msg) {
+  msgs.forEach(function (msg) {
     const transMsg = formatMessage(msg, undefined, lang);
     transMsgs.push(transMsg);
   });
@@ -283,7 +283,7 @@ export function rfc5424(
 ) {
   return packMessage(
     args,
-    msg => {
+    (msg) => {
       logPersistent(level, msg);
       if (consoleEnabled()) print(msg.message);
       return msg;
@@ -508,7 +508,7 @@ function loadCldr(lang: string) {
     'CLDR already loaded for ' + lang
   );
   const cldrDir = pathUtil.join(__dirname, '..', 'cldr');
-  helper.enumerateFilesSync(cldrDir, null, ['json'], false, false, function(
+  helper.enumerateFilesSync(cldrDir, null, ['json'], false, false, function (
     content,
     filePath
   ) {

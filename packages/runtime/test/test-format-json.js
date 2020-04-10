@@ -61,12 +61,12 @@ var allKeys =
   '["threeWrites", "w"]' +
   ']';
 
-test('test formatJson and formatYaml', function(t) {
+test('test formatJson and formatYaml', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       var rootDir = helper.getRootDir();
       SG.SetRootDir(rootDir);
       var g = new SG();
@@ -78,7 +78,7 @@ test('test formatJson and formatYaml', function(t) {
         case 'formatyaml001':
           g.formatMessage(fileName, allKeys);
           var langs = loadMsgHelper.wellKnownLangs;
-          langs.forEach(function(lang) {
+          langs.forEach(function (lang) {
             g.setLanguage(lang);
             var dataJson = g.formatMessage(
               fileName,
@@ -102,7 +102,7 @@ test('test formatJson and formatYaml', function(t) {
       unhook_intercept();
       callback();
     },
-    function() {
+    function () {
       t.end();
     }
   );

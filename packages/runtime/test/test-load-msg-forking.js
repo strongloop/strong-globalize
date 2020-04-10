@@ -21,25 +21,25 @@ if (cluster.isMaster && !process.argv[2]) {
     silent: false,
   });
   cluster.fork();
-  cluster.on('online', function(worker) {
+  cluster.on('online', function (worker) {
     // worker has started.
   });
-  cluster.on('exit', function(worker) {
+  cluster.on('exit', function (worker) {
     // worker has completed.
   });
 } else if (cluster.isWorker) {
   var test = require('tap').test;
-  test('secondary test on forking', function(t) {
+  test('secondary test on forking', function (t) {
     t.match(process.argv[2], 'second_invoke', 'worker in the second invoke');
     async.forEachOfSeries(
       wellKnownLangs,
-      function(lang, ix, callback) {
-        secondaryMgr(__dirname, lang, t, helper.AML_ALL, true, function() {
+      function (lang, ix, callback) {
+        secondaryMgr(__dirname, lang, t, helper.AML_ALL, true, function () {
           t.pass('secondaryMgr succeeds for ' + lang);
           callback();
         });
       },
-      function(err) {
+      function (err) {
         if (err) t.fail('language iteration failed.');
         else t.pass('language iteration succeeds.');
         t.end();

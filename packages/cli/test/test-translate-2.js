@@ -276,21 +276,21 @@ var skipTranslate =
   !process.env.BLUEMIX_INSTANCE;
 
 if (skipTranslate) {
-  test('skip translate misc testing', function(t) {
+  test('skip translate misc testing', function (t) {
     t.pass();
     t.end();
   });
 } else {
-  test('test translate misc testing', function(t) {
+  test('test translate misc testing', function (t) {
     sltTH.testHarness(
       t,
       targets,
       false,
-      function(name, unhook_intercept, callback) {
+      function (name, unhook_intercept, callback) {
         if (name === 'translate003') {
           translate.setTranslationUnit(1);
         }
-        translate.translateResource(function(err) {
+        translate.translateResource(function (err) {
           var targetIfLogonFailed =
             '*** Login to GPB failed or' + ' GPB.supportedTranslations error.';
           var target = null;
@@ -316,7 +316,7 @@ if (skipTranslate) {
           callback();
         });
       },
-      function() {
+      function () {
         t.end();
       }
     );

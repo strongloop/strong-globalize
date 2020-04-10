@@ -134,7 +134,7 @@ function subTest(mode, t) {
   var extractedMsgs = [];
   var extractedLocs = [];
   var targetLocs = require('./test-extract.json');
-  extract.scanAst(content, testFileName).forEach(function(m) {
+  extract.scanAst(content, testFileName).forEach(function (m) {
     extractedMsgs.push(m.msg);
     extractedLocs.push(m.loc);
   });
@@ -154,7 +154,7 @@ function subTest(mode, t) {
 
   var baseIndex = 11; // of format test cases
 
-  targetMsgs.forEach(function(tgtMsg, ix) {
+  targetMsgs.forEach(function (tgtMsg, ix) {
     if (ix > baseIndex) return;
     t.equal(
       g.formatMessage(tgtMsg),
@@ -163,7 +163,7 @@ function subTest(mode, t) {
     );
   });
 
-  targetMsgs.forEach(function(tgtMsg, ix) {
+  targetMsgs.forEach(function (tgtMsg, ix) {
     if (ix > baseIndex) return;
     t.equal(
       g.formatMessage(tgtMsg),
@@ -215,7 +215,7 @@ function subTest(mode, t) {
   t.end();
 }
 
-test('extract from HTML', function(t) {
+test('extract from HTML', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var content =
@@ -289,7 +289,7 @@ test('extract from HTML', function(t) {
       'rendered as something like 400ms.',
   ];
   var extractedMsgs = [];
-  extract.scanHtml(content, testFileName).forEach(function(m) {
+  extract.scanHtml(content, testFileName).forEach(function (m) {
     extractedMsgs.push(m.msg);
   });
   t.comment('Extracted: ' + extractedMsgs.toString());
@@ -303,14 +303,14 @@ test('extract from HTML', function(t) {
   t.end();
 });
 
-test('extract from CDATA', function(t) {
+test('extract from CDATA', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var content =
     '<![CDATA[\n' + '      {{Text in cdata | globalize }}\n' + '    ]]>\n';
   var targetMsgs = ['Text in cdata'];
   var extractedMsgs = [];
-  extract.scanHtml(content, testFileName).forEach(function(m) {
+  extract.scanHtml(content, testFileName).forEach(function (m) {
     extractedMsgs.push(m.msg);
   });
   t.comment('Extracted: ' + extractedMsgs.toString());
@@ -323,7 +323,7 @@ test('extract from CDATA', function(t) {
   t.end();
 });
 
-test('custom extraction regex', function(t) {
+test('custom extraction regex', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var content =
@@ -331,7 +331,7 @@ test('custom extraction regex', function(t) {
   var targetMsgs = ['Text in cdata'];
   extract.setHtmlRegex(/{{LOCALIZE:.+}}/m, /{{LOCALIZE:/m, /}}/m);
   var extractedMsgs = [];
-  extract.scanHtml(content, testFileName).forEach(function(m) {
+  extract.scanHtml(content, testFileName).forEach(function (m) {
     extractedMsgs.push(m.msg);
   });
   t.comment('Extracted: ' + extractedMsgs.toString());
@@ -345,7 +345,7 @@ test('custom extraction regex', function(t) {
   t.end();
 });
 
-test('pseudo loc extraction', function(t) {
+test('pseudo loc extraction', function (t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var content =
@@ -362,7 +362,7 @@ test('pseudo loc extraction', function(t) {
     'test-extract.js:1',
     'test-extract.js:2',
   ];
-  extract.scanAst(content, testFileName).forEach(function(m) {
+  extract.scanAst(content, testFileName).forEach(function (m) {
     extractedMsgs.push(m.msg);
     extractedLocs.push(m.loc);
   });

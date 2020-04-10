@@ -28,17 +28,17 @@ class StrongGlobalize {
   }
   formatCurrency = this.c;
 
-  d = function(value: Date, options: AnyObject) {
+  d = function (value: Date, options: AnyObject) {
     return value.toString();
   };
   formatDate = this.d;
 
-  n = function(value: number, options: AnyObject) {
+  n = function (value: number, options: AnyObject) {
     return value.toString();
   };
   formatNumber = this.n;
 
-  m = function(path: string, variables: any) {
+  m = function (path: string, variables: any) {
     return util.format.apply(null, [path].concat(variables));
   };
   formatMessage = this.m;

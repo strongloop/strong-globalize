@@ -76,7 +76,7 @@ export function setRootDir(rootPath: string) {
   validPath = validPath && !!files;
   if (validPath) {
     let intlDirFound = false;
-    files!.forEach(function(item) {
+    files!.forEach(function (item) {
       if (intlDirFound) return;
       if (item === 'intl') intlDirFound = true;
     });
@@ -123,7 +123,7 @@ export function validateAmlValue(aml: string | string[]) {
   if (aml === AML_ALL || aml === AML_NONE) return aml;
   if (Array.isArray(aml)) {
     if (aml.length === 0) return false;
-    aml.forEach(function(v) {
+    aml.forEach(function (v) {
       if (typeof aml !== 'string') return false;
     });
     return aml;
@@ -245,7 +245,7 @@ export function enumerateFilesSyncPriv(
   blackList = Array.isArray(blackList) ? blackList : [];
   if (!Array.isArray(targetFileType)) targetFileType = [targetFileType];
   let skipDir = false;
-  blackList.forEach(function(part) {
+  blackList.forEach(function (part) {
     if (typeof part !== 'string') return;
     if (currentPath.indexOf(part) >= 0) skipDir = true;
   });
@@ -259,7 +259,7 @@ export function enumerateFilesSyncPriv(
   } catch (e) {
     return;
   }
-  files.forEach(function(item) {
+  files.forEach(function (item) {
     if (item.indexOf('.') === 0) return;
     const child = path.join(currentPath, item);
     let stats = null;
@@ -302,7 +302,7 @@ export function enumerateFilesSyncPriv(
     const depthRoot = directoryDepth(rootDir);
     const moduleRootPaths = resolveDependencies(currentPath, rootDir);
     if (moduleRootPaths) {
-      moduleRootPaths.forEach(function(modulePath) {
+      moduleRootPaths.forEach(function (modulePath) {
         const depthModule = directoryDepth(modulePath);
         if (depthModule - depthRoot > maxDirectoryDepth()) return;
         enumerateFilesSyncPriv(
@@ -349,7 +349,7 @@ export function cloneEnglishTxtSyncDeep(rootDir?: string) {
     true,
     true,
     0,
-    function() {}
+    function () {}
   );
 }
 
@@ -392,7 +392,7 @@ export function enumerateMsgSyncPriv(
   }
   const enDirPath = path.join(rootDir, 'intl', ENGLISH);
   const clonedFileNames: string[] = [];
-  msgFiles.forEach(function(msgFile) {
+  msgFiles.forEach(function (msgFile) {
     if (msgFile.indexOf('.') === 0) return;
     const stats = fs.lstatSync(path.join(langDirPath, msgFile));
     if (!stats.isFile()) return;
@@ -424,7 +424,7 @@ export function enumerateMsgSyncPriv(
     const depthRoot = directoryDepth(rootDir);
     const moduleRootPaths = resolveDependencies(currentPath, rootDir);
     if (moduleRootPaths) {
-      moduleRootPaths.forEach(function(modulePath) {
+      moduleRootPaths.forEach(function (modulePath) {
         const depthModule = directoryDepth(modulePath);
         if (depthModule - depthRoot > maxDirectoryDepth()) return;
         clonedTxtCount = enumerateMsgSyncPriv(
@@ -444,7 +444,7 @@ export function enumerateMsgSyncPriv(
 
 export function removeObsoleteFile(dir: string, fileNames: string[]) {
   const files = fs.readdirSync(dir);
-  files.forEach(function(file) {
+  files.forEach(function (file) {
     const matched = file.match(/^([0-9a-f]{32})_(.*\.txt)$/);
     if (!matched) return;
     if (fileNames.indexOf(matched[2]) >= 0) {
@@ -528,7 +528,7 @@ export function resolveDependencies(
   if (deps === undefined || !deps) return null;
   deps = Object.keys(deps);
   if (deps.length === 0) return null;
-  deps.forEach(function(dep) {
+  deps.forEach(function (dep) {
     const depPath = requireResolve(dep, currentDir, rootDir);
     if (depPath && moduleRootPaths!.indexOf(depPath) < 0) {
       moduleRootPaths!.push(depPath);
@@ -567,7 +567,7 @@ export function readToJson(langDirPath: string, msgFile: string, lang: string) {
   }
   if (fileType === 'json' && HASH_KEYS && lang === ENGLISH) {
     const keys = Object.keys(jsonObj);
-    keys.forEach(function(key) {
+    keys.forEach(function (key) {
       const newKey = md5(key);
       jsonObj[newKey] = jsonObj[key];
       delete jsonObj[key];
@@ -582,7 +582,7 @@ export function normalizeKeyArrays(keyArrays?: string | string[]) {
   if (typeof keyArrays === 'string' && keyArrays.length === 0) return [];
   if (!Array.isArray(keyArrays)) return [[keyArrays.toString()]];
   const retKeyArrays: string[][] = [];
-  keyArrays.forEach(function(keyArray) {
+  keyArrays.forEach(function (keyArray) {
     if (keyArray === null) return;
     if (typeof keyArray === 'string' && keyArray.length === 0) return;
     if (!Array.isArray(keyArray)) {
@@ -590,7 +590,7 @@ export function normalizeKeyArrays(keyArrays?: string | string[]) {
       return;
     }
     const retKeyArray: string[] = [];
-    keyArray.forEach(function(key) {
+    keyArray.forEach(function (key) {
       if (key === null) return;
       if (typeof key === 'string' && key.length === 0) return;
       assert(
@@ -663,16 +663,16 @@ export function scanJsonPriv(
 
 export function sortMsges(msgs: {[name: string]: any}) {
   const keys = Object.keys(msgs);
-  const msgKeys = _.remove(keys, function(key) {
-    return KEY_HEADERS.some(function(header) {
+  const msgKeys = _.remove(keys, function (key) {
+    return KEY_HEADERS.some(function (header) {
       return key.indexOf(header) === 0;
     });
   });
   const sorted: {[name: string]: any} = {};
-  keys.sort().forEach(function(key) {
+  keys.sort().forEach(function (key) {
     sorted[key] = msgs[key];
   });
-  msgKeys.sort().forEach(function(key) {
+  msgKeys.sort().forEach(function (key) {
     sorted[key] = msgs[key];
   });
   return sorted;
@@ -692,7 +692,7 @@ export function initIntlDirs() {
   }
   if (!intlEnStats.isDirectory()) return false;
   if (!TARGET_LANGS) TARGET_LANGS = getSupportedLanguages();
-  TARGET_LANGS.forEach(function(lang) {
+  TARGET_LANGS.forEach(function (lang) {
     mkdirp.sync(path.join(INTL_DIR, lang));
   });
   return true;
@@ -782,7 +782,7 @@ export function headerIncluded(name: string, headersAllowed: string[]) {
   if (typeof name !== 'string') return false;
   let matched = false;
   if (Array.isArray(headersAllowed)) {
-    headersAllowed.forEach(function(header) {
+    headersAllowed.forEach(function (header) {
       if (matched) return;
       matched = name.indexOf(header) === 0;
     });
@@ -813,7 +813,7 @@ export function percent(msg: string) {
  */
 export function mapPercent(msg: string) {
   let ix = 0;
-  const output = msg.replace(/\%[sdj\%]/g, match => {
+  const output = msg.replace(/\%[sdj\%]/g, (match) => {
     if (match === '%%') return '';
     const str = '{' + ix.toString() + '}';
     ix++;
@@ -825,7 +825,7 @@ export function mapPercent(msg: string) {
 export function mapArgs(p: string, args: any[]) {
   let ix = 1;
   const output: string[] = [];
-  p.replace(/\%[sdj\%]/g, match => {
+  p.replace(/\%[sdj\%]/g, (match) => {
     if (match === '%%') return '';
     let arg = args[ix++];
     if (arg === undefined) arg = 'undefined';
@@ -948,7 +948,7 @@ export function loadMsgFromFile(
  */
 export function removeDoubleCurlyBraces(json: AnyObject) {
   let count = 0;
-  Object.keys(json).forEach(key => {
+  Object.keys(json).forEach((key) => {
     count++;
     if (typeof json[key] !== 'string') {
       // The value for `zz` pseudo code is an array, let's skip

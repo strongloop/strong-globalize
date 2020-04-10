@@ -41,9 +41,9 @@ var secondaryMgr = loadMsgHelper.secondaryMgr;
 var POSITIVE_TEST = true;
 var NEGATIVE_TEST = false;
 
-test('deep extraction and autonomous msg loading NOT forking', function(t) {
+test('deep extraction and autonomous msg loading NOT forking', function (t) {
   mktmpdir(
-    function(err, destDir, done) {
+    function (err, destDir, done) {
       if (err) t.fail('mktmpdir failed.');
       shell.cd(__dirname);
       shell.cp(
@@ -62,36 +62,36 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
 
       async.series(
         [
-          function(cb) {
+          function (cb) {
             // before deep extraction: AML_NONE fails.
             async.forEachOfSeries(
               wellKnownLangs,
-              function(lang, ix, callback) {
+              function (lang, ix, callback) {
                 secondaryMgr(
                   destDir,
                   lang,
                   t,
                   helper.AML_NONE,
                   NEGATIVE_TEST,
-                  function() {
+                  function () {
                     t.pass('secondaryMgr succeeds for ' + lang);
                     callback();
                   }
                 );
               },
-              function(err) {
+              function (err) {
                 if (err) t.fail('language iteration 1 failed.');
                 else t.pass('language iteration 1 succeeds.');
                 cb();
               }
             );
           },
-          function(cb) {
+          function (cb) {
             helper.setRootDir(destDir);
             var savedMaxDepth = process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH;
             process.env.STRONGLOOP_GLOBALIZE_MAX_DEPTH = null;
             var unhook_intercept = stdout(stdoutCb, stderrCb);
-            extract.extractMessages(null, true, true, function(err, result) {
+            extract.extractMessages(null, true, true, function (err, result) {
               unhook_intercept();
               if (err) t.fail('extractMessages failed.');
               else t.pass('extractMessages succeeds.');
@@ -99,7 +99,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
               cb();
             });
           },
-          function(cb) {
+          function (cb) {
             var targetMsgJson = {
               '2b98ad6283669674d93a859cfac60ce8':
                 'third - primary depth message',
@@ -130,7 +130,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
             );
             cb();
           },
-          function(cb) {
+          function (cb) {
             if (translateMaybeSkip) {
               cb();
               return;
@@ -138,7 +138,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
             SG.STRONGLOOP_GLB.reset();
             helper.setRootDir(destDir);
             var unhook_intercept = stdout(stdoutCb, stderrCb);
-            translate.translateResource(function(err) {
+            translate.translateResource(function (err) {
               unhook_intercept();
               if (err) {
                 t.comment('*** translate is unavailable; skipping.');
@@ -149,11 +149,11 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
               cb();
             });
           },
-          function(cb) {
+          function (cb) {
             // after deep extraction: only aml_none with EN.
             async.forEachOfSeries(
               wellKnownLangs,
-              function(lang, ix, callback) {
+              function (lang, ix, callback) {
                 if (translateMaybeSkip && lang !== helper.ENGLISH) {
                   callback();
                   return;
@@ -164,58 +164,58 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
                   t,
                   helper.AML_NONE,
                   POSITIVE_TEST,
-                  function() {
+                  function () {
                     t.pass('secondaryMgr succeeds for ' + lang);
                     callback();
                   }
                 );
               },
-              function(err) {
+              function (err) {
                 if (err) t.fail('language iteration 2 failed.');
                 else t.pass('language iteration 2 succeeds.');
                 cb();
               }
             );
           },
-          function(cb) {
+          function (cb) {
             // after deep extraction: aml overriding with all non-EN succeed.
             async.forEachOfSeries(
               wellKnownLangs,
-              function(lang, ix, callback) {
+              function (lang, ix, callback) {
                 secondaryMgr(
                   destDir,
                   lang,
                   t,
                   ['secondary', 'third', 'fourth', 'fifth'],
                   POSITIVE_TEST,
-                  function() {
+                  function () {
                     callback();
                   }
                 );
               },
-              function(err) {
+              function (err) {
                 if (err) t.fail('language iteration 3 failed.');
                 cb();
               }
             );
           },
-          function(cb) {
+          function (cb) {
             // after deep extraction: aml_all with all non-EN succeed.
             async.forEachOfSeries(
               wellKnownLangs,
-              function(lang, ix, callback) {
+              function (lang, ix, callback) {
                 secondaryMgr(
                   destDir,
                   lang,
                   t,
                   helper.AML_ALL,
                   POSITIVE_TEST,
-                  function() {
+                  function () {
                     callback();
                   }
                 );
               },
-              function(err) {
+              function (err) {
                 if (err) t.fail('language iteration 4 failed.');
                 cb();
               }
@@ -225,7 +225,7 @@ test('deep extraction and autonomous msg loading NOT forking', function(t) {
         done
       );
     },
-    function(err, dir) {
+    function (err, dir) {
       if (process.platform !== 'win32') {
         if (err) t.fail('mktmpdir cleanup failed.');
       }

@@ -35,9 +35,9 @@ var aliases = [
   {level: 'silly', err: false, fn: g.silly},
 ];
 
-aliases.forEach(function(alias) {
+aliases.forEach(function (alias) {
   var title = alias.level + ' (this msg is shown in the console - singleton)';
-  test(title, function(t) {
+  test(title, function (t) {
     var called = false;
     function myLogCb(level, msg) {
       if (msg.message.indexOf('StrongGlobalize') === 0) return;
@@ -63,7 +63,7 @@ function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
     return VERBOSE ? null : '';
   }
   var unhook_intercept = stdout(stdoutCb, stderrCb);
-  setTimeout(function() {
+  setTimeout(function () {
     var myStdMsg = alias.err ? myStderrMsg : myStdoutMsg;
     t.comment('myLogCbMsg: %j', myLogCbMsg);
     t.comment('myStdMsg: %s', myStdMsg);
@@ -92,9 +92,9 @@ function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
   }, 50);
 }
 
-aliases.forEach(function(alias) {
+aliases.forEach(function (alias) {
   var title = alias.level + ' (console disabled in singleton logging)';
-  test(title, function(t) {
+  test(title, function (t) {
     var called = false;
     function myLogCb(level, msg) {
       if (msg.message.toString().indexOf('StrongGlobalize') === 0) return;
@@ -118,7 +118,7 @@ function logTestWithConsoleDisabled(myLogCbMsg, t, alias, expectedMsg) {
     myStderrMsg = txt;
   }
   var unhook_intercept = stdout(stdoutCb, stderrCb);
-  setTimeout(function() {
+  setTimeout(function () {
     var myStdMsg = alias.err ? myStderrMsg : myStdoutMsg;
     t.comment('myLogCbMsg: %j', myLogCbMsg);
     t.comment('myStdMsg: %s', myStdMsg);

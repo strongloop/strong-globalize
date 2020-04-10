@@ -8,8 +8,8 @@
 var gpbHelper = require('./gpb-translate-helper');
 var test = require('tap').test;
 
-test('test translate error ' + gpbHelper.FAKE_bundle_create, function(t) {
-  gpbHelper.fakeGpbTest(t, gpbHelper.FAKE_bundle_create, function() {
+test('test translate error ' + gpbHelper.FAKE_bundle_create, function (t) {
+  gpbHelper.fakeGpbTest(t, gpbHelper.FAKE_bundle_create, function () {
     t.pass();
     t.end();
   });

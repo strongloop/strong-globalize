@@ -110,22 +110,22 @@ var targets = {
   },
 };
 
-test('test extract misc testing', function(t) {
+test('test extract misc testing', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, checkResults) {
+    function (name, unhook_intercept, checkResults) {
       var blackList = name === 'extract000' ? 'foo.js' : null;
       var deep = name === 'extract000' || name === 'extract003';
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput, function(_err) {
+      extract.extractMessages(blackList, deep, suppressOutput, function (_err) {
         unhook_intercept();
         t.notOk(_err, 'extractMessages succeeds.');
         checkResults();
       });
     },
-    function() {
+    function () {
       t.end();
     }
   );

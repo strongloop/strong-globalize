@@ -19,120 +19,120 @@ var aliases = [
   {
     level: 'emergency',
     err: true,
-    fn: function(title) {
+    fn: function (title) {
       g.emergency(title);
     },
   },
   {
     level: 'alert',
     err: true,
-    fn: function(title) {
+    fn: function (title) {
       g.alert(title);
     },
   },
   {
     level: 'critical',
     err: true,
-    fn: function(title) {
+    fn: function (title) {
       g.critical(title);
     },
   },
   {
     level: 'error',
     err: true,
-    fn: function(title) {
+    fn: function (title) {
       g.error(title);
     },
   },
   {
     level: 'warning',
     err: true,
-    fn: function(title) {
+    fn: function (title) {
       g.warning(title);
     },
   },
   {
     level: 'notice',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.notice(title);
     },
   },
   {
     level: 'informational',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.informational(title);
     },
   },
   {
     level: 'debug',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.debug(title);
     },
   },
   {
     level: 'warn',
     err: true,
-    fn: function(title) {
+    fn: function (title) {
       g.warn(title);
     },
   },
   {
     level: 'info',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.info(title);
     },
   },
   {
     level: 'log',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.log(title);
     },
   },
   {
     level: 'help',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.help(title);
     },
   },
   {
     level: 'data',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.data(title);
     },
   },
   {
     level: 'verbose',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.verbose(title);
     },
   },
   {
     level: 'input',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.input(title);
     },
   },
   {
     level: 'prompt',
     err: false,
-    fn: function(title) {
+    fn: function (title) {
       g.prompt(title);
     },
   },
 ];
 
-aliases.forEach(function(alias) {
+aliases.forEach(function (alias) {
   var title = alias.level + ' (this msg is shown in the console - multiple)';
-  test(title, function(t) {
+  test(title, function (t) {
     var called = false;
     function myLogCb(level, msg) {
       if (msg.message.indexOf('StrongGlobalize') === 0) return;
@@ -158,7 +158,7 @@ function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
     return VERBOSE ? null : '';
   }
   var unhook_intercept = stdout(stdoutCb, stderrCb);
-  setTimeout(function() {
+  setTimeout(function () {
     var myStdMsg = alias.err ? myStderrMsg : myStdoutMsg;
     t.comment('myLogCbMsg: %j', myLogCbMsg);
     t.comment('myStdMsg: %s', myStdMsg);
@@ -187,9 +187,9 @@ function logTestWithConsoleEnabled(myLogCbMsg, t, alias, expectedMsg) {
   }, 50);
 }
 
-aliases.forEach(function(alias) {
+aliases.forEach(function (alias) {
   var title = alias.level + ' (console disabled in multiple logging)';
-  test(title, function(t) {
+  test(title, function (t) {
     var called = false;
     function myLogCb(level, msg) {
       if (msg.message.toString().indexOf('StrongGlobalize') === 0) return;
@@ -213,7 +213,7 @@ function logTestWithConsoleDisabled(myLogCbMsg, t, alias, expectedMsg) {
     myStderrMsg = txt;
   }
   var unhook_intercept = stdout(stdoutCb, stderrCb);
-  setTimeout(function() {
+  setTimeout(function () {
     var myStdMsg = alias.err ? myStderrMsg : myStdoutMsg;
     t.comment('myLogCbMsg: %j', myLogCbMsg);
     t.comment('myStdMsg: %s', myStdMsg);

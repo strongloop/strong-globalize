@@ -28,12 +28,12 @@ var targets = {
   },
 };
 
-test('test globalize misc testing', function(t) {
+test('test globalize misc testing', function (t) {
   sltTH.testHarness(
     t,
     targets,
     true,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       unhook_intercept();
       callback();
       var g = new SG();
@@ -63,7 +63,7 @@ test('test globalize misc testing', function(t) {
         default:
       }
     },
-    function() {
+    function () {
       t.end();
     }
   );

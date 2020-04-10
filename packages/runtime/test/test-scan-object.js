@@ -10,10 +10,10 @@ var test = require('tap').test;
 
 var savedConsoleLog = console.log;
 var savedConsoleError = console.error;
-console.log = function() {};
-console.error = function() {};
+console.log = function () {};
+console.error = function () {};
 
-test('normalize keys', function(t) {
+test('normalize keys', function (t) {
   var data = [
     {
       i: null,
@@ -67,7 +67,7 @@ test('normalize keys', function(t) {
       'normalize keys with data number: ' + ix.toString()
     );
   }
-  t.throws(function() {
+  t.throws(function () {
     helper.normalizeKeyArrays([[[]]]);
   }, 'key must be string or number');
   t.end();
@@ -126,9 +126,9 @@ function testScan(returnErrors) {
   var exptd = returnErrors ? longExpected : shortExpected;
   test(
     'object scan object with' + (returnErrors ? '' : 'out') + ' errors',
-    function(t) {
+    function (t) {
       t.match(ret.length, exptd.length, 'return length matched.');
-      exptd.forEach(function(exp, ix) {
+      exptd.forEach(function (exp, ix) {
         t.match(ret[ix], exp, 'right text is returned ' + ix.toString());
       });
       t.end();
@@ -171,7 +171,7 @@ var replacedData = {
 
 function testReplace() {
   var ret = helper.replaceJson(newKeys, data, newData);
-  test('replace object', function(t) {
+  test('replace object', function (t) {
     t.match(
       JSON.stringify(ret),
       JSON.stringify(replacedData),

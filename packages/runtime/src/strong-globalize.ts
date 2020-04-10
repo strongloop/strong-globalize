@@ -24,9 +24,9 @@ import {getLangAlias} from './helper';
 try {
   const Cldr = require('cldrjs');
   const get = Cldr.prototype.get;
-  Cldr.prototype.get = function(paths?: string[]) {
+  Cldr.prototype.get = function (paths?: string[]) {
     if (Array.isArray(paths)) {
-      paths = paths.map(function(p) {
+      paths = paths.map(function (p) {
         return p === 'zz' ? 'en' : p;
       });
     }
@@ -87,7 +87,7 @@ export class StrongGlobalize {
       helper.isLoadMessages(rootDir)
     ) {
       const langs = Object.keys(STRONGLOOP_GLB.bundles!);
-      langs.forEach(function(lang) {
+      langs.forEach(function (lang) {
         helper.loadMsgFromFile(lang, rootDir);
       });
     }
@@ -170,7 +170,7 @@ export class StrongGlobalize {
     globalize.loadGlobalize(this._options.language);
     return globalize.packMessage(
       args,
-      function(msg) {
+      function (msg) {
         globalize.logPersistent(msg, 'error');
         if (globalize.consoleEnabled()) process.stderr.write(msg.message);
         return msg;
@@ -184,7 +184,7 @@ export class StrongGlobalize {
     globalize.loadGlobalize(this._options.language);
     return globalize.packMessage(
       args,
-      function(msg) {
+      function (msg) {
         globalize.logPersistent(msg, 'error');
         if (globalize.consoleEnabled()) process.stdout.write(msg.message);
       },

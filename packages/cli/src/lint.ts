@@ -95,7 +95,7 @@ export function lintMessageFiles(enOnly: boolean): boolean {
       verified = false;
     }
     const keys = Object.keys(trait.msgs);
-    keys.forEach(function(key) {
+    keys.forEach(function (key) {
       const enMsg = traitEnglish.msgs[key];
       if (!enMsg) {
         console.error(
@@ -135,7 +135,7 @@ export function lintMessageFiles(enOnly: boolean): boolean {
         );
         verified = false;
       } else {
-        enMsg.phKeys!.forEach(phKey => {
+        enMsg.phKeys!.forEach((phKey) => {
           if (msg.phKeys!.indexOf(phKey) < 0) {
             console.error(
               '***',
@@ -179,14 +179,14 @@ export function lintMessageFiles(enOnly: boolean): boolean {
     let wordCount = 0;
     let characterCount = 0;
     const rootDir = helper.getRootDir();
-    helper.enumerateMsgSync(rootDir, lang, false, function(
+    helper.enumerateMsgSync(rootDir, lang, false, function (
       // tslint:disable-next-line:no-any
       jsonObj: {[key: string]: any},
       msgFilePath: string
     ) {
       const jsonObjKeys = Object.keys(jsonObj);
       trait.nFiles++;
-      jsonObjKeys.forEach(key => {
+      jsonObjKeys.forEach((key) => {
         if (key in trait.msgs) {
           trait.dupKeys.push(key);
           return;
@@ -207,13 +207,10 @@ export function lintMessageFiles(enOnly: boolean): boolean {
           trt.hardCoded = msg.match(/{{.+?}}/g);
           trt.cHardCoded = trt.hardCoded ? trt.hardCoded.length : 0;
           trt.phKeys = [];
-          let trimedMsg = msg
-            .trim()
-            .replace(/{{/g, '')
-            .replace(/}}/g, '');
+          let trimedMsg = msg.trim().replace(/{{/g, '').replace(/}}/g, '');
           const phs = trimedMsg.match(/{[0-9a-zA-Z]+?}/g);
           if (phs)
-            phs.forEach(function(ph) {
+            phs.forEach(function (ph) {
               const phKey = ph.slice(1, -1);
               trimedMsg = trimedMsg.replace(ph, phKey);
               trt.phKeys!.push(phKey);
@@ -261,7 +258,7 @@ function checkTrait(trait: Trait) {
         'duplicate message key' +
         (plural ? 's:' : ':')
     );
-    trait.dupKeys.forEach(dupKey => {
+    trait.dupKeys.forEach((dupKey) => {
       console.error('***   ' + dupKey);
     });
     verified = false;
@@ -299,7 +296,7 @@ function checkTrait(trait: Trait) {
       verified = false;
     }
     if (msg.phKeys!.length > 0) {
-      msg.phKeys!.forEach(phKey => {
+      msg.phKeys!.forEach((phKey) => {
         if (!isNameAllowed(phKey, PLACEHOLDER_NAMES_ALLOWED)) {
           console.error(
             '***',
@@ -320,7 +317,7 @@ function checkTrait(trait: Trait) {
           'left orphan placeholder' +
           (plural ? 's:' : ':')
       );
-      msg.phLeftOrphans.forEach(function(phKey) {
+      msg.phLeftOrphans.forEach(function (phKey) {
         console.error('***   ' + phKey);
       });
       verified = false;
@@ -335,7 +332,7 @@ function checkTrait(trait: Trait) {
           'right orphan placeholder' +
           (plural ? 's:' : ':')
       );
-      msg.phRightOrphans.forEach(function(phKey) {
+      msg.phRightOrphans.forEach(function (phKey) {
         console.error('***   ' + phKey);
       });
       verified = false;

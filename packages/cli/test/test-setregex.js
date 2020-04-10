@@ -27,12 +27,12 @@ var targets = {
     err: ["*** setHtmlRegex: 'regexTail' is illegal.\n"],
   },
 };
-test('setHtmlRegex test', function(t) {
+test('setHtmlRegex test', function (t) {
   sltTH.testHarness(
     t,
     targets,
     true,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       switch (name) {
         case 'setregex000': {
           try {
@@ -73,7 +73,7 @@ test('setHtmlRegex test', function(t) {
       unhook_intercept();
       callback();
     },
-    function() {
+    function () {
       t.end();
     }
   );

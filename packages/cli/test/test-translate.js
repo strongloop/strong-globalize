@@ -10,7 +10,7 @@ var helper = SG.helper;
 var test = require('tap').test;
 var translate = require('../lib/translate');
 
-test('setTranslationUnit', function(t) {
+test('setTranslationUnit', function (t) {
   var LB = 1;
   var UB = translate.GPB_MAX_NUMBER_OF_KEYS;
   t.match(translate.setTranslationUnit(null), UB, 'null');
@@ -27,8 +27,8 @@ test('setTranslationUnit', function(t) {
   t.end();
 });
 
-test('language mapping for GPB', function(t) {
-  helper.enumerateLanguageSync(function(lang) {
+test('language mapping for GPB', function (t) {
+  helper.enumerateLanguageSync(function (lang) {
     t.equal(
       translate.reverseAdjustLangFromGPB(translate.adjustLangForGPB(lang)),
       lang,

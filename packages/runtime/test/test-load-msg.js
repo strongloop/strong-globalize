@@ -16,7 +16,7 @@ SG.SetAppLanguages(['en', 'zh-Hans', 'zh-Hant']);
 
 var g = new SG();
 
-test('register resource tag', function(t) {
+test('register resource tag', function (t) {
   var rootDir = path.resolve(__dirname);
   var lang = helper.ENGLISH;
   var txtFile = 'test-help.txt';
@@ -37,7 +37,7 @@ test('register resource tag', function(t) {
   t.end();
 });
 
-test('load message', function(t) {
+test('load message', function (t) {
   var template = 'Error: {url} or {port} is invalid.';
   var message = g.t(template, {url: 'localhost', port: 8123});
   var targetMsg = 'Error: localhost or 8123 is invalid.';
@@ -49,14 +49,14 @@ test('load message', function(t) {
   t.end();
 });
 
-test('remove double curly braces', function(t) {
+test('remove double curly braces', function (t) {
   var source = {msgError: 'Error: {{HTTP}} err.'};
   var targetMsg = 'Error: HTTP err.';
   helper.removeDoubleCurlyBraces(source);
   t.equal(source.msgError, targetMsg, 'Remove double curly braces.');
   t.end();
 });
-test('no accept-language header', function(t) {
+test('no accept-language header', function (t) {
   var req = {
     headers: {
       accept: 'application/json',
@@ -66,7 +66,7 @@ test('no accept-language header', function(t) {
   t.equal(message, 'Test message');
   t.end();
 });
-test('empty accept-language header', function(t) {
+test('empty accept-language header', function (t) {
   var req = {
     headers: {
       'accept-language': '',
@@ -76,7 +76,7 @@ test('empty accept-language header', function(t) {
   t.equal(message, 'Test message');
   t.end();
 });
-test('accept-language header - *', function(t) {
+test('accept-language header - *', function (t) {
   var req = {
     headers: {
       'accept-language': '*',
@@ -86,7 +86,7 @@ test('accept-language header - *', function(t) {
   t.equal(message, 'Test message');
   t.end();
 });
-test('accept-language header - en', function(t) {
+test('accept-language header - en', function (t) {
   var req = {
     headers: {
       'accept-language': 'en',
@@ -97,7 +97,7 @@ test('accept-language header - en', function(t) {
   t.end();
 });
 
-test('accept-language header - alias', function(t) {
+test('accept-language header - alias', function (t) {
   var req = {
     headers: {
       // alias to 'zh-Hans'
@@ -114,7 +114,7 @@ test('accept-language header - alias', function(t) {
   t.end();
 });
 
-test('multiple, weighted, accept-language header with alias', function(t) {
+test('multiple, weighted, accept-language header with alias', function (t) {
   var req = {
     headers: {
       'accept-language':

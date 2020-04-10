@@ -35,7 +35,7 @@ var unintendedOrder = {
   xyz: 'xyz',
 };
 
-test('check equality of message objects', function(t) {
+test('check equality of message objects', function (t) {
   var result = helper.sortMsges(outOfOrder);
   t.match(result, outOfOrder, 'result contents are intact - outOfOrder.');
   t.match(result, inOrder, 'result contents are intact - inOrder.');

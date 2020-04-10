@@ -40,8 +40,8 @@ export interface GlobalizeConfig {
 export const STRONGLOOP_GLB: GlobalizeConfig = {
   reset() {
     // tslint:disable:no-invalid-this
-    const keys = Object.keys(this).filter(k => k !== 'reset');
-    keys.forEach(k => {
+    const keys = Object.keys(this).filter((k) => k !== 'reset');
+    keys.forEach((k) => {
       // Clean up all properties except `reset`
       delete this[k];
     });

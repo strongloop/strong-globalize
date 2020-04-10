@@ -184,12 +184,12 @@ var targets = {
   },
 };
 
-test('test lint misc testing', function(t) {
+test('test lint misc testing', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, callback) {
+    function (name, unhook_intercept, callback) {
       var checkAllLangs = name === 'lint004';
       var mustErr = name !== 'lint005';
       const err = lint.lintMessageFiles(!checkAllLangs);
@@ -198,7 +198,7 @@ test('test lint misc testing', function(t) {
       else t.assert(!err, name + ' must not error.');
       callback();
     },
-    function() {
+    function () {
       t.end();
     }
   );

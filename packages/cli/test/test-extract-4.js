@@ -30,22 +30,22 @@ var targets = {
   },
 };
 
-test('test extract misc cases 3', function(t) {
+test('test extract misc cases 3', function (t) {
   sltTH.testHarness(
     t,
     targets,
     false,
-    function(name, unhook_intercept, checkResults) {
+    function (name, unhook_intercept, checkResults) {
       var blackList = null;
       var deep = name === 'extract014';
       var suppressOutput = false;
-      extract.extractMessages(blackList, deep, suppressOutput, function(_err) {
+      extract.extractMessages(blackList, deep, suppressOutput, function (_err) {
         unhook_intercept();
         t.notOk(_err, 'extractMessages succeeds.');
         checkResults();
       });
     },
-    function() {
+    function () {
       t.end();
     }
   );

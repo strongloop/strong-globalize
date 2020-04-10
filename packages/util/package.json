@@ -1,7 +1,7 @@
 {
   "name": "strong-globalize-util",
   "description": "StrongLoop Globalize - Util",
-  "version": "5.0.4",
+  "version": "6.0.0",
   "private": true,
   "keywords": [
     "StrongLoop",

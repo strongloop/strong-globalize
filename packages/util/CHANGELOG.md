@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/strongloop/strong-globalize/compare/strong-globalize-util@5.0.4...strong-globalize-util@6.0.0) (2020-04-10)
+
+
+### chore
+
+* add Node.js requirement to READMEs ([c637bac](https://github.com/strongloop/strong-globalize/commit/c637bac86c3a6b8b4d3dd578424f447f4b26f9c8))
+
+
+### Features
+
+* upgrade dependencies ([71e2ccd](https://github.com/strongloop/strong-globalize/commit/71e2ccd09962a2fb83641d380fecc2458dd527b8))
+
+
+### BREAKING CHANGES
+
+* Support for Node.js 8.x is now dropped. Please use latest
+10.x or above.
+
+
+
+
+
 ## [5.0.4](https://github.com/strongloop/strong-globalize/compare/strong-globalize-util@5.0.3...strong-globalize-util@5.0.4) (2020-01-31)
 
 **Note:** Version bump only for package strong-globalize-util

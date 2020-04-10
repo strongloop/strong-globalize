@@ -2,7 +2,11 @@
 
 Assembles CLDR data of the specified languages to one .json file.
 
-Usage
+## Supported Node.js versions
+
+Node 10.x latest version and above are supported.
+
+## Usage
 
 Out of box, one `json` file is included which contains CLDR data for the languages enabled in app.js.  In the installation of `strong-globalize` in your package, you can replace the out-of-box CLDR file entirely, or add extra CLDR files to the `cldr` directory.
 
@@ -14,6 +18,5 @@ In runtime, `strong-globalize` dynamically loads in memory just the CLDR data re
 
 
 ```js
-	$node app.js
-	
+	node app.js
 ```

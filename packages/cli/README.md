@@ -2,6 +2,10 @@
 
 This module provides CLI tooling for globalization.
 
+## Supported Node.js versions
+
+Node 10.x latest version and above are supported.
+
 ## Overview
 
 The CLI ships `slt-globalize` command to perform common tasks to globalize

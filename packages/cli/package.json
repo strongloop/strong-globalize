@@ -31,16 +31,16 @@
     "slt-globalize": "./lib/cli.js"
   },
   "dependencies": {
-    "async": "^3.1.1",
+    "async": "^3.2.0",
     "debug": "^4.1.1",
     "esprima": "^4.0.0",
-    "estraverse": "^4.3.0",
-    "g11n-pipeline": "^3.4.1",
-    "globalize": "^1.4.2",
+    "estraverse": "^5.0.0",
+    "g11n-pipeline": "^3.4.0",
+    "globalize": "^1.5.0",
     "htmlparser2": "^3.10.1",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
-    "mkdirp": "^1.0.3",
+    "mkdirp": "^1.0.4",
     "mktmpdir": "^0.1.1",
     "optimist": "^0.6.1",
     "strong-globalize": "^5.0.5",
@@ -49,22 +49,22 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@types/async": "^3.0.7",
+    "@types/async": "^3.2.0",
     "@types/debug": "^4.1.5",
     "@types/esprima": "^4.0.2",
     "@types/estraverse": "0.0.6",
     "@types/htmlparser2": "^3.10.1",
-    "@types/lodash": "^4.14.138",
+    "@types/lodash": "^4.14.149",
     "@types/md5": "^2.1.32",
-    "@types/mkdirp": "^0.5.2",
-    "@types/node": "^12.7.5",
+    "@types/mkdirp": "^1.0.0",
+    "@types/node": "^13.11.1",
     "@types/optimist": "0.0.29",
     "@types/yamljs": "^0.2.30",
-    "coveralls": "^3.0.6",
+    "coveralls": "^3.0.11",
     "intercept-stdout": "^0.1.2",
-    "rimraf": "^3.0.1",
+    "rimraf": "^3.0.2",
     "shelljs": "^0.8.3",
-    "tap": "^14.10.6",
-    "typescript": "^3.7.5"
+    "tap": "^14.10.7",
+    "typescript": "^3.8.3"
   }
 }

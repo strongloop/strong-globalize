@@ -24,7 +24,7 @@
     "lint": "npm run prettier:check && npm run tslint",
     "lint:fix": "npm run prettier:fix && npm run tslint:fix",
     "prettier:cli": "prettier \"**/*.ts\" \"**/*.js\"",
-    "prettier:check": "npm run prettier:cli -- -l",
+    "prettier:check": "npm run prettier:cli -- --check",
     "prettier:fix": "npm run prettier:cli -- --write",
     "tslint": "tslint -p tsconfig.json -c tslint.json",
     "tslint:fix": "npm run tslint -- --fix",
@@ -45,12 +45,12 @@
     "url": "https://github.com/strongloop/strong-globalize/issues"
   },
   "devDependencies": {
-    "coveralls": "^3.0.9",
+    "coveralls": "^3.0.11",
     "lerna": "^3.20.2",
-    "prettier": "^1.19.1",
-    "tap": "^14.10.6",
-    "tslint": "^6.0.0",
-    "typescript": "^3.7.5"
+    "prettier": "^2.0.4",
+    "tap": "^14.10.7",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3"
   },
   "dependencies": {}
 }

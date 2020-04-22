@@ -114,6 +114,23 @@ test('accept-language header - alias', function (t) {
   t.end();
 });
 
+test('accept-language header - alias, case handling', function (t) {
+  var req = {
+    headers: {
+      // alias to 'zh-Hans'
+      'accept-language': 'zh-CN',
+    },
+  };
+
+  // create a SG instance for language 'zh-Hans' and register it
+  var sg_hans = new SG({language: 'zh-Hans'});
+  SG.sgCache.set('zh-Hans', sg_hans);
+
+  var cachedSg = g.http(req);
+  t.equal(cachedSg.getLanguage(), 'zh-Hans');
+  t.end();
+});
+
 test('multiple, weighted, accept-language header with alias', function (t) {
   var req = {
     headers: {

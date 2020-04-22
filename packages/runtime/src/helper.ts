@@ -971,6 +971,7 @@ export function getLangAlias(lang: string): string {
   const ALIAS_MAP: {[lang: string]: string} = {
     'zh-cn': 'zh-Hans',
     'zh-tw': 'zh-Hant',
+    'zh-TW': 'zh-Hant',
   };
   if (lang && ALIAS_MAP.hasOwnProperty(lang)) return ALIAS_MAP[lang];
   return lang;

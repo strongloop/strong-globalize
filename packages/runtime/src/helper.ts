@@ -968,10 +968,11 @@ export function removeDoubleCurlyBraces(json: AnyObject) {
  */
 export function getLangAlias(lang: string): string {
   // The {lang: alias} pairs
+  let language = _.toLower(lang) || lang;
   const ALIAS_MAP: {[lang: string]: string} = {
     'zh-cn': 'zh-Hans',
     'zh-tw': 'zh-Hant',
   };
-  if (lang && ALIAS_MAP.hasOwnProperty(lang)) return ALIAS_MAP[lang];
+  if (lang && ALIAS_MAP.hasOwnProperty(language)) return ALIAS_MAP[language];
   return lang;
 }

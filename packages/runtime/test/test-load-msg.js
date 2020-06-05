@@ -12,7 +12,7 @@ var test = require('tap').test;
 
 SG.SetRootDir(__dirname);
 SG.SetDefaultLanguage();
-SG.SetAppLanguages(['en', 'zh-Hans', 'zh-Hant']);
+SG.SetAppLanguages(['de', 'en', 'zh-Hans', 'zh-Hant']);
 
 var g = new SG();
 
@@ -147,5 +147,17 @@ test('multiple, weighted, accept-language header with alias', function (t) {
 
   var message = g.http(req).f('log');
   t.equal(message, '原木');
+  t.end();
+});
+
+test('language not in list should default to en', function (t) {
+  var req = {
+    headers: {
+      'accept-language': 'id',
+    },
+  };
+
+  var cachedSg = g.http(req);
+  t.equal(cachedSg.getLanguage(), 'en');
   t.end();
 });

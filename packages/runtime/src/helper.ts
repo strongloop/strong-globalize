@@ -880,6 +880,7 @@ export function getLanguageFromRequest(
     return defaultLanguage;
   }
 
+  appLanguages.unshift(defaultLanguage);
   acceptLanguage.languages(appLanguages);
   const bestLanguage = acceptLanguage.get(reqLanguage);
   return bestLanguage || defaultLanguage;

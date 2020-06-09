@@ -880,7 +880,9 @@ export function getLanguageFromRequest(
     return defaultLanguage;
   }
 
-  appLanguages.unshift(defaultLanguage);
+  // Copy the array so that it won't be mutated
+  appLanguages = [defaultLanguage, ...appLanguages];
+
   acceptLanguage.languages(appLanguages);
   const bestLanguage = acceptLanguage.get(reqLanguage);
   return bestLanguage || defaultLanguage;

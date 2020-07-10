@@ -38,7 +38,7 @@
     "g11n-pipeline": "^3.4.0",
     "globalize": "^1.5.0",
     "htmlparser2": "^3.10.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.17",
     "md5": "^2.2.1",
     "mkdirp": "^1.0.4",
     "mktmpdir": "^0.1.1",

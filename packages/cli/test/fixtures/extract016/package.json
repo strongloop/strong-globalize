@@ -1,0 +1,8 @@
+{
+  "name": "spreadOperator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "strong-globalize": "^6.0.4"
+  }
+}

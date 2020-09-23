@@ -33,7 +33,7 @@
   "dependencies": {
     "async": "^3.2.0",
     "debug": "^4.1.1",
-    "esprima": "^4.0.0",
+    "espree": "^7.3.0",
     "estraverse": "^5.1.0",
     "g11n-pipeline": "^3.4.0",
     "globalize": "^1.5.0",

@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import * as assert from 'assert';
 import * as dbg from 'debug';
 const debug = dbg('strong-globalize-cli');
-import * as esprima from 'esprima';
+const espree = require('espree');
 import * as est from 'estraverse';
 import * as fs from 'fs';
 import SG = require('strong-globalize');
@@ -24,15 +24,29 @@ import {AnyObject} from 'strong-globalize/lib/config';
 const extractionFilter = /^([0-9\s\n,\.\'\"]*|.)$/;
 const applyExtractionFilter = true;
 
+// See : https://github.com/eslint/espree#options
 const options = {
-  // esprima parse options
-  loc: true, // Nodes have line and column-based location info
+  // espree parse options
   range: false, // Nodes have an index-based location range (array)
-  raw: false, // We don't need raw.  Value is enough.
-  tokens: false, // An extra array containing all found tokens
+  loc: true, // Nodes have line and column-based location info
   comment: false, // An extra array containing all line and block comments
-  tolerant: false, // An extra array containing all errors found,
-  // attempts to continue parsing when an error is encountered
+  tokens: false, // An extra array containing all found tokens
+  // Set to 3, 5 (default), 6, 7, 8, 9, 10, 11, or 12 to specify the version of ECMAScript syntax you want to use.
+  // You can also set to 2015 (same as 6), 2016 (same as 7), 2017 (same as 8), 2018 (same as 9), 2019 (same as 10), 2020 (same as 11), or 2021 (same as 12) to use the year-based naming.
+  ecmaVersion: 11,
+  sourceType: 'script',
+
+  // specify additional language features
+  ecmaFeatures: {
+    // enable JSX parsing
+    jsx: false,
+
+    // enable return in global scope
+    globalReturn: false,
+
+    // enable implied strict mode (if ecmaVersion >= 5)
+    impliedStrict: false,
+  },
 };
 
 const GLB_FN = [
@@ -575,7 +589,7 @@ export function scanAst(
   }
   let ast: Node;
   try {
-    ast = esprima.parseScript(content, options);
+    ast = espree.parse(content, options);
   } catch (e) {
     const errMsg =
       '\n**********************************************************' +

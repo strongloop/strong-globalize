@@ -835,17 +835,21 @@ export function scanAst(
           node.arguments
         );
       } else if (nodeIsFnCall(node)) {
+        // @ts-ignore
         // tslint:disable-next-line:no-any
         const callee = node.callee as any;
         handleSGCall(
           node,
           callee.object.callee.object.name,
           callee.property.name,
+          // @ts-ignore
           node.arguments
         );
       } else if (nodeIsCallOrNew(node)) {
+        // @ts-ignore
         // tslint:disable-next-line:no-any
         const callee = node.callee as any;
+        // @ts-ignore
         recordLiteralPosition(node.arguments[0], callee.name);
       }
     },

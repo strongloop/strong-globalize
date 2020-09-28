@@ -117,6 +117,35 @@ In runtime, the string resource JSON files under `intl` will be loaded on to mem
               └── package.json
 ```
 
+#### Use `@strong-globalize` comment
+
+Sometimes it's hard for the CLI to determine if a given variable is an instance
+of `StrongGlobalize` so that usage of such variables are subject to message
+extraction.
+
+To explicitly mark a variable as an instance of `StrongGlobalize`, use
+`@strong-globalize` comment:
+
+```ts
+// @strong-globalize
+import g from 'strong-globalize';
+
+// Now the usage of `g.*` is enabled for message extraction
+console.log(g.f('English Text'));
+```
+
+To explicitly mark an argument of a function call to be globalized, we can use
+`@globalize` or `@strong-globalize` comment.
+
+```js
+const gUtil = require('your-helper-for-strong-globalize');
+
+// @globalize
+const msg = gUtil.f('abc');
+// @globalize
+gUtil.log('abc');
+```
+
 ### Deep extraction
 
 Enterprise-scale applications may depend on dozens of third party packages directly or indirectly.  Such applications typically download dependent packages using `npm install` and can globalize them using the `Deep Extraction` mode.

@@ -80,7 +80,7 @@ var targets = {
         '^\n[*]{58}\n' +
           '[*]{2} Please fix the JS code or blacklist the directory.\n' +
           '[*]{2} /index.js\n' +
-          '[*]{2} {"index":[0-9]{3},"lineNumber":8,"column":1' +
+          '[*]{2} {"loc":{"line":8,"column":0},"pos":[0-9]{3}' +
           '}\n' +
           '[*]{58}\n\n$'
       ),
@@ -113,6 +113,23 @@ var targets = {
       '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
         '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
         '--- extracted: 1 msges, 7 words, 30 characters\n',
+    ],
+    err: [],
+  },
+  extract017: {
+    out: [
+      '    extracted: xyz2\n',
+      '    extracted: abc1\n',
+      '    extracted: xyz5\n',
+      '    extracted: abc2\n',
+      '    extracted: abc\n',
+      '    extracted: xyz1\n',
+      '    extracted: xyz4\n',
+      '    extracted: xyz\n',
+      '    extracted: xyz3\n',
+      '\n--- root: \n--- max depth: N/A\n--- cloned: N/A\n' +
+        '--- scanned: 1 js, 0 html \n--- skipped: 0 js, 0 html \n' +
+        '--- extracted: 9 msges, 9 words, 34 characters\n',
     ],
     err: [],
   },

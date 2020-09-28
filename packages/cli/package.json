@@ -31,9 +31,9 @@
     "slt-globalize": "./lib/cli.js"
   },
   "dependencies": {
+    "@babel/parser": "^7.11.5",
     "async": "^3.2.0",
     "debug": "^4.2.0",
-    "espree": "^7.3.0",
     "estraverse": "^5.2.0",
     "g11n-pipeline": "^3.4.0",
     "globalize": "^1.6.0",

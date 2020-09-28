@@ -36,20 +36,24 @@ var content_singleton_body =
   "msg = g.format('format of %s and %s', 'zero', 'one');\n" +
   "msg = g.format('format of {0} and {1}', 'zero', 'one');\n" +
   "msg = g.f('format of {zero} and {one}', \n" +
-  "  {zero: 'zero', one: 'one'});\n";
+  "  {zero: 'zero', one: 'one'});\n" +
+  '// @globalize\n' +
+  "console.log('abc');\n";
 
 test(
   'extract from JS and fill-in with singleton head',
   subTest.bind(
     content_singleton_head + content_singleton_body,
-    'singleton_head + singleton_body'
+    'singleton_head + singleton_body',
+    './test-extract.json'
   )
 );
 test(
   'extract from JS and fill-in with multiple head',
   subTest.bind(
     content_multiple_head + content_singleton_body,
-    'multiple_head + singleton_body'
+    'multiple_head + singleton_body',
+    './test-extract.json'
   )
 );
 
@@ -58,6 +62,8 @@ var content_multiple =
   'var Q = require("strong-globalize")();\n' +
   'var g = new SG();\n' +
   'var N = new SG();\n' +
+  '// @strong-globalize\n' +
+  "const gg = require('./globalize')\n" +
   'function test() {\n' +
   "  return g.Error('This is an error.');\n" +
   '}\n' +
@@ -75,11 +81,16 @@ var content_multiple =
   "msg = Q.data  ('format of %s and %s', 'zero', 'one');\n" +
   "msg = N.format('format of {0} and {1}', 'zero', 'one');\n" +
   "msg = g.f('format of {zero} and {one}', \n" +
-  "  {zero: 'zero', one: 'one'});\n";
+  "  {zero: 'zero', one: 'one'});\n" +
+  "gg.log('abc');\n";
 
 test(
   'extract from JS and fill-in with multiple',
-  subTest.bind(content_multiple, 'content_multiple')
+  subTest.bind(
+    content_multiple,
+    'content_multiple',
+    './test-extract-multiple.json'
+  )
 );
 
 var content_multiple_new =
@@ -103,14 +114,20 @@ var content_multiple_new =
   "msg = g.help  ('format of %s and %s', 'zero', 'one');\n" +
   "msg = g.notice('format of {0} and {1}', 'zero', 'one');\n" +
   "msg = g.prompt('format of {zero} and {one}', \n" +
-  "  {zero: 'zero', one: 'one'});\n";
+  "  {zero: 'zero', one: 'one'});\n" +
+  '// @globalize\n' +
+  "console.log('abc');\n";
 
 test(
   'extract from JS and fill-in with multiple new',
-  subTest.bind(content_multiple_new, 'content_multiple_new')
+  subTest.bind(
+    content_multiple_new,
+    'content_multiple_new',
+    './test-extract.json'
+  )
 );
 
-function subTest(mode, t) {
+function subTest(mode, f, t) {
   helper.setRootDir(__dirname);
   g.setDefaultLanguage();
   var content = this;
@@ -130,10 +147,11 @@ function subTest(mode, t) {
     'format of %s and %s',
     'format of {0} and {1}',
     'format of {zero} and {one}',
+    'abc',
   ];
   var extractedMsgs = [];
   var extractedLocs = [];
-  var targetLocs = require('./test-extract.json');
+  var targetLocs = require(f);
   extract.scanAst(content, testFileName).forEach(function (m) {
     extractedMsgs.push(m.msg);
     extractedLocs.push(m.loc);

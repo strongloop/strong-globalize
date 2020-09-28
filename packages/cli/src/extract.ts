@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import * as assert from 'assert';
 import * as dbg from 'debug';
 const debug = dbg('strong-globalize-cli');
-const espree = require('espree');
+const espree = require('@babel/parser');
 import * as est from 'estraverse';
 import * as fs from 'fs';
 import SG = require('strong-globalize');
@@ -29,7 +29,13 @@ const options = {
   // espree parse options
   range: false, // Nodes have an index-based location range (array)
   loc: true, // Nodes have line and column-based location info
-  comment: false, // An extra array containing all line and block comments
+
+  // create a top-level comments array containing all comments
+  comments: true,
+  attachComment: true,
+
+  plugins: ['estree'],
+
   tokens: false, // An extra array containing all found tokens
   // Set to 3, 5 (default), 6, 7, 8, 9, 10, 11, or 12 to specify the version of ECMAScript syntax you want to use.
   // You can also set to 2015 (same as 6), 2016 (same as 7), 2017 (same as 8), 2018 (same as 9), 2019 (same as 10), 2020 (same as 11), or 2021 (same as 12) to use the year-based naming.
@@ -589,7 +595,7 @@ export function scanAst(
   }
   let ast: Node;
   try {
-    ast = espree.parse(content, options);
+    ast = espree.parse(content, options).program;
   } catch (e) {
     const errMsg =
       '\n**********************************************************' +
@@ -609,6 +615,10 @@ export function scanAst(
   let glbs: string[] = [];
   est.traverse(ast, {
     enter: function enterNode(node, parent) {
+      if (parent?.leadingComments) {
+        node.leadingComments = node.leadingComments ?? [];
+        node.leadingComments.push(...parent.leadingComments);
+      }
       if (
         node.type === 'VariableDeclaration' &&
         node.declarations &&
@@ -616,6 +626,14 @@ export function scanAst(
       ) {
         const decls = node.declarations;
         decls.forEach(function (d) {
+          if (d.type === 'VariableDeclarator' && hasGlobalizeComment(node)) {
+            // @strong-globalize
+            // var g = ...
+            if (d.id?.type === 'Identifier') {
+              sg.push(d.id.name);
+              return;
+            }
+          }
           if (
             d.type === 'VariableDeclarator' &&
             d.init &&
@@ -785,15 +803,32 @@ export function scanAst(
     );
   }
 
+  /**
+   * Check if the node has `@strong-globalize` or `@globalize` comments
+   * @param node - Estree Node
+   */
+  function hasGlobalizeComment(node: Node | null) {
+    return !!node?.leadingComments?.some((c) =>
+      c.value.match(/^(\s)*@(strong-globalize|globalize)/)
+    );
+  }
+
   function handleSGCall(
     node: CallExpression,
     objName: string,
     propName: string,
-    args: Node[]
+    args: Node[],
+    parent: Node | null
   ) {
     const ix = glbs.indexOf(objName);
 
-    if (ix >= 0) {
+    // Check if there is `@globalize` comment
+    let globalize = ix !== -1;
+    if (!globalize && hasGlobalizeComment(node)) {
+      globalize = true;
+    }
+
+    if (globalize) {
       if (GLB_FN.indexOf(propName) >= 0) {
         const msg = binExpOrLit(args[0]);
         if (!msg) {
@@ -832,7 +867,8 @@ export function scanAst(
           node,
           callee.object.name,
           callee.property.name,
-          node.arguments
+          node.arguments,
+          parent
         );
       } else if (nodeIsFnCall(node)) {
         // @ts-ignore
@@ -843,7 +879,8 @@ export function scanAst(
           callee.object.callee.object.name,
           callee.property.name,
           // @ts-ignore
-          node.arguments
+          node.arguments,
+          parent
         );
       } else if (nodeIsCallOrNew(node)) {
         // @ts-ignore

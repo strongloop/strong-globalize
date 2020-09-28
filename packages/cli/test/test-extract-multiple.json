@@ -1,7 +1,5 @@
 [
-  "test-extract.js:6",
   "test-extract.js:8",
-  "test-extract.js:9",
   "test-extract.js:10",
   "test-extract.js:11",
   "test-extract.js:12",
@@ -14,5 +12,7 @@
   "test-extract.js:19",
   "test-extract.js:20",
   "test-extract.js:21",
-  "test-extract.js:24"
+  "test-extract.js:22",
+  "test-extract.js:23",
+  "test-extract.js:25"
 ]

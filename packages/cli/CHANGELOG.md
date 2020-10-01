@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.1.0](https://github.com/strongloop/strong-globalize/compare/strong-globalize-cli@7.0.5...strong-globalize-cli@7.1.0) (2020-10-01)
+
+
+### Features
+
+* use @babel/parser & allow [@strong-globalize](https://github.com/strong-globalize) comments ([dde8c19](https://github.com/strongloop/strong-globalize/commit/dde8c1912d89799dd0fa9744dee3afec6d718e10))
+
+
+
+
+
 ## [7.0.5](https://github.com/strongloop/strong-globalize/compare/strong-globalize-cli@7.0.4...strong-globalize-cli@7.0.5) (2020-09-24)
 
 **Note:** Version bump only for package strong-globalize-cli

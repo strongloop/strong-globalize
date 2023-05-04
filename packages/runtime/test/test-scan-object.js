@@ -111,8 +111,10 @@ var longExpected = [
   'text a2',
   '*** not a string value ["b","0"]',
   'b one',
-  "*** TypeError: Cannot read property 'b4' of undefined" + ' ["b","4","b4"]',
-  "*** TypeError: Cannot read property 'd' of undefined" + ' ["h","d"]',
+  "*** TypeError: Cannot read properties of undefined (reading 'b4')" +
+    ' ["b","4","b4"]',
+  "*** TypeError: Cannot read properties of undefined (reading 'd')" +
+    ' ["h","d"]',
   '*** not a string value ["h"]',
   'text e',
   '*** unexpected string value ["f","g"]',

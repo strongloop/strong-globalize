@@ -39,7 +39,7 @@
       "packages/*/browser.js",
       "packages/*/lib/*.js"
     ],
-    "all": true
+    "all": false
   },
   "bugs": {
     "url": "https://github.com/strongloop/strong-globalize/issues"
@@ -48,8 +48,10 @@
     "coveralls": "^3.1.0",
     "lerna": "^3.22.1",
     "prettier": "^2.1.2",
-    "tap": "^14.10.8",
+    "tap": "^16.3.4",
     "tslint": "^6.1.3",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-conventional": "^17.6.1"
   }
 }

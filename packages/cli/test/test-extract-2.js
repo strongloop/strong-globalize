@@ -77,12 +77,11 @@ var targets = {
     ],
     err: [
       new RegExp(
-        '^\n[*]{58}\n' +
-          '[*]{2} Please fix the JS code or blacklist the directory.\n' +
-          '[*]{2} /index.js\n' +
-          '[*]{2} {"loc":{"line":8,"column":0},"pos":[0-9]{3}' +
-          '}\n' +
-          '[*]{58}\n\n$'
+        '^\n[*]{58}' +
+          '\n[*]{2} Please fix the JS code or blacklist the directory.' +
+          '\n[*]{2} /index.js' +
+          '\n[*]{2} {"code":"BABEL_PARSER_SYNTAX_ERROR","reasonCode":"IllegalReturn","loc":{"line":8,"column":0,"index":[0-9]{3}},"pos":[0-9]{3}}' +
+          '\n[*]{58}\n\n$'
       ),
     ],
   },

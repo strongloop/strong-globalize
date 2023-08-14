@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.1.1](https://github.com/strongloop/strong-globalize/compare/strong-globalize-cli@7.1.0...strong-globalize-cli@7.1.1) (2023-08-14)
+
+**Note:** Version bump only for package strong-globalize-cli
+
+
+
+
+
 # [7.1.0](https://github.com/strongloop/strong-globalize/compare/strong-globalize-cli@7.0.5...strong-globalize-cli@7.1.0) (2020-10-01)
 
 

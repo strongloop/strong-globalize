@@ -333,7 +333,7 @@ test('extract from CDATA', function (t) {
   });
   t.comment('Extracted: ' + extractedMsgs.toString());
   t.comment('   Target: ' + targetMsgs);
-  t.assert(
+  t.ok(
     targetMsgs.join('') === extractedMsgs.join(''),
     'all literals extracted from CDATA.'
   );

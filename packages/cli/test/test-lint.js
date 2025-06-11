@@ -194,8 +194,8 @@ test('test lint misc testing', function (t) {
       var mustErr = name !== 'lint005';
       const err = lint.lintMessageFiles(!checkAllLangs);
       unhook_intercept();
-      if (mustErr) t.assert(err, name + ' must error.');
-      else t.assert(!err, name + ' must not error.');
+      if (mustErr) t.ok(err, name + ' must error.');
+      else t.ok(!err, name + ' must not error.');
       callback();
     },
     function () {

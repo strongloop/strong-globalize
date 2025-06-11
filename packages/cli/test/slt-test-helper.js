@@ -91,6 +91,7 @@ function testHarness(t, targets, noFixtures, testCallback, testAllDone) {
               temporaryFailure ||
               passTemporaryFailure(out, targets[key].out[ix]);
             if (temporaryFailure) return;
+            out = out.replace(/\u001b\[[0-9;]*m/g, '');
             t.match(out, targets[key].out[ix], key + ': out msg matches.');
           });
           if (temporaryFailure) return;

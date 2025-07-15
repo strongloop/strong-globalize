@@ -43,7 +43,7 @@ var targets = {
     err: [
       '*** json read failure:  /data/dataNonExistent.json *** defined in:' +
         '  /index.js\n',
-      '*** key array parse failure:  undefined *** defined in:  /index.js\n',
+      '*** key array parse failure:  \u001b[90mundefined\u001b[39m *** defined in:  /index.js\n',
       '*** key array parse failure:  [[][ *** defined in:  /index.js\n',
     ],
   },

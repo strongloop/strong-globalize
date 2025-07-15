@@ -179,47 +179,54 @@ export function lintMessageFiles(enOnly: boolean): boolean {
     let wordCount = 0;
     let characterCount = 0;
     const rootDir = helper.getRootDir();
-    helper.enumerateMsgSync(rootDir, lang, false, function (
-      // tslint:disable-next-line:no-any
-      jsonObj: {[key: string]: any},
-      msgFilePath: string
-    ) {
-      const jsonObjKeys = Object.keys(jsonObj);
-      trait.nFiles++;
-      jsonObjKeys.forEach((key) => {
-        if (key in trait.msgs) {
-          trait.dupKeys.push(key);
-          return;
-        }
-        trait.msgs[key] = {};
-        const trt = trait.msgs[key];
-        const msg = jsonObj[key];
-        trt.length = undefined;
-        if (typeof msg === 'string') {
-          if (lang === helper.ENGLISH) {
-            msgCount++;
-            wordCount += wc(msg);
-            characterCount += msg.length;
+    helper.enumerateMsgSync(
+      rootDir,
+      lang,
+      false,
+      function (
+        // tslint:disable-next-line:no-any
+        jsonObj: {[key: string]: any},
+        msgFilePath: string
+      ) {
+        const jsonObjKeys = Object.keys(jsonObj);
+        trait.nFiles++;
+        jsonObjKeys.forEach((key) => {
+          if (key in trait.msgs) {
+            trait.dupKeys.push(key);
+            return;
           }
-          trt.length = msg.length;
-          trt.cDoubleLeftBraces = (msg.match(/{{/g) || []).length;
-          trt.cDoubleRightBraces = (msg.match(/}}/g) || []).length;
-          trt.hardCoded = msg.match(/{{.+?}}/g);
-          trt.cHardCoded = trt.hardCoded ? trt.hardCoded.length : 0;
-          trt.phKeys = [];
-          let trimedMsg = msg.trim().replace(/{{/g, '').replace(/}}/g, '');
-          const phs = trimedMsg.match(/{[0-9a-zA-Z]+?}/g);
-          if (phs)
-            phs.forEach(function (ph) {
-              const phKey = ph.slice(1, -1);
-              trimedMsg = trimedMsg.replace(ph, phKey);
-              trt.phKeys!.push(phKey);
-            });
-          trt.phLeftOrphans = trimedMsg.match(/{[0-9a-zA-Z]+?[^0-9a-zA-Z}]/g);
-          trt.phRightOrphans = trimedMsg.match(/[^{0-9a-zA-Z][0-9a-zA-Z]+?}/g);
-        }
-      });
-    });
+          trait.msgs[key] = {};
+          const trt = trait.msgs[key];
+          const msg = jsonObj[key];
+          trt.length = undefined;
+          if (typeof msg === 'string') {
+            if (lang === helper.ENGLISH) {
+              msgCount++;
+              wordCount += wc(msg);
+              characterCount += msg.length;
+            }
+            trt.length = msg.length;
+            trt.cDoubleLeftBraces = (msg.match(/{{/g) || []).length;
+            trt.cDoubleRightBraces = (msg.match(/}}/g) || []).length;
+            trt.hardCoded = msg.match(/{{.+?}}/g);
+            trt.cHardCoded = trt.hardCoded ? trt.hardCoded.length : 0;
+            trt.phKeys = [];
+            let trimedMsg = msg.trim().replace(/{{/g, '').replace(/}}/g, '');
+            const phs = trimedMsg.match(/{[0-9a-zA-Z]+?}/g);
+            if (phs)
+              phs.forEach(function (ph) {
+                const phKey = ph.slice(1, -1);
+                trimedMsg = trimedMsg.replace(ph, phKey);
+                trt.phKeys!.push(phKey);
+              });
+            trt.phLeftOrphans = trimedMsg.match(/{[0-9a-zA-Z]+?[^0-9a-zA-Z}]/g);
+            trt.phRightOrphans = trimedMsg.match(
+              /[^{0-9a-zA-Z][0-9a-zA-Z]+?}/g
+            );
+          }
+        });
+      }
+    );
     if (lang === helper.ENGLISH)
       console.log(
         '--- linted',

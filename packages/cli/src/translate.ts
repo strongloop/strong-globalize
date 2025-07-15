@@ -81,10 +81,9 @@ function writeAllToMsg(lang: string, json: AnyObject) {
 export function getCredentials() {
   let LC;
   try {
-    LC = require(path.join(
-      os.homedir(),
-      '.strong-globalize/ibm-cloud-credentials.json'
-    ));
+    LC = require(
+      path.join(os.homedir(), '.strong-globalize/ibm-cloud-credentials.json')
+    );
   } catch (e) {
     // Ignore error
   }

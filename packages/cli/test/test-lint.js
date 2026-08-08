@@ -177,8 +177,8 @@ var targets = {
         '3333333333333333333333333333333333333333333333333333333333333333' +
         '3333333333333333333333333333333333333333333333333333333333333333' +
         '333333333333333333333333333333333333333333333333333333333333333' +
-        ' name is longer than 256\n',
-      '*** null en:msg006Msg4 message is longer than 8192\n',
+        ' name is longer than \u001b[33m256\u001b[39m\n',
+      '*** null en:msg006Msg4 message is longer than \u001b[33m8192\u001b[39m\n',
       '*** English file is malformed. Other languages not checked.\n',
     ],
   },

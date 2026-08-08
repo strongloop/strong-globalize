@@ -88,10 +88,9 @@ const LANGS = [
   // 'zu', // Zulu
 ];
 
-const cldrVersion = require(path.resolve(
-  __dirname,
-  'node_modules/cldr-data/package.json'
-)).version;
+const cldrVersion = require(
+  path.resolve(__dirname, 'node_modules/cldr-data/package.json')
+).version;
 var CLDR = {};
 
 LANGS.forEach(function (lang) {

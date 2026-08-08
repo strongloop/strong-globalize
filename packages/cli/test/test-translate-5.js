@@ -16,19 +16,25 @@ var skipTranslate =
   !process.env.BLUEMIX_INSTANCE;
 
 if (skipTranslate) {
-  test('skip translate error ' + gpbHelper.FAKE_bundle_uploadStrings, function (
-    t
-  ) {
-    t.pass();
-    t.end();
-  });
-} else {
-  test('test translate error ' + gpbHelper.FAKE_bundle_uploadStrings, function (
-    t
-  ) {
-    gpbHelper.fakeGpbTest(t, gpbHelper.FAKE_bundle_uploadStrings, function () {
+  test(
+    'skip translate error ' + gpbHelper.FAKE_bundle_uploadStrings,
+    function (t) {
       t.pass();
       t.end();
-    });
-  });
+    }
+  );
+} else {
+  test(
+    'test translate error ' + gpbHelper.FAKE_bundle_uploadStrings,
+    function (t) {
+      gpbHelper.fakeGpbTest(
+        t,
+        gpbHelper.FAKE_bundle_uploadStrings,
+        function () {
+          t.pass();
+          t.end();
+        }
+      );
+    }
+  );
 }

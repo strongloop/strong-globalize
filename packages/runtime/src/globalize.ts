@@ -250,8 +250,8 @@ export function packMessage(
   const variables = percentInKey
     ? helper.mapArgs(path, args)
     : txtWithTwoOrMoreArgs
-    ? helper.repackArgs(args, 1)
-    : args[1];
+      ? helper.repackArgs(args, 1)
+      : args[1];
   let message = formatMessage(path, variables, lang);
   if (withOriginalMsg)
     message = {
@@ -508,24 +508,28 @@ function loadCldr(lang: string) {
     'CLDR already loaded for ' + lang
   );
   const cldrDir = pathUtil.join(__dirname, '..', 'cldr');
-  helper.enumerateFilesSync(cldrDir, null, ['json'], false, false, function (
-    content,
-    filePath
-  ) {
-    let cldr = null;
-    try {
-      cldr = JSON.parse(content);
-    } catch (e) {
-      throw new Error('*** CLDR read error on ' + process.platform);
+  helper.enumerateFilesSync(
+    cldrDir,
+    null,
+    ['json'],
+    false,
+    false,
+    function (content, filePath) {
+      let cldr = null;
+      try {
+        cldr = JSON.parse(content);
+      } catch (e) {
+        throw new Error('*** CLDR read error on ' + process.platform);
+      }
+      const cldrMain: AnyObject = {main: {}};
+      cldrMain.main[lang] = cldr.main[lang];
+      STRONGLOOP_GLB.load!(cldrMain);
+      if (lang === helper.ENGLISH) {
+        const cldrSupplemental = {supplemental: cldr.supplemental};
+        STRONGLOOP_GLB.load!(cldrSupplemental);
+      }
     }
-    const cldrMain: AnyObject = {main: {}};
-    cldrMain.main[lang] = cldr.main[lang];
-    STRONGLOOP_GLB.load!(cldrMain);
-    if (lang === helper.ENGLISH) {
-      const cldrSupplemental = {supplemental: cldr.supplemental};
-      STRONGLOOP_GLB.load!(cldrSupplemental);
-    }
-  });
+  );
 }
 
 /**
